@@ -1,0 +1,2636 @@
+#+TITLE: d1egoaz "dotemacs"
+#+AUTHOR: Diego Alvarez
+#+EMAIL: diego.canada@icloud.com
+#+DESCRIPTION: d1egoaz personal Emacs config.
+
++ Created: 2021-04-24
+
+* Table of Contents                                                   :TOC_2:
+- [[#getting-started][Getting Started]]
+  - [[#how-i-install-emacs][How I Install Emacs]]
+  - [[#lexical-binding][Lexical Binding]]
+  - [[#name-and-email][Name And Email]]
+- [[#package-manager][Package Manager]]
+  - [[#native-compilation][Native Compilation]]
+  - [[#straightel][straight.el]]
+  - [[#use-packageel][use-package.el]]
+  - [[#keep-emacsd-clean-no-litteringel][Keep .emacs.d clean (no-littering.el)]]
+- [[#general-emacs-base-settings][General Emacs Base Settings]]
+  - [[#garbage-collection][Garbage collection]]
+  - [[#change-startup-message][Change startup message]]
+  - [[#authinfo][Authinfo]]
+  - [[#pinentry][Pinentry]]
+  - [[#disable-startup-messages-and-bell][Disable startup messages and bell]]
+  - [[#disable-exit-confirmation][Disable exit confirmation]]
+  - [[#disable-lock-files][Disable lock files]]
+  - [[#disable-files-backup][Disable files backup]]
+  - [[#kill-ring-not-save-duplicates][Kill ring not save duplicates]]
+  - [[#use-short-answers-yn][Use short answers y/n]]
+  - [[#server-mode][Server mode]]
+  - [[#increase-read-output-from-processes][Increase read output from processes]]
+  - [[#scroll-compilation-output-to-first-error][Scroll compilation output to first error]]
+- [[#ui---lets-make-emacs-look-a-little-better][UI - Let's make Emacs look a little better.]]
+  - [[#disable-toolbars-and-scrollbars][Disable toolbars and scrollbars]]
+  - [[#increase-fill-column-width][Increase fill column width]]
+  - [[#fonts][Fonts]]
+  - [[#theme][Theme]]
+- [[#buffers][Buffers]]
+  - [[#scratch-buffer][Scratch buffer]]
+- [[#mode-line][Mode line]]
+  - [[#make-it-compact][Make it compact]]
+  - [[#hide-mode-line-minor-modes][Hide mode line minor modes]]
+  - [[#show-current-command-in-the-mode-line-keycastel][Show current command in the mode line (keycast.el)]]
+  - [[#show-column-number][Show column number]]
+  - [[#show-date-and-time][Show date and time]]
+  - [[#project-name][Project name]]
+- [[#windows][Windows]]
+  - [[#window-rules][Window rules]]
+  - [[#jump-to-windows-ace-windowel][Jump to windows (ace-window.el)]]
+  - [[#restore-old-window-configurations-winnerel][Restore old window configurations (winner.el)]]
+- [[#files][Files]]
+  - [[#dont-prompt-for-confirmation-when-we-create-a-new-file-or-buffer][Don't prompt for confirmation when we create a new file or buffer.]]
+  - [[#create-missing-directories-when-using-find-file][Create missing directories when using find file]]
+  - [[#follow-symlinks-when-opening-files][Follow symlinks when opening files.]]
+  - [[#disable-the-warning-x-and-y-are-the-same-file][Disable the warning X and Y are the same file]]
+  - [[#disable-file-changed-on-disk-messages][Disable file changed on disk messages]]
+- [[#editor][Editor]]
+  - [[#default-coding-system][Default coding system]]
+  - [[#new-line-at-eof][New line at EOF]]
+  - [[#display-line-numbers-and-truncated-lines][Display line numbers and truncated lines]]
+  - [[#highlight-current-line][Highlight current line]]
+  - [[#avoid-performance-issues-with-long-lines][Avoid performance issues with long lines]]
+  - [[#indentation-spaces-and-tabs][Indentation, spaces, and tabs]]
+  - [[#underscore-_-and-hyphen---as-a-word-characters][Underscore =_= and hyphen =-= as a word characters]]
+  - [[#whitespace-cleanup-on-buffer-save][Whitespace cleanup on buffer save]]
+  - [[#enable-narrowing-functions][Enable narrowing functions]]
+- [[#lets-be-evil-evil-el][Let's Be Evil (evil-*.el)]]
+  - [[#evilel][evil.el]]
+  - [[#evil-collectionel][evil-collection.el]]
+  - [[#goto-chgel][goto-chg.el]]
+  - [[#evil-argsel][evil-args.el]]
+  - [[#evil-commentaryel][evil-commentary.el]]
+  - [[#evil-exchangeel][evil-exchange.el]]
+  - [[#evil-escapeel][evil-escape.el]]
+  - [[#evil-surroundel][evil-surround.el]]
+  - [[#evil-tuning][evil Tuning]]
+- [[#completion][Completion]]
+  - [[#enhance-m-x-smexel][Enhance M-x (smex.el)]]
+  - [[#preserve-minibuffer-history-with-savehist-mode][Preserve minibuffer history with savehist-mode]]
+  - [[#completion-framework-companyel][Completion framework (company.el)]]
+  - [[#ivy-counsel-and-swiper][Ivy, Counsel, and Swiper]]
+  - [[#key-bindings-hints-which-keyel][Key bindings hints (which-key.el)]]
+- [[#search-and-replace][Search And Replace]]
+  - [[#ctrlf-isearch-replacement][Ctrlf (Isearch replacement)]]
+  - [[#jumping-with-avyel][Jumping with (avy.el)]]
+  - [[#imenu-listel][imenu-list.el]]
+  - [[#writable-grep-wgrepel][Writable grep (wgrep.el)]]
+  - [[#visual-regex][Visual regex]]
+  - [[#projectile-ignored-directories][Projectile ignored directories]]
+  - [[#consultel][consult.el]]
+- [[#project-management][Project Management]]
+  - [[#git][Git]]
+  - [[#projectile][Projectile]]
+  - [[#treemacsel][treemacs.el]]
+- [[#development][Development]]
+  - [[#language-server-support-lsp][Language Server Support (LSP)]]
+  - [[#go][Go]]
+  - [[#markdown][Markdown]]
+  - [[#misc][Misc]]
+  - [[#kubernetes][Kubernetes]]
+  - [[#hideshowel][hideshow.el]]
+  - [[#tab-binding][Tab binding]]
+- [[#productivity][Productivity]]
+  - [[#syntax-checking-flycheckel][Syntax checking (flycheck.el)]]
+  - [[#snippets-yasnippetel][Snippets (yasnippet.el)]]
+  - [[#expand-regionel][expand-region.el]]
+  - [[#parens-dumbparensel][Parens (dumbparens.el)]]
+  - [[#format-allel][format-all.el]]
+  - [[#vtermel][vterm.el]]
+  - [[#flyspellel][flyspell.el]]
+  - [[#define-word][Define word]]
+  - [[#buff-moveel][buff-move.el]]
+- [[#org-mode][Org Mode]]
+  - [[#orgel][org.el]]
+  - [[#org-downloadel][org-download.el]]
+  - [[#evil-orgel][evil-org.el]]
+  - [[#make-org-capture-start-in-insert-mode][Make org-capture start in insert mode]]
+  - [[#org-babel][Org-Babel]]
+  - [[#create-table-of-dontents][Create table of dontents]]
+  - [[#imenu-org-depth][iMenu org depth]]
+- [[#misc-1][Misc]]
+  - [[#helpfulel][helpful.el]]
+  - [[#all-the-iconsel][all-the-icons.el]]
+  - [[#world-clock][World Clock]]
+  - [[#rss-elfeedel][RSS (elfeed.el)]]
+- [[#keybindings][Keybindings]]
+  - [[#simplify-leader-bindings-generalel][Simplify Leader Bindings (general.el)]]
+  - [[#bindings][Bindings]]
+- [[#functions][Functions]]
+- [[#inspiration][Inspiration]]
+
+* Getting Started
+** How I Install Emacs
+
+#+begin_example sh
+brew install emacs-plus@28 --with-no-frame-refocus --with-native-comp
+#+end_example
+
+** Lexical Binding
+
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Lexical-Binding.html
+
+#+begin_src elisp
+;; -*- lexical-binding: t; -*-
+#+end_src
+
+** Name And Email
+
+#+begin_src elisp
+(setq user-full-name "Diego Alvarez")
+(setq user-mail-address "diego.canada@icloud.com")
+#+end_src
+
+* Package Manager
+** Native Compilation
+
+Silence compiler warnings as they can be pretty disruptive.
+
+#+begin_src elisp
+(setq native-comp-async-report-warnings-errors nil)
+(setq native-comp-async-query-on-exit t)
+(setq native-comp-async-jobs-number 4)
+(setq native-comp-deferred-compilation t)
+#+end_src
+
+** straight.el
+
+[[https://github.com/raxod502/straight.el][straight.el]] operates by cloning Git repositories and then symlinking files into Emacs' load path.
+
+=straight-use-package= package name is a *symbol* not a string.
+*straight configuration is done in =early-init.el=*
+
+*** Update Packages
+
+Update packages (pull in changes, then freeze), this creates
+=~/.config/emacs/straight/versions/default.el=, this lockfile should be checked in.
+
+#+begin_example elisp
+(straight-pull-all)
+(straight-freeze-versions)
+#+end_example
+
+*** Rollback/Re-Install Packages
+
+Read version lockfile and restore package versions to those listed.
+
+#+begin_example elisp
+(straight-thaw-versions)
+#+end_example
+
+** use-package.el
+
+A common use-package declaration looks like this:
+
+#+begin_example elisp
+(use-package <package-name>
+   ;; The :init configuration is always executed (Not lazy)
+    :init
+   ;; <commands to auto load>
+    :commands
+   ;; Configure other variables and modes in the :config section,
+   ;; after lazily loading the package.
+    :config
+   ;; key bindings for this package>
+    :bind)
+#+end_example
+
+Package =use-package= provides a handy macro by the same name which is essentially a wrapper around
+=with-eval-after-load= with a lot of handy syntactic sugar and useful features.
+
+*=use-package= is installed in early-init.el.*
+
+** Keep .emacs.d clean (no-littering.el)
+
+#+begin_src elisp
+(use-package no-littering
+  :config
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+#+end_src
+
+* General Emacs Base Settings
+** Garbage collection
+
+Enforce a sneaky Garbage Collection strategy to minimize GC interference with user activity.  During
+normal use a high GC threshold is set.  When idling GC is triggered and a low threshold is set.
+
+This is important as Emacs just dies trying to collect GC due to the huge initial GC threshold in
+=early-init.el=.
+
+#+begin_src elisp
+(use-package gcmh
+  :config
+  (gcmh-mode 1))
+#+end_src
+
+** Change startup message
+
+#+begin_src elisp
+(setq-default initial-scratch-message ";; Happy hacking d1egoaz - Emacs ♥\n\n")
+#+end_src
+
+** Authinfo
+
+Sensitive credentials.
+
+#+begin_src elisp
+(setq auth-sources '("~/.authinfo.gpg"))
+#+end_src
+
+** Pinentry
+
+Emacs can be prompted for the PIN of GPG private keys.
+
+#+begin_src elisp
+(setq epg-pinentry-mode 'loopback)
+#+end_src
+
+** Disable startup messages and bell
+
+#+begin_src elisp
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
+
+(setq ring-bell-function 'ignore)
+(setq visible-bell nil)
+#+end_src
+
+** Disable exit confirmation
+
+#+begin_src elisp
+(setq confirm-kill-emacs nil)
+#+end_src
+
+** Disable lock files
+
+Disables .#file.ext creation.
+
+#+begin_src elisp
+(setq  create-lockfiles nil)
+#+end_src
+
+** Disable files backup
+
+#+begin_src elisp
+(setq delete-by-moving-to-trash t)
+(setq make-backup-files nil)
+(setq vc-make-backup-files nil)
+(setq auto-save-default nil)
+#+end_src
+
+** Kill ring not save duplicates
+
+Remove duplicates in the kill ring.
+
+#+begin_src elisp
+(setq kill-do-not-save-duplicates t)
+#+end_src
+
+** Use short answers y/n
+
+yes-or-no-p uses shorter answers "y" or "n".
+
+#+begin_src elisp
+(setq use-short-answers t) ; new in Emacs28
+#+end_src
+
+** Server mode
+
+Start the Emacs server from this instance so that all =emacsclient= calls are routed here.
+
+#+begin_src elisp
+(server-start)
+#+end_src
+
+** Increase read output from processes
+
+Increase how much is read from processes in a single chunk (default is 4kb). This is further
+increased by our more expensive LSP module, and where needed.
+
+#+begin_src elisp
+(setq read-process-output-max (* 64 1024))  ; 64kb
+#+end_src
+
+** Scroll compilation output to first error
+
+#+begin_src elisp
+(setq compilation-scroll-output 'first-error)
+#+end_src
+
+* UI - Let's make Emacs look a little better.
+** Disable toolbars and scrollbars
+
+#+begin_src elisp
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode 1) ; I do like to have the menu-bar available to use when I break Emacs :D
+#+end_src
+
+** Increase fill column width
+
+#+begin_src elisp
+(setq fill-column 100)
+#+end_src
+
+** Fonts
+*** Setting The Font Face
+
+#+begin_src elisp
+(set-face-attribute 'variable-pitch nil :font "Helvetica")
+(set-face-attribute 'fixed-pitch nil :font "Iosevka SS08-14")
+(set-face-attribute 'variable-pitch nil :font "Helvetica-14")
+(set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+
+;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
+(add-to-list 'default-frame-alist '(font . "Iosevka SS08-14"))
+#+end_src
+
+*** Configure emoji font 😎
+
+Copied from https://github.com/dunn/company-emoji
+
+#+begin_src elisp
+(defun diego--set-emoji-font (frame)
+  "Adjust the font settings of FRAME so Emacs can display emoji properly."
+  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+
+;; For when Emacs is started in GUI mode:
+(diego--set-emoji-font nil)
+
+;; Hook for when a frame is created with emacsclient
+;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
+(add-hook 'after-make-frame-functions #'diego--set-emoji-font)
+#+end_src
+
+*** Zooming In and Out
+
+CTRL plus =/- for zooming in/out.
+
+#+begin_src elisp
+(global-set-key (kbd "s-=") #'text-scale-increase)
+(global-set-key (kbd "s--") #'text-scale-decrease)
+#+end_src
+
+** Theme
+#+begin_src elisp
+(use-package modus-themes
+  :init
+  (setq modus-themes-completions 'opinionated) ; {nil,'moderate,'opinionated}
+  (setq modus-themes-fringes 'subtle) ; {nil,'subtle,'intense}
+  (setq modus-themes-headings ; Lots of options---continue reading the manual
+        '((1 . section)
+          (2 . section-no-bold)
+          (3 . rainbow-line)
+          (t . rainbow-line-no-bold)))
+  (setq modus-themes-org-blocks 'grayscale) ; {nil,'grayscale,'rainbow}
+  (setq modus-themes-paren-match 'intense-bold) ; {nil,'subtle-bold,'intense,'intense-bold}
+  (setq modus-themes-prompts 'intense) ; {nil,'subtle,'intense}
+  (setq modus-themes-region 'bg-only-no-extend) ; {nil,'no-extend,'bg-only,'bg-only-no-extend}
+  (setq modus-themes-slanted-constructs t) ; use slanted text (italics) unless it is absolutely necessary, strings and code comments
+  (setq modus-themes-subtle-line-numbers t)
+  (setq modus-themes-syntax 'all-syntax) ; Lots of options---continue reading the manual
+  (setq modus-themes-scale-1 1.1)
+  (setq modus-themes-scale-2 1.15)
+  (setq modus-themes-scale-3 1.21)
+  (setq modus-themes-scale-4 1.27)
+  (setq modus-themes-scale-5 1.33)
+  (setq modus-themes-scale-headings t)
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; Load the theme of your choice:
+  ;;(modus-themes-load-operandi)
+  (modus-themes-load-vivendi)
+  :bind ("<f5>" . #'modus-themes-toggle))
+#+end_src
+
+* Buffers
+** Scratch buffer
+
+*** Protect scratch buffer against accidental kill
+
+#+begin_src elisp
+(with-current-buffer "*scratch*"
+  (emacs-lock-mode 'kill))
+#+end_src
+
+*** Initial major mode
+#+begin_src elisp
+(setq initial-major-mode 'org-mode)
+#+end_src
+
+*** Persistent scratch across sessions
+
+#+begin_src elisp
+(use-package persistent-scratch
+  :init
+  (setq persistent-scratch-scratch-buffer-p-function #'(lambda ()(string-match "^*scratch" (buffer-name))))
+
+  (defun diego/make-new-scratch-buffer ()
+    "New temporary scratch buffer with a random name."
+    (interactive)
+    (switch-to-buffer (make-temp-name "*scratch-"))
+    (org-mode))
+
+  (defun diego/make-new-scratch-buffer-go-babel ()
+    "New temporary scratch buffer with a random name with go-babel enabled."
+    (interactive)
+    (switch-to-buffer (make-temp-name "*scratch-go-"))
+    (insert "
+\#+begin_src go
+package main
+import \"fmt\"
+func main() {
+    fmt.Println(\"hello d1egoaz\")
+}
+\#+end_src
+")
+    (org-mode))
+  :config
+  (persistent-scratch-setup-default))
+#+end_src
+
+* Mode line
+
+** Make it compact
+
+#+begin_src elisp
+(setq mode-line-compact t)
+#+end_src
+
+** Hide mode line minor modes
+
+#+begin_src elisp
+(use-package minions
+  :config
+  (setq minions-mode-line-lighter "+")
+  (setq minions-direct '(flymake-mode projectile-mode))
+  (minions-mode 1))
+#+end_src
+
+** Show current command in the mode line (keycast.el)
+
+[[https://github.com/tarsius/keycast][Keycast]] mode shows the current command and its key or mouse binding in the mode line, and updates
+them whenever another command is invoked.
+
+#+begin_src elisp
+(use-package moody) ; required by keycast window predicate
+
+(use-package keycast
+  :after moody
+  :config
+  (setq keycast-window-predicate 'moody-window-active-p)
+  (setq keycast-separator-width 1)
+  (setq keycast-remove-tail-elements nil)
+  (dolist (input '(self-insert-command
+                   org-self-insert-command))
+    (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
+
+  (dolist (event '(mouse-event-p
+                   mouse-movement-p
+                   mwheel-scroll))
+    (add-to-list 'keycast-substitute-alist `(,event nil)))
+
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (add-hook 'pre-command-hook 'keycast--update t)
+      (remove-hook 'pre-command-hook 'keycast--update)))
+
+  (add-to-list 'global-mode-string '("" mode-line-keycast " "))
+  (keycast-mode 1))
+#+end_src
+
+** Show column number
+
+#+begin_src elisp
+(column-number-mode 1) ; Show column number next to line number in mode line
+(setq mode-line-position-column-line-format '(" (%l,%c)"))
+#+end_src
+
+** Show date and time
+
+#+begin_src elisp
+(use-package time
+  :init
+  (setq display-time-format "%l:%M%p %Y-%m-%d")
+  (setq display-time-interval 60)
+  (setq display-time-default-load-average nil))
+#+end_src
+
+** Project name
+
+#+begin_src elisp
+(setq projectile-mode-line-function #'(lambda () (format " Proj[%s]" (projectile-project-name))))
+#+end_src
+
+* Windows
+** Window rules
+
+#+begin_src elisp
+(setq display-buffer-alist
+      `(;; top side window
+        ("\\*\\(world-clock\\).*"
+         (display-buffer-in-side-window)
+         (window-height . 0.16)
+         (side . top)
+         (slot . -1))
+        ("\\*\\(Flymake\\|Package-Lint\\|vc-git :\\).*"
+         (display-buffer-in-side-window)
+         (window-height . 0.16)
+         (side . top)
+         (slot . 0))
+        ("\\*Messages.*"
+         (display-buffer-in-side-window)
+         (window-height . 0.16)
+         (side . top)
+         (slot . 1))
+        ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\)\\*"
+         (display-buffer-in-side-window)
+         (window-height . 0.16)
+         (side . top)
+         (slot . 2)
+         (window-parameters . ((no-other-window . t))))
+        ;; bottom side window
+        ("\\*\\(Embark\\)?.*Completions.*"
+         (display-buffer-in-side-window)
+         (side . bottom)
+         (slot . 0)
+         (window-parameters . ((no-other-window . t)
+                               (mode-line-format . none))))
+        ("\\*kubel -.*"
+         (display-buffer-in-side-window)
+         (window-height . 0.8)
+         (side . bottom)
+         (slot . 0))
+        ;; left side window
+        ("\\*Help.*"
+         (display-buffer-in-side-window)
+         (window-width . 0.30)
+         (side . left)
+         (slot . 0))
+        ;; right side window
+        ("\\*compilation\\*"
+         (display-buffer-in-side-window)
+         (window-width . 0.40)
+         (side . right)
+         (slot . 0))
+        ("\\*Faces\\*"
+         (display-buffer-in-side-window)
+         (window-width . 0.25)
+         (side . right)
+         (slot . 0))
+        ;; bottom buffer (NOT side window)
+        ("\\*\\vc-\\(incoming\\|outgoing\\).*"
+         (display-buffer-at-bottom))
+        ("\\*\\(Output\\|Register Preview\\).*"
+         (display-buffer-at-bottom))
+        ("\\*.*\\(e?shell\\|v?term\\).*"
+         (display-buffer-reuse-mode-window display-buffer-at-bottom)
+         (window-height . 0.2))
+        ;; below currect window
+        ("\\*Calendar.*"
+         (display-buffer-reuse-mode-window display-buffer-below-selected)
+         (window-height . shrink-window-if-larger-than-buffer))))
+(setq window-combination-resize t)
+(setq even-window-sizes 'height-only)
+(setq window-sides-vertical nil)
+(setq switch-to-buffer-in-dedicated-window 'pop)
+(add-hook 'help-mode-hook #'visual-line-mode)
+(add-hook 'custom-mode-hook #'visual-line-mode)
+(define-key global-map (kbd "<f6>") #'window-toggle-side-windows)
+
+;; (Let ((map global-map))
+;;   (define-key map (kbd "s-n") #'next-buffer)
+;;   (define-key map (kbd "s-p") #'previous-buffer)
+;;   (define-key map (kbd "s-o") #'other-window)
+;;   (define-key map (kbd "s-2") #'split-window-below)
+;;   (define-key map (kbd "s-3") #'split-window-right)
+;;   (define-key map (kbd "s-0") #'delete-window)
+;;   (define-key map (kbd "s-1") #'delete-other-windows)
+;;   (define-key map (kbd "s-!") #'delete-other-windows-vertically) ; s-S-1
+;;   (define-key map (kbd "s-5") #'delete-frame)
+;;   (define-key map (kbd "C-x _") #'balance-windows)      ; underscore
+;;   (define-key map (kbd "C-x -") #'fit-window-to-buffer) ; hyphen
+;;   (define-key map (kbd "C-x +") #'balance-windows-area)
+;;   (define-key map (kbd "s-q") #'window-toggle-side-windows)
+;;   (define-key map (kbd "C-x }") #'enlarge-window)
+;;   (define-key map (kbd "C-x {") #'shrink-window)
+;;   (define-key map (kbd "C-x >") #'enlarge-window-horizontally) ; override `scroll-right'
+;;   (define-key map (kbd "C-x <") #'shrink-window-horizontally)) ; override `scroll-left'
+;; (let ((map resize-window-repeat-map))
+;;   (define-key map ">" #'enlarge-window-horizontally)
+;;   (define-key map "<" #'shrink-window-horizontally)))
+#+end_src
+** Jump to windows (ace-window.el)
+
+Package for selecting a window to switch to.
+https://github.com/abo-abo/ace-window
+
+- Change the action midway:
+
+You can also start by calling ace-window and then decide to switch the action to delete or swap etc. By default the bindings are:
+
+x - delete window
+m - swap windows
+M - move window
+c - copy window
+j - select buffer
+n - select the previous window
+u - select buffer in the other window
+c - split window fairly, either vertically or horizontally
+v - split window vertically
+b - split window horizontally
+o - maximize current window
+? - show these command bindings
+
+#+begin_src elisp
+(use-package ace-window
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+end_src
+
+(defvar aw-dispatch-alist
+'((?x aw-delete-window "Delete Window")
+(?m aw-swap-window "Swap Windows")
+(?M aw-move-window "Move Window")
+(?c aw-copy-window "Copy Window")
+(?j aw-switch-buffer-in-window "Select Buffer")
+(?n aw-flip-window)
+(?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+(?c aw-split-window-fair "Split Fair Window")
+(?v aw-split-window-vert "Split Vert Window")
+(?b aw-split-window-horz "Split Horz Window")
+(?o delete-other-windows "Delete Other Windows")
+(?? aw-show-dispatch-help))
+"List of actions for `aw-dispatch-default'.")
+
+** Restore old window configurations (winner.el)
+
+#+begin_src elisp
+(winner-mode 1)
+#+end_src
+
+* Files
+** Don't prompt for confirmation when we create a new file or buffer.
+
+#+begin_src elisp
+(setq confirm-nonexistent-file-or-buffer nil)
+#+end_src
+
+** Create missing directories when using find file
+
+Create missing directories when we open a file that doesn't exist under a directory tree that may not exist.
+
+#+begin_src elisp
+(defun diego/my-create-non-existent-directory ()
+  "Automatically create missing directories when creating new files."
+  (unless (file-remote-p buffer-file-name)
+    (let ((parent-directory (file-name-directory buffer-file-name)))
+      (and (not (file-directory-p parent-directory))
+           (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory))
+           (progn (make-directory parent-directory 'parents)
+                  t)))))
+(add-to-list 'find-file-not-found-functions #'diego/my-create-non-existent-directory)
+#+end_src
+
+** Follow symlinks when opening files.
+
+#+begin_src elisp
+(setq vc-follow-symlinks t)
+(setq find-file-visit-truename t)
+#+end_src
+
+** Disable the warning X and Y are the same file
+
+Which normally appears when you visit a symlinked file by the same name.
+
+#+begin_src  elisp
+(setq find-file-suppress-same-file-warnings t)
+#+end_src
+
+** Disable file changed on disk messages
+
+Turn the delay on auto-reloading from 5 seconds down to 1 second.  We have to do this before turning
+on =auto-revert-mode= for the change to take effect.
+
+#+begin_src elisp
+(setq auto-revert-interval 1)
+(setq revert-without-query '(".*")) ; disables prompt
+(global-auto-revert-mode 1)
+#+end_src
+
+* Editor
+** Default coding system
+
+#+begin_src elisp
+(set-default-coding-systems 'utf-8)
+#+end_src
+
+** New line at EOF
+
+Add a newline automatically at the end of the file.
+
+#+begin_src elisp
+(setq require-final-newline t)
+#+end_src
+
+** Display line numbers and truncated lines
+
+#+begin_src elisp
+;; Explicitly define a width to reduce the cost of on-the-fly computation
+(setq-default display-line-numbers-width 3)
+
+;; Show absolute line numbers for narrowed regions to make it easier to tell the
+;; buffer is narrowed, and where you are, exactly.
+(setq-default display-line-numbers-widen t)
+
+;; Enable line numbers in most text-editing modes.
+(setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'text-mode-hook #'display-line-numbers-mode)
+(add-hook 'conf-mode-hook #'display-line-numbers-mode)
+(global-visual-line-mode 1)
+#+end_src
+
+** Highlight current line
+
+#+begin_src elisp
+(global-hl-line-mode 1)
+#+end_src
+
+** Avoid performance issues with long lines
+
+When the lines in a file are so long that performance could suffer to an unacceptable degree, we say
+"so long" to the slow modes and options enabled in that buffer, and invoke something much more basic
+in their place.
+
+#+begin_src elisp
+(global-so-long-mode 1)
+#+end_src
+
+** Indentation, spaces, and tabs
+
+Favor spaces over tabs.
+
+#+begin_src elisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+#+end_src
+
+Make =tabify= and =untabify= only affect indentation. Not tabs/spaces in the middle of a line.
+#+begin_src elisp
+(setq tabify-regexp "^\t* [ \t]+")
+#+end_src
+
+** Underscore =_= and hyphen =-= as a word characters
+
+An underscore =_= is a word character in Vim. This means that word motions like w skip over
+underlines in a sequence of letters as if it was a letter itself. In contrast, in Evil the
+underscore is often a non-word character like operators, e.g. +.
+
+#+begin_src elisp
+(modify-syntax-entry ?_ "w")
+(modify-syntax-entry ?- "w")
+#+end_src
+
+** Whitespace cleanup on buffer save
+
+#+begin_src elisp
+(add-hook 'before-save-hook #'whitespace-cleanup)
+#+end_src
+
+** Enable narrowing functions
+
+#+begin_src elisp
+(put 'narrow-to-defun  'disabled nil)
+(put 'narrow-to-page   'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+#+end_src
+
+* Let's Be Evil (evil-*.el)
+
+- Cutting and Pasting ::
+In emacs, cutting is called killing. Pasting is called yanking.
+
+- Point and Mark ::
+The point refers to the cursor. The mark refers to the other side of a selected region (the “active region”).
+
+** evil.el
+
+[[https://github.com/emacs-evil/evil][evil]] is a 'vi' layer for Emacs.
+
+#+begin_src elisp
+(use-package evil
+  :init
+  (setq evil-kill-on-visual-paste nil) ; don't add the replaced text to the kill ring
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil) ; so we can use evil-collection
+  (setq evil-want-minibuffer nil) ; so I can map C-a, C-j, C-k
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-d-scroll t)
+  (setq evil-want-C-i-jump t)
+  (setq evil-want-C-u-delete t) ; when insert mode
+  (setq evil-undo-system 'undo-redo) ; default to natively Emacs 28
+  :config
+  (evil-mode 1))
+#+end_src
+
+** evil-collection.el
+
+[[https://github.com/emacs-evil/evil-collection][evil-collection]] are Evil bindings for the parts of Emacs that Evil does not cover properly by default, such as
+help-mode, M-x calendar, Eshell and more. Some bindings don't make sense, so I'm just enabling it per mode.
+
+Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
+
+#+begin_src elisp
+(use-package evil-collection
+  :after (evil general magit)
+  :init
+  (setq evil-collection-company-use-tng nil) ; I don't want that completion experience
+  (setq evil-collection-mode-list nil) ; I don't want surprises, I'll enable it manually by mode
+  (setq evil-collection-key-blacklist '("SPC" "SPC m" "C-SPC" "M-SPC" "gd" "gf" "K" "gr" "gR" "[" "]" "gz" "<escape>"))
+  (setq evil-collection-setup-minibuffer nil) ; don't setup Vim style bindings in the minibuffer.
+  (setq evil-collection-setup-debugger-keys nil)
+  :config
+  (evil-collection-init '(calendar comint company compile dired docker docview ediff elfeed elisp-mode elisp-refs eshell flycheck flymake go-mode help helpful ibuffer imenu imenu-list magit ocurr popup vterm wgrep which-key xref))
+  (evil-collection-magit-setup)
+  ;; q is enough; ESC is way too easy for a vimmer to accidentally press,
+  ;; especially when traversing modes in magit buffers.
+  ;;(evil-define-key* 'normal magit-status-mode-map [escape] nil)
+  ;; Some extra vim-isms I thought were missing from upstream
+  (evil-define-key* '(normal visual) magit-mode-map
+    "zt" #'evil-scroll-line-to-top
+    "zz" #'evil-scroll-line-to-center
+    "zb" #'evil-scroll-line-to-bottom
+    "gi" #'forge-jump-to-issues
+    "gm" #'forge-jump-to-pullreqs
+    "gr" #'magit-refresh))
+;; A more intuitive behavior for TAB in magit buffers:
+;; (define-key! 'normal
+;;   (magit-status-mode-map
+;;    magit-stash-mode-map
+;;    magit-revision-mode-map
+;;    magit-process-mode-map
+;;    magit-diff-mode-map)
+;;   [tab] #'magit-section-toggle)
+
+#+end_src
+
+** goto-chg.el
+
+g; and g,
+
+#+begin_src elisp
+(use-package goto-chg :after evil)
+#+end_src
+
+** evil-args.el
+
+Motions and text objects for delimited arguments.
+
+For example, =cia~ (~ia= inner arg) transforms:
+#+begin_example
+function(ar|g1, arg2, arg3)
+function(|, arg2, arg3)
+#+end_example
+
+=daa= (=aa= outer arg) transforms:
+#+begin_example
+function(ar|g1, arg2, arg3)
+function(|arg2, arg3)
+#+end_example
+
+#+begin_src elisp
+(use-package evil-args
+  :after evil
+  :config
+  (setq evil-args-delimiters '("," ";" " ")); include space to use in lisp
+  :bind (:map evil-inner-text-objects-map
+              ("a" . #'evil-inner-arg)
+              :map evil-outer-text-objects-map
+              ("a" . #'evil-outer-arg)
+              :map evil-normal-state-map
+              ("L" . #'evil-forward-arg)
+              ("H" . #'evil-backward-arg)
+              :map evil-motion-state-map
+              ("H" . #'evil-backward-arg)
+              ("L" . #'evil-forward-arg)))
+#+end_src
+
+** evil-commentary.el
+
+evil-commentary is an Emacs package for evil-mode that intends to make it easy to comment out (lines of) code:
+
+=gcc= comments out a line (takes a count)
+=gc~ comments out the target of a motion, e.g. ~gcap= to comment out a paragraph (normal state) and gc to comment out the selection (visual state).
+
+#+begin_src elisp
+(use-package evil-commentary
+  :straight (:build (autoloads native-compile))
+  :after evil
+  :config
+  (evil-commentary-mode 1))
+#+end_src
+
+** evil-exchange.el
+
+Easy text exchange operator for Evil.
+
+gx (evil-exchange)
+
+On the first use, define (and highlight) the first {motion} to exchange. On the second use, define the second {motion} and perform the exchange.
+
+gX (evil-exchange-cancel)
+
+Notes
+gx (and gX) can also be used from visual mode, which is sometimes easier than coming up with the right {motion}
+If you're using the same motion again (e.g. exchanging two words using gxiw), you can use . (evil-repeat) the second time.
+gxx exchanges lines.
+
+#+begin_src elisp
+(use-package evil-exchange
+  :after evil
+  :config
+  (evil-exchange-install))
+#+end_src
+
+** evil-escape.el
+
+Customizable key sequence to escape from insert state and everything else in Emacs.
+
+#+begin_src elisp
+(use-package evil-escape
+  :after evil
+  :commands evil-escape
+  :init
+  (setq evil-escape-excluded-states '(normal visual multiedit emacs motion))
+  (setq evil-escape-delay 0.15)
+  (setq-default evil-escape-key-sequence "jk")
+  (evil-define-key* '(insert replace visual operator) 'global "\C-g" #'evil-escape)
+  :config
+  (evil-escape-mode 1))
+#+end_src
+
+** evil-surround.el
+
+Add surrounding
+
+You can surround in visual-state with S<textobject> or gS<textobject>. Or in normal-state with
+ys<textobject> or yS<textobject>.  Change surrounding
+
+You can change a surrounding with cs<old-textobject><new-textobject>.
+Delete surrounding
+
+You can delete a surrounding with ds<textobject>.
+
+#+begin_src elisp
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode 1))
+#+end_src
+
+** evil Tuning
+*** Change cursor color evil-mode
+
+#+begin_src elisp
+(setq evil-insert-state-cursor '((bar . 2) "#ff00ff"))
+(setq evil-normal-state-cursor '(box "#ff00ff"))
+#+end_src
+
+*** Stay on the original character when leaving insert mode
+
+#+begin_src elisp
+(setq evil-move-cursor-back nil)
+(setq evil-shift-round nil)
+#+end_src
+
+*** Make magit commit buffer start in insert mode
+
+#+begin_src elisp
+(add-hook 'with-editor-mode-hook #'evil-insert-state)
+#+end_src
+
+* Completion
+** Enhance M-x (smex.el)
+
+[[https://github.com/nonsequitur/smex/blob/master/README.markdown][Smex]] is a package the makes M-x remember our history.
+Now M-x will show our last used commands first.
+
+#+begin_src elisp
+(use-package smex
+  :config
+  (smex-initialize))
+#+end_src
+
+** Preserve minibuffer history with savehist-mode
+
+#+begin_src elisp
+(savehist-mode 1)
+#+end_src
+
+** Completion framework (company.el)
+
+Company is a modular completion framework.  Modules for retrieving completion candidates are called
+backends, modules for displaying them are frontends.
+
+#+begin_src elisp
+(use-package company
+  :config
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 2)
+  (setq company-require-match 'never)
+  (setq company-frontends
+        '(company-pseudo-tooltip-frontend  ; always show candidates in overlay tooltip
+          company-echo-metadata-frontend))  ; show selected candidate docs in echo area
+  (setq company-auto-complete nil)
+  (setq company-auto-complete-chars nil)
+
+  ;; Only search the current buffer for `company-dabbrev' (a backend that
+  ;; suggests text your open buffers). This prevents Company from causing
+  ;; lag once you have a lot of buffers open.
+  (setq company-dabbrev-other-buffers nil)
+
+  ;; Make `company-dabbrev' fully case-sensitive, to improve UX with
+  ;; domain-specific words with particular casing.
+  (setq company-dabbrev-ignore-case nil)
+  (setq company-dabbrev-downcase nil)
+
+  ;; When candidates in the autocompletion tooltip have additional
+  ;; metadata, like a type signature, align that information to the
+  ;; right-hand side. This usually makes it look neater.
+  (setq company-tooltip-align-annotations t)
+
+  (eldoc-add-command #'company-complete-selection
+                     #'company-complete-common
+                     #'company-capf
+                     #'company-abort)
+
+  ;; Always display the entire suggestion list onscreen, placing it
+  ;; above the cursor if necessary.
+  (setq company-tooltip-limit 20)
+  (setq company-tooltip-minimum company-tooltip-limit)
+  (global-company-mode 1))
+#+end_src
+
+** Ivy, Counsel, and Swiper
+
+I currently use Ivy, Counsel, and Swiper to navigate around files, buffers, and projects super
+quickly. Here are some workflow notes on how to best use Ivy:
+
+While in an Ivy minibuffer, you can search within the current results by using S-Space.  To quickly
+jump to an item in the minibuffer, use C-' to get Avy line jump keys.  To see actions for the
+selected minibuffer item, use M-o and then press the action's key.  Super useful: Use C-c C-o to
+open ivy-occur to open the search results in a separate buffer. From there you can click any item to
+perform the ivy action.
+
+*** Ivy
+**** What is Ivy?
+Ivy, counsel, and swiper are a generic completion mechanism for Emacs.
+
+Ivy is a completion framework. Ivy comes with Counsel and Swiper.
+Ivy doesn't try to do too many things, instead it provides an interface to *list, search, filter and perform actions on a collection of "things"*.
+These "things" can range from strings to buffers, Ivy doesn't really care. It just provides a way for the user to interact with this collection.
+
+Ivy-rich allows us to add descriptions alongside the commands in M-x.
+**** Usage
+***** Creating a list
+Ivy is simple to work with. The following code creates a simplified version of the buffer list using Ivy.
+
+#+begin_example elisp
+(ivy-read "My buffers: " (mapcar #'buffer-name (buffer-list)))
+#+end_example
+
+***** Actions
+The ivy-read function takes a number of optional keyword arguments after the collection of results.
+
+Actions invoke a function on the selected candidate. The default action is bound to RET. When working in the Ivy minibuffer, hit M-o to see available actions.
+
+#+begin_example elisp :export none
+(ivy-read "My buffers: "
+        (mapcar #'buffer-name (buffer-list))
+        :action '(1 ;; index (1 based) of the default action
+                    ("s" (lambda (x)
+                        (switch-to-buffer x)) "switch")))
+#+end_example
+
+**** Installing Ivy And Basic Setup
+
+#+begin_src elisp
+(use-package ivy
+  :init
+  (ivy-mode 1)
+  :config
+  (setq ivy-count-format "(%d/%d) ")
+  ;; don't show recent files in switch-buffer
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-wrap t) ; cycle past the last and the first candidates respectively.
+  ;; The default sorter is much to slow and the default for `ivy-sort-max-size'
+  ;; is way too big (30,000). Turn it down so big repos affect project
+  ;; navigation less.
+  (setq ivy-sort-max-size 7500)
+  ;; Counsel changes a lot of ivy's state at startup; to control for that, we
+  ;; need to load it as early as possible. Some packages (like `ivy-prescient')
+  ;; require this.
+  (setq ivy-extra-directories nil); Remove ./ and ../ from file commands
+  (setq ivy-height 17)
+  (setq ivy-fixed-height-minibuffer t) ; make sure it always uses the same height
+  ;; enable ability to select prompt (alternative to `ivy-immediate-done')
+  (setq ivy-use-selectable-prompt t)
+  ;; The following line removes '^' in things like counsel-M-x and other ivy/counsel prompts. Most of the
+  ;; time, I'm searching for a command without knowing what it begins with.
+  (setq ivy-initial-inputs-alist nil) ;
+  (require 'counsel nil t))
+#+end_src
+
+*** ivy-rich.el
+#+begin_src elisp
+
+(use-package ivy-rich
+  :after (ivy counsel projectile)
+  :config
+  (setq ivy-rich-path-style 'full)
+  (setq ivy-virtual-abbreviate 'full)
+  (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
+  (ivy-rich-project-root-cache-mode 1))
+#+end_src
+
+*** Counsel
+
+Counsel comes with Ivy and provides some useful commands, such as counsel-M-x and counsel-find-file.
+These functions use the ivy-read function and provide useful actions on the selection candidate.
+
+#+begin_src elisp
+(use-package counsel
+  :after ivy
+  :config
+  (counsel-mode 1)
+  (setq counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
+  :bind
+  ([remap bookmark-jump]            . #'counsel-bookmark)
+  ([remap describe-bindings]        . #'counsel-descbinds)
+  ([remap describe-face]            . #'counsel-faces)
+  ([remap describe-function]        . #'counsel-describe-function)
+  ([remap describe-variable]        . #'counsel-describe-variable)
+  ([remap describe-symbol]          . #'counsel-describe-symbol)
+  ([remap evil-ex-registers]        . #'counsel-evil-registers)
+  ([remap evil-show-marks]          . #'counsel-mark-ring)
+  ([remap execute-extended-command] . #'counsel-M-x)
+  ([remap find-file]                . #'counsel-find-file)
+  ([remap find-library]             . #'counsel-find-library)
+  ([remap imenu]                    . #'counsel-imenu)
+  ([remap info-lookup-symbol]       . #'counsel-info-lookup-symbol)
+  ([remap load-theme]               . #'counsel-load-theme)
+  ([remap locate]                   . #'counsel-locate)
+  ([remap org-goto]                 . #'counsel-org-goto)
+  ([remap org-set-tags-command]     . #'counsel-org-tag)
+  ([remap recentf-open-files]       . #'counsel-recentf)
+  ([remap set-variable]             . #'counsel-set-variable)
+  ([remap swiper]                   . #'counsel-grep-or-swiper)
+  ([remap unicode-chars-list-chars] . #'counsel-unicode-char)
+  ([remap yank-pop]                 . #'counsel-yank-pop))
+
+(use-package counsel-projectile :after (counsel projectile)
+  :config
+  (counsel-projectile-mode 1)
+  :bind
+  ([remap projectile-find-dir]         . #'counsel-projectile-find-dir)
+  ([remap projectile-switch-to-buffer] . #'counsel-projectile-switch-to-buffer)
+  ([remap projectile-grep]             . #'counsel-projectile-grep)
+  ([remap projectile-ag]               . #'counsel-projectile-rg)
+  ([remap projectile-switch-project]   . #'counsel-projectile-switch-project))
+#+end_src
+
+*** ivy-postrame.el
+
+#+begin_src elisp
+(use-package ivy-posframe
+  :config
+  (setq ivy-posframe-parameters
+        '((left-fringe . 2)
+          (right-fringe . 2)
+          (internal-border-width . 2)
+          ))
+  (setq ivy-posframe-height-alist
+        '((swiper . 15)
+          (swiper-isearch . 15)
+          (t . 15)))
+  (setq ivy-posframe-display-functions-alist
+        '((complete-symbol . ivy-posframe-display-at-point)
+          (swiper . nil)
+          (swiper-isearch . nil)
+          (t . ivy-posframe-display-at-frame-center)))
+  (ivy-posframe-mode 1))
+#+end_src
+
+*** Swiper
+
+#+begin_src elisp
+(use-package swiper :after ivy)
+#+end_src
+
+*** prescient.el
+
+https://github.com/raxod502/prescient.el
+
+Package `prescient' is a library for intelligent sorting and filtering in various contexts.
+
+#+begin_src elisp
+(use-package prescient
+  :config
+  (prescient-persist-mode 1); Remember usage statistics across Emacs sessions.
+  (setq prescient-sort-full-matches-first t))
+
+(use-package ivy-prescient
+  :after (ivy counsel)
+  :config
+  (ivy-prescient-mode 1))
+
+(use-package company-prescient
+  :after company
+  :config
+  (company-prescient-mode 1))
+
+#+end_src
+
+** Key bindings hints (which-key.el)
+
+[[https://github.com/justbur/emacs-which-key][which-key.el]] is a minor mode for Emacs that displays the key bindings following your currently
+entered incomplete command (a prefix) in a popup.
+
+Special SPC, TAB, etc., Single Character a-z,Modifier C-, M-, Other same as default, except single
+characters are sorted alphabetically
+
+#+begin_src elisp
+(use-package which-key
+  :init
+  (setq which-key-sort-order #'which-key-key-order-alpha) ;
+  (setq which-key-sort-uppercase-first nil) ; I prefer to have lowercase first when there is for example a k and K
+  (setq which-key-max-display-columns nil)
+  (setq which-key-min-display-lines 10)
+  (setq which-key-side-window-slot -10); A negative value means use a slot preceding (that is, above or on the left of) the middle slot.
+  (setq which-key-idle-delay 0.3)
+  :config
+  (which-key-mode 1))
+#+end_src
+
+*** Emacs Client
+This setting ensures that emacsclient always opens on *dashboard* rather than *scratch*.
+https://github.com/emacs-dashboard/emacs-dashboard#emacs-daemon
+
+If t, open the *scratch* buffer.
+
+#+begin_src elisp
+(setq initial-buffer-choice t)
+#+end_src
+
+* Search And Replace
+** Ctrlf (Isearch replacement)
+
+C-s search forward.
+C-r search backward (it should be already in Isearch)
+
+Package `ctrlf' provides a replacement for `isearch' that is more similar to the tried-and-true text
+search interfaces in web browsers and other programs (think of what happens when you type ctrl+F).
+
+#+begin_src elisp
+(use-package ctrlf
+  :straight (:host github :repo "raxod502/ctrlf")
+  :init
+  (ctrlf-mode 1))
+#+end_src
+
+** Jumping with (avy.el)
+
+[[https://github.com/abo-abo/avy][avy]] is used to jump to visible text using chars.
+
+#+begin_src elisp
+(use-package avy
+  :init
+  (avy-setup-default))
+
+(use-package ivy-avy
+  :after (ivy avy))
+#+end_src
+
+** imenu-list.el
+
+https://github.com/bmag/imenu-list
+Emacs plugin to show the current buffer's imenu entries in a seperate buffer.
+
+#+begin_src elisp
+(use-package imenu-list)
+#+end_src
+
+** Writable grep (wgrep.el)
+
+With =wgrep= we can directly edit the results of a =grep= and save the
+changes to all affected buffers.
+
+I press C-c C-o (ivy-occur) in the search result. It opens an ivy-occur buffer.
+C-c C-e: Apply the changes to file buffers.
+C-c C-k: Discard all changes and exit.
+To save all buffers that wgrep has changed, run M-x wgrep-save-all-buffers
+
+I switch to this buffer and press C-x C-q (ivy-wgrep-change-to-wgrep-mode) to edit it. I can now change each variable name globally using normal search and replace techniques.
+I then press C-c C-c (wgrep-finish-edit).
+
+#+begin_src elisp
+(use-package wgrep
+  :config (setq wgrep-auto-save-buffer t))
+#+end_src
+
+** Visual regex
+
+Package `visual-regexp-steroids' allows `visual-regexp' to use regexp engines other than Emacs'; for
+example, Python or Perl regexps.
+
+#+begin_src elisp
+(use-package visual-regexp
+  :config
+  (setq vr/default-replace-preview t))
+
+(use-package visual-regexp-steroids
+  :after visual-regexp
+  :bind (([remap query-replace-regexp] . #'vr/query-replace)))
+#+end_src
+
+** Projectile ignored directories
+
+#+begin_src elisp
+(add-to-list 'projectile-globally-ignored-directories "vendor")
+#+end_src
+* Project Management
+** Git
+
+https://github.com/magit/magit
+
+A git client for Emacs.
+C-t to turn any magit buffer into text-mode.
+
+Keybindings: https://github.com/emacs-evil/evil-collection/tree/master/modes/magit
+
+*** magit.el
+
+
+Keys:
+https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-collection-magit.el#L280-L309
+
+#+begin_src elisp
+(use-package magit
+  :after transient
+  :config
+  (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
+  (setq magit-save-repository-buffers nil) ; Don't autosave repo buffers
+  ;; Don't display parent/related refs in commit buffers; they are rarely
+  ;; helpful and only add to runtime costs.
+  (setq magit-revision-insert-related-refs nil)
+  (setq magit-repository-directories
+        '(
+          ("~/src/github.com/Shopify" . 2)
+          ("~/code/" . 2)
+          ("~/dotfiles/" . 1)))
+
+  (transient-append-suffix 'magit-fetch "-p"
+    '("-t" "Fetch all tags" ("-t" "--tags"))))
+
+#+end_src
+
+*** transient.el
+
+Package `transient' is the interface used by Magit to display popups.
+
+#+begin_src elisp
+(use-package transient
+  :config
+  ;; Allow using `q' to quit out of popups, in addition to `C-g'. See
+  ;; <https://magit.vc/manual/transient.html#Why-does-q-not-quit-popups-anymore_003f>
+  ;; for discussion.
+  (transient-bind-q-to-quit)
+  ;; Close transient with ESC
+  (define-key transient-map [escape] #'transient-quit-one))
+#+end_src
+
+*** git-link.el
+
+#+begin_src elisp
+(use-package git-link
+  :commands git-link
+  :config
+  (setq git-link-open-in-browser t))
+#+end_src
+
+*** forge.el
+
+#+begin_src elisp
+(use-package forge
+  :commands forge-create-pullreq)
+#+end_src
+
+** Projectile
+
+https://github.com/bbatsov/projectile
+
+Projectile is a project interaction library for Emacs. Its goal is to provide a nice set of features
+operating on a project level without introducing external dependencies.
+
+This library provides easy project management and navigation. The concept of a project is pretty
+basic just a folder containing some special file (.git or a file called .projectile).
+
+#+begin_src elisp
+(use-package projectile
+  :after magit
+  :config
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-enable-caching t)
+  (setq projectile-require-project-root nil) ; run projectile commands on current not project dir
+  (projectile-global-mode 1)
+  (mapc #'projectile-add-known-project
+        (mapcar #'file-name-as-directory (magit-list-repos)))
+  ;; write to persistent `projectile-known-projects-file'
+  (projectile-save-known-projects))
+
+(use-package recentf
+  :config
+  (recentf-mode 1))
+#+end_src
+
+** treemacs.el
+
+Treemacs - a tree layout file explorer for Emacs.
+https://github.com/Alexander-Miller/treemacs
+
+=oaa= open window with ace
+For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to parent.
+
+#+begin_src elisp
+(use-package treemacs
+  :config
+  (setq treemacs-git-mode 'simple)
+  (setq treemacs-tag-follow-mode nil))
+
+(define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
+
+(use-package treemacs-evil
+  :after (treemacs evil))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
+#+end_src
+
+* Development
+** Language Server Support (LSP)
+
+#+begin_src elisp
+(use-package lsp-mode
+  :after go-mode
+  :commands (lsp lsp-deferred)
+  :hook (go-mode . lsp-deferred)
+  :bind (:map lsp-mode-map
+              ("TAB" . #'completion-at-point))
+  :config
+  (lsp-enable-which-key-integration t)
+  (setq lsp-go-goimports-local "github.com/Shopify/"))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-ui-sideline-show-hover nil)
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-position 'top))
+
+(use-package lsp-ivy
+  :after lsp
+  :commands lsp-ivy-workspace-symbol lsp-ivy-global-workspace-symbol)
+#+end_src
+
+*** Go
+**** go-mode.el
+
+#+begin_src elisp
+(use-package go-mode
+  :config
+  (setq godef-command "go doc") ; original godef
+  (setq gofmt-command "goimports")) ; original gofmt
+#+end_src
+
+*** Get latest gopls
+
+#+begin_src sh
+GO111MODULE=on go get golang.org/x/tools/gopls@latest
+#+end_src
+
+*** Go LSP
+
+#+begin_src elisp
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+#+end_src
+
+*** ob-go.el
+
+Org-Babel support for evaluating go code.
+https://github.com/pope/ob-go
+
+#+begin_src elisp
+(use-package ob-go
+  :after (go-mode org)
+  :straight (ob-go :type git :host github :repo "pope/ob-go"))
+#+end_src
+
+** Markdown
+
+#+begin_src elisp
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . #'gfm-mode)
+         ("\\.md\\'" . #'gfm-mode)
+         ("\\.markdown\\'" . #'gfm-mode)))
+#+end_src
+
+** Misc
+
+#+begin_src elisp
+(use-package dockerfile-mode)
+(use-package json-mode)
+(use-package nix-mode)
+(use-package terraform-mode)
+(use-package yaml-mode)
+(use-package protobuf-mode)
+#+end_src
+
+** Kubernetes
+*** kubel.el
+
+To set said namespace and context, respectively call
+
+M-x kubel-set-namespace
+M-x kubel-set-context
+
+On the kubel screen, place your cursor on the resource:
+|----------+----------------------------------------|
+| key      | command                                |
+|----------+----------------------------------------|
+| $        | show process buffer                    |
+| enter    | get resource details                   |
+| a        | jab deployment to force rolling update |
+| c        | copy popup                             |
+| C        | set context                            |
+| d        | delete popup                           |
+| e        | exec popup                             |
+| E        | quick edit                             |
+| F        | set output format                      |
+| g        | refresh                                |
+| h        | help popup                             |
+| h        | help popup                             |
+| l        | log popup                              |
+| n        | set namespace                          |
+| o        | describe popup                         |
+| p        | port forward pod                       |
+| m        | unmark item                            |
+| u        | unmark item                            |
+| M        | mark all                               |
+| U        | mark all                               |
+| R        | set resource                           |
+| M-n, M-p | next/previous highlight                |
+|----------+----------------------------------------|
+
+#+begin_src elisp
+(use-package kubel
+  :config
+  ;; list namespaces automatically
+  (setq kubel-use-namespace-list 'on))
+
+(use-package kubel-evil
+  :after (kubel evil))
+#+end_src
+
+** hideshow.el
+
+;;   hs-hide-block                      C-c @ C-h
+;;   hs-show-block                      C-c @ C-s
+;;   hs-hide-all                        C-c @ C-M-h
+;;   hs-show-all                        C-c @ C-M-s
+;;   hs-hide-level                      C-c @ C-l
+;;   hs-toggle-hiding                   C-c @ C-c
+;;   hs-toggle-hiding                   [(shift mouse-2)]
+;;   hs-hide-initial-comment-block
+
+#+begin_src elisp
+(setq hs-hide-comments-when-hiding-all nil) ; dont' hide the comments too when you do a 'hs-hide-all'
+#+end_src
+
+
+** Tab binding
+
+Hideshow mode is a buffer-local minor mode that allows you to selectively display portions of a program, which are referred to as blocks
+
+#+begin_src elisp
+;; copy pasted from https://lists.gnu.org/archive/html/emacs-devel/2011-04/msg00562.html
+
+;; called once on a line that contains a hidden block, shows the
+;; block; otherwise calls the default action of TAB; called twice on a
+;; line that does not contain a hidden block, hide the block from the
+;; current position of the cursor
+(defun diego/tab-hs-hide ( &optional arg )
+  (interactive "P")
+  (let ((sl (save-excursion (move-beginning-of-line nil) (point) ) )
+        (el (save-excursion (move-end-of-line nil) (point) ) )
+        obj)
+    (catch 'stop
+      (dotimes (i (- el sl))
+        (mapc
+         (lambda (overlay)
+           (when (eq 'hs (overlay-get overlay 'invisible))
+             (setq obj t)))
+         (overlays-at (+ i sl)))
+        (and obj (throw 'stop 'stop) ) ) )
+    (cond ((and (null obj)
+                (eq last-command this-command) )
+           (hs-hide-block) )
+          (obj
+           (progn
+             (move-beginning-of-line nil)
+             (hs-show-block) ) )
+          (t
+           (save-excursion
+             (funcall (lookup-key (current-global-map) (kbd "^I") ) arg ) ) ) )
+    ) )
+#+end_src
+
+*** Enabling it in some modes
+
+#+begin_src elisp
+(add-hook 'go-mode-hook #'hs-minor-mode)
+#+end_src
+
+*** Global hide/show toggle
+
+#+begin_src elisp
+(defvar diego--my-hs-hide nil "Current state of hideshow for toggling all.")
+(defun diego/toggle-hideshow-all ()
+  "Toggle hideshow all."
+  (interactive)
+  (setq diego--my-hs-hide (not diego--my-hs-hide))
+  (if diego--my-hs-hide
+      (hs-hide-all)
+    (hs-show-all)))
+#+end_src
+
+* Productivity
+** Syntax checking (flycheck.el)
+
+#+begin_src elisp
+(use-package flycheck
+  :config
+  (global-flycheck-mode 1))
+;;:hook (lsp-mode . flycheck-mode))
+#+end_src
+
+** Snippets (yasnippet.el)
+*** yasnippet.el
+
+https://github.com/joaotavora/yasnippet
+
+YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates.
+
+#+begin_src elisp
+(use-package yasnippet
+  :config
+  (setq yas-verbosity 2)
+  (setq yas-snippet-dirs '("~/.config/doom/snippets/"))
+  (yas-global-mode 1))
+#+end_src
+
+*** Snippets collection
+
+https://github.com/hlissner/doom-snippets
+
+#+begin_src elisp
+;; needs files * to download the snippets directories
+(use-package doom-snippets
+  :after yasnippet
+  :straight (doom-snippets :type git :host github :repo "hlissner/doom-snippets" :files ("*.el" "*"))
+  :config
+  (yas-global-mode 1))
+#+end_src
+
+** expand-region.el
+
+https://github.com/magnars/expand-region.el
+
+Emacs extension to increase selected region by semantic units.
+er/expand-region
+
+#+begin_src elisp
+(use-package expand-region)
+#+end_src
+
+** Parens (dumbparens.el)
+
+https://github.com/raxod502/dumbparens/
+A simpler version of Smartparens.
+
+#+begin_src elisp
+(use-package dumbparens
+  :straight (dumbparens :host github :repo "raxod502/dumbparens")
+  :init
+  (setq dumbparens-mode-bindings nil) ; to avoid remapping keys, like C-a
+  (dumbparens-global-mode))
+#+end_src
+
+** format-all.el
+
+#+begin_src elisp
+(use-package format-all)
+#+end_src
+
+** vterm.el
+
+#+begin_src elisp
+(use-package vterm)
+#+end_src
+
+** flyspell.el
+
+#+begin_src elisp
+(use-package flyspell
+  :after org
+  :config
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode))
+#+end_src
+
+** Define word
+
+#+begin_src elisp
+(use-package define-word)
+#+end_src
+
+** buff-move.el
+
+Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-up',
+`buf-move-down', `buf-move-left', `buf-move-right'.
+
+#+begin_src elisp
+(use-package buffer-move)
+#+end_src
+
+* Org Mode
+** org.el
+
+#+begin_src elisp
+(use-package org
+  :init
+  (setq org-directory "~/gdrive/deft")
+  (setq org-agenda-files (list "~/gdrive/deft/journal.org" "~/gdrive/deft/gtd-inbox.org" "~/gdrive/deft/gtd-personal.org" "~/gdrive/deft/gtd-work.org" ))
+  (setq org-attach-id-dir (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
+  (setq org-attach-directory org-attach-id-dir)
+  (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
+  (setq org-download-image-dir org-attach-directory)
+  (setq org-refile-targets '(("~/gdrive/deft/gtd-inbox.org" :maxlevel . 1) ("~/gdrive/deft/gtd-personal.org" :level . 1) ("~/gdrive/deft/gtd-work.org" :maxlevel . 2)))
+  :config
+  (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setq org-clock-out-remove-zero-time-clocks nil)
+  (setq org-cycle-emulate-tab 'white) ; allows to collapse the current outline (call org-cycle)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-download-image-html-width 500)
+  (setq org-edit-src-content-indentation 0) ; not need to waste space
+  (setq org-ellipsis "⌄ ")
+  (setq org-hide-leading-stars nil)
+  (setq org-hide-emphasis-markers nil)
+  (setq org-insert-heading-respect-content nil) ; Insert Org headings at point, not after the current subtree
+  (setq org-log-into-drawer t)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)     ; we do this ourselves
+  (setq org-src-window-setup 'current-window)
+  (setq org-startup-with-inline-images t)
+  (setq org-todo-keywords '((sequence "TODO(t!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)" "IN-PROGRESS(i!)")))
+  (setq org-capture-templates
+        '(
+          ;; example:
+          ;;   "t"                               = key
+          ;;   "Todo"                            = description
+          ;;   entry                             = type
+          ;;   (file+headline "file" "tasks")    = target
+          ;;   ""                                = template
+          ;;   :prepend t                        = properties
+          ;; https://orgmode.org/manual/Template-expansion.html
+          ("t" "Todo" entry (file+headline "~/gdrive/deft/gtd-inbox.org" "Inbox")
+           "* TODO %?\nCreated on on %U\n" :prepend t :empty-lines 1)
+          ("l" "Link" entry (file+headline "~/gdrive/deft/notes.org" "Links")
+           "* %? %^L %^g \n%T" :prepend t)
+          ("n" "Note" entry (file+headline "~/gdrive/deft/notes.org" "Notes")
+           "* %^{title}%^g\n%T\n\n%?" :prepend t)
+          ("j" "Journal" entry (file+olp+datetree "~/gdrive/deft/journal.org")
+           "* %?\nSCHEDULED: <%(org-read-date nil nil \"today\")>" :clock-in t :clock-resume t))))
+#+end_src
+
+** org-download.el
+
+#+begin_src elisp
+(use-package org-download
+  :commands org-download-screenshot)
+#+end_src
+
+** evil-org.el
+
+https://github.com/hlissner/evil-org-mode
+
+key	explanation
+gh, gj, gk, gl	navigate between elements
+vae	select an element
+
+|------+----------------------+-------------------|
+| key  | function             | explanation       |
+|------+----------------------+-------------------|
+| =gh= | org-element-up       | parent of element |
+| =gj= | org-forward-element  | next element      |
+| =gk= | org-backward-element | previous element  |
+| =gl= | org-down-element     | first subelement  |
+| =gH= | evil-org-top         | top-level heading |
+|------+----------------------+-------------------|
+
+all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/doc/keythemes.org
+
+#+begin_src elisp
+(use-package evil-org
+  :after org
+  :straight (:host github :repo "hlissner/evil-org-mode")
+  :config
+                                        ;(add-hook 'evil-org-mode-hook #'evil-normalize-keymaps)
+  (add-hook 'org-mode-hook #'evil-org-mode)
+  (add-hook 'evil-org-mode-hook
+            (lambda ()
+              (evil-org-set-key-theme)))
+  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading))); enable all bindings
+#+end_src
+
+** Make org-capture start in insert mode
+
+#+begin_src elisp
+(add-hook 'org-capture-mode-hook #'evil-insert-state)
+#+end_src
+
+** Org-Babel
+
+#+begin_src elisp
+(org-babel-do-load-languages 'org-babel-load-languages
+                             '(
+                               (dot . t)
+                               (shell . t)
+                               (gnuplot . t)
+                               (latex . t)
+                               ))
+#+end_src
+
+** Create table of dontents
+
+To use, add a =:TOC:= tag to the headline.
+Every time the file is saved, it'll be auto-updated with the current table of contents.
+
+The table of contents heading may also be set with these tags:
+
+- =:TOC_#:= Sets the maximum depth of the headlines in the table of
+  contents to the number given, e.g. :TOC_3: for
+  3 (default for plain :TOC: tag is 2).
+
+- =:TOC_#_gh:= Sets the maximum depth as above and also uses
+  GitHub-style anchors in the table of contents (the
+  default).  The other supported style is :TOC_#_org:,
+
+  #+begin_src elisp
+  (use-package toc-org
+    :after (org markdown-mode)
+    :commands toc-org-enable
+    :hook (org-mode . toc-org-enable)
+    :config
+    (setq toc-org-max-depth 2)
+    (add-hook 'org-mode-hook #'toc-org-mode)
+    (add-hook 'markdown-mode-hook #'toc-org-mode))
+  #+end_src
+
+** iMenu org depth
+
+Increase the maximum level for Imenu access to Org headlines.
+
+#+begin_src elisp
+(setq org-imenu-depth 6)
+#+end_src
+
+* Misc
+** helpful.el
+
+[[https://github.com/Wilfred/helpful][helpful.el]] is an alternative to the built-in Emacs help that provides much more contextual information.
+
+#+begin_src elisp
+(use-package helpful
+  :after counsel
+  :bind (
+         ([remap describe-function] . #'helpful-callable)
+         ([remap describe-variable] . #'helpful-variable)
+         ([remap describe-symbol]   . #'helpful-symbol)
+         ([remap describe-key]      . #'helpful-key))
+  :config
+  (setq counsel-describe-function-function #'helpful-callable)
+  (setq counsel-describe-variable-function #'helpful-variable)
+  (setq counsel-describe-symbol-function #'helpful-symbol))
+#+end_src
+
+Always select the help window (t).
+#+begin_src elisp
+(setq help-window-select t)
+#+end_src
+
+** all-the-icons.el
+
+To have some icons available in doom mode line.
+
+#+begin_src elisp
+(use-package all-the-icons)
+(use-package all-the-icons-dired)
+#+end_src
+
+** World Clock
+
+Tz zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
+=format-time-string= for time format. ISO 8601 format =%FT%T%z=.
+
+#+begin_src elisp
+(use-package time
+  :config
+  (setq zoneinfo-style-world-list '(("etc/UTC" "UTC")
+                                    ("US/Pacific" "PT")
+                                    ("America/New_York" "ET")
+                                    ("America/Bogota" "Bogota")
+                                    ("America/Toronto" "Toronto")))
+  (setq world-clock-time-format "%A %d %B %R (%Z %z) %FT%T%z")
+  (setq world-clock-buffer-name "*world-clock*") ; Placement handled by `display-buffer-alist'
+  (general-define-key :states 'normal :keymaps 'world-clock-mode-map "q" #'kill-buffer-and-window)
+  (add-hook 'after-init-hook #'display-time-mode))
+#+end_src
+
+** RSS (elfeed.el)
+
+https://github.com/skeeto/elfeed
+The best RSS reader.
+
+#+begin_src elisp
+(use-package elfeed
+  :commands elfeed
+  :config
+  (setq elfeed-search-filter "@2-week-ago +unread")
+  (setq elfeed-search-date-format '("%a %b-%d" 10 :left))
+  (setq elfeed-sort-order 'ascending)
+  (general-define-key :states 'normal :keymaps 'elfeed-search-mode-map
+                      "c" #'elfeed-search-clear-filter
+                      "s" #'elfeed-search-live-filter
+                      "r" #'elfeed-search-untag-all-unread
+                      "," #'diego/elfeed-filter))
+
+(use-package elfeed-org
+  :after elfeed
+  :config
+  (setq rmh-elfeed-org-files (list "~/gdrive/deft/elfeed.org"))
+  (elfeed-org))
+#+end_src
+
+* Keybindings
+** Simplify Leader Bindings (general.el)
+
+[[https://github.com/noctuid/general.el][general.el]] allows us to set keybindings.
+
+=general-evil-setup= to set up some basic equivalents for vim mapping functions. This creates global key definition
+functions for the evil states.
+
+=general.el= is installed in early-init.el.*
+
+#+begin_src elisp
+(general-evil-setup t) ; https://github.com/noctuid/general.el#vim-like-definers
+#+end_src
+
+** Bindings
+
+#+begin_src elisp
+;; ** Global Keybindings
+
+;; repeat last macro with Q
+(define-key evil-normal-state-map "Q" (kbd "@@"))
+
+;; ESC Cancels All
+(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+(global-set-key (kbd "M-o") #'ace-window)
+
+(general-define-key
+ :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
+ :keymaps 'override
+ :prefix "SPC"
+ :non-normal-prefix "M-SPC"
+ "SPC" #'(counsel-M-x :which-key "M-x")
+ "'"   #'(ivy-resume :which-key "Resume last search")
+ ">"   #'(er/expand-region :which-key "Expand region")
+ "u"   #'(universal-argument-more :which-key "Universal argument")
+ "x"  #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
+ [tab] #'tab-hs-hide
+ ;; Apps
+ "ad"  #'(dired-jump :which-key "Dired current dir")
+ "a"   '(:ignore t :which-key "apps")
+ "ac"  #'(world-clock :which-key "World clock")
+ "ae"  #'(elfeed :which-key "Elfeed - RSS")
+ "ak"  #'(kubel :which-key "Kubel")
+ "ap"  #'(list-processes :which-key "List process")
+ "aP"  #'(counsel-list-processes :which-key "Kill process")
+ "at"  #'((lambda () (interactive) (treemacs-select-window)(treemacs-display-current-project-exclusively)) :which-key "Treemacs project")
+ "aT"  #'(treemacs :which-key "Toggle Treemacs")
+ "av"  #'vterm
+ ;; Buffers
+ "b"   '(:ignore t :which-key "buffers")
+ "bb"  #'(ivy-switch-buffer :which-key "Switch buffer")
+ "bB"  #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+ "bc"  #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+ "bd"  #'(kill-current-buffer :which-key "Kill current buffer")
+ "be"  #'(diego/safe-erase-buffer :which-key "Erase buffer")
+ "bf"  #'(format-all-buffer :which-key "Format buffer")
+ "bi"  #'(diego/indent-buffer :which-key "Indent buffer")
+ "bK"  #'(kill-buffer :which-key "Kill buffer")
+ "bl"  #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
+ "bm"  '(:ignore t :which-key "move buffer")
+ "bmk" #'(buf-move-up :which-key "Move up")
+ "bmj" #'(buf-move-down :which-key "Move down")
+ "bmh" #'(buf-move-left :which-key "Move left")
+ "bml" #'(buf-move-right :which-key "Move right")
+ "bM"  #'view-echo-area-messages
+ "bn"  #'(next-buffer :which-key "Next buffer")
+ "bp"  #'(previous-buffer :which-key "Previous buffer")
+ "bs"  #'(basic-save-buffer :which-key "Save buffer")
+ "bS"  #'(evil-write-all :which-key "Save all buffers")
+ "by"  #'(diego/copy-buffer-name :which-key "Yank buffer name")
+ "bY"  #'(diego/copy-whole-buffer-to-clipboard :which-key "Copy buffer to clipboard")
+ ;; Compile
+ "c"   '(:ignore t :which-key "compile")
+ "cc"  #'projectile-compile-project
+ "cr"  #'recompile
+ ;; Evaluate elisp expressions
+ "e"   '(:ignore t :which-key "eval")
+ "eb"  #'(eval-buffer :which-key "Eval elisp in buffer")
+ "ed"  #'(eval-defun :which-key "Eval defun")
+ "ee"  #'(eval-expression :which-key "Eval elisp expression")
+ "el"  #'(eval-last-sexp :which-key "Eval last sexression")
+ "er"  #'(eval-region :which-key "Eval region")
+ ;; Files
+ "f"   '(:ignore t :which-key "files")
+ "fC"  #'(copy-file :which-key "Copy file")
+ "fD"  #'(delete-file :which-key "Delete file")
+ "ff"  #'(find-file :which-key "Find file")
+ "fj"  #'(counsel-file-jump :which-key "Jump to file curr dir")
+ "fJ"  #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
+ "fp"  #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
+ "fR"  #'(rename-file :which-key "Rename file")
+ "fs"  #'(save-buffer :which-key "Save file")
+ "fS"  #'(write-file :which-key "Save file as...")
+ "fr"  #'(counsel-recentf :which-key "Recent files")
+ "fy"  #'(diego/copy-file-name :which-key "Yank file path")
+ ;; Git
+ "g"   '(:ignore t :which-key "git")
+ "gb"  #'magit-branch
+ "gs"  #'(magit-status :which-key "Magit status")
+ "gd"  #'magit-diff-unstaged
+ "gc"  #'magit-branch-or-checkout
+ "gF"  #'magit-fetch-all
+ "gP"  #'magit-pull-branch
+ "gf"  #'magit-fetch
+ "gl"  #'magit-log
+ "gL"  #'git-link
+ "gp"  #'magit-push-current
+ "gr"  #'magit-rebase
+ "gR"  #'vc-revert
+ "gS"  #'magit-stage-file
+ "gU"  #'magit-unstage-file
+ ;; Help
+ "h"   '(:ignore t :which-key "help")
+ "hf"  #'(counsel-describe-function :which-key "Describe function/macro")
+ "hF"  #'(counsel-describe-face :which-key "Describe face")
+ "hk"  #'(helpful-key :which-key "Describe key")
+ "hl"  #'(counsel-find-library :which-key "Describe library/package")
+ "hm"  #'(describe-mode :which-key "Describe mode")
+ "hp"  #'(helpful-at-point :which-key "Describe at point")
+ "ho"  #'(counsel-describe-symbol :which-key "Describe symbol")
+ "hv"  #'(counsel-describe-variable :which-key "Describe variable")
+ "hw"  #'define-word-at-point
+ "hr"  #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
+ ;; Insert
+ "i"   '(:ignore t :which-key "insert")
+ "iu"  #'(counsel-unicode-char :which-key "Unicode char")
+ "ir"  #'(counsel-yank-pop :which-key "Register")
+ "is"  #'(yas-insert-snippet :which-key "Snippet")
+ "ik"  #'(diego/evil-insert-line-above :which-key "Line above")
+ "ij"  #'(diego/evil-insert-line-below :which-key "Line below")
+ ;; Jump
+ "j"   '(:ignore t :which-key "jump")
+ "ji"  #'imenu
+ "jI"  #'imenu-list
+ "jb"  #'(bookmark-jump :which-key "Jump to bookmark")
+ "jj"  #'(avy-goto-char-timer :which-key "Jump to char")
+ "jl"  #'(avy-goto-line :which-key "Jump to line")
+ "jh"  #'(evil-show-jumps :which-key "Jump history")
+ "jm"  #'(evil-show-marks :which-key "Jump to mark")
+ "ju"  #'(ffap-menu :which-key "Jump to URL")
+ "jr"  #'(counsel-buffer-or-recentf :which-key "Jump to recent file/buffer")
+ ;; LSP
+ "l"   '(:ignore t :which-key "lsp")
+ "ld"  #'xref-find-definitions
+ "le"  #'lsp-ui-flycheck-list
+ "li"  #'lsp-goto-type-implementation
+ "ln" #'lsp-ui-find-next-reference
+ "lp" #'lsp-ui-find-prev-reference
+ "lr"  #'xref-find-references
+ "lt"  #'lsp-goto-type-definition
+ "lX"  #'lsp-execute-code-action
+ ;; "ls"  #'lsp-lens-show
+ ;;    :desc "Show"                      "m" #'lsp-ui-imenu
+ ;;    :desc "Hide"                      "q" #'lsp-ui-imenu--kill)
+ ;; :desc "Rename"                    "r" #'lsp-rename)
+ ;; :desc "show signature"            "s" #'lsp-signature-activate))
+ ;; :desc "highliht symbol at point"    "h" #'highlight-symbol-at-point
+ ;; :n "t" #'diego/elfeed-ivy-filter
+ ;; local mode
+ "m"   '(:ignore t :which-key "local mode")
+ ;; Narrow
+ "n"   '(:ignore t :which-key "notes/narrow")
+ "nf"  #'(narrow-to-defun :which-key "Narrow function")
+ "nr"  #'(narrow-to-region :which-key "Narrow region")
+ "nw"  #'(widen :which-key "Narrow widen/remove")
+ ;; Org/Other
+ "o"   '(:ignore t :which-key "org/other")
+ "oa"  #'org-agenda
+ "oc"  #'(org-capture :which-key "capture")
+ "oo"  #'(org-open-at-point :which-key "open link at point")
+ "ot"  #'(org-todo :which-key "todo")
+ "oT"  #'org-todo-list
+ "ol"  '(:ignore t :which-key "org-link")
+ "oli" #'org-insert-link
+ "ols" #'org-store-link
+ "oO"  '(:ignore t :which-key "other")
+ "oOd" #'(diego/delete-last-char-eol :which-key "Delete last char EOL")
+ ;; Project
+ "p"   '(:ignore t :which-key "project")
+ "!"   #'(projectile-run-shell-command-in-root :which-key "Run cmd in project root")
+ "pa"  #'(projectile-add-known-project :which-key "Add new project")
+ "pb"  #'(counsel-projectile-switch-to-buffer :which-key "Project buffer")
+ "pf"  #'(counsel-projectile-find-file :which-key "Project file")
+ "pd"  #'(counsel-projectile-find-dir :which-key "Project dir")
+ "pd"  #'(projectile-kill-buffers :which-key "Kill project buffers")
+ "pp"  #'(counsel-projectile-switch-project :which-key "Switch project")
+ "ps"  #'(counsel-projectile-rg :which-key "Project search")
+ "pr"  #'(projectile-recentf :which-key "Project recent files")
+ ;; Profiler
+ "P"   '(:ignore t :which-key "profiler")
+ "Ps"  #'(profiler-start :which-key "Profiler start")
+ "Pk"  #'(profiler-stop :which-key "Profiler stop")
+ "Pr"  #'(profiler-report :which-key "Profiler report")
+ ;; Search
+ "s"   '(:ignore t :which-key "search")
+ "sB"  #'(swiper-all :which-key "Search all buffers")
+ "se"  #'(iedit-mode :which-key "iedit") ; next item TAB
+ "sl"  #'(ivy-resume :which-key "Resume")
+ "ss"  #'(swiper-isearch :which-key "Search")
+ "sp"  #'(counsel-projectile-rg :which-key "Search in project")
+ ;; Toggle
+ "t"   '(:ignore t :which-key "toggle")
+ "tf"  #'toggle-frame-fullscreen
+ "th"  #'(diego/toggle-hideshow-all :which-key "Hide/Show code")
+ "tn"  #'(global-display-line-numbers-mode :which-key "Line numbers")
+ "tt"  #'toggle-truncate-lines
+ "tT"  #'(counsel-load-theme :which-key "Toggle theme")
+ "tv"  #'variable-pitch-mode
+ "tw"  #'whitespace-mode
+ "tW"  #'(visual-line-mode :which-key "Soft line wrapping")
+ ;; Quit/Restart
+ "q"   '(:ignore t :which-key "quit/restart")
+ "qf"  #'(delete-frame :which-key "Delete frame")
+ "qq"  #'(kill-emacs :which-key "Quit Emacs")
+ ;; Window manipulation
+ "w"   '(:ignore t :which-key "windows")
+ "wa"  #'ace-window
+ "w-"  #'(evil-window-split :which-key "Horizontal split window")
+ "w/"  #'(evil-window-vsplit :which-key "Vertical split window")
+ "wd"  #'(evil-window-delete :which-key "Close window")
+ "wh"  #'(evil-window-left :which-key "Window left")
+ "wj"  #'(evil-window-down :which-key "Window down")
+ "wk"  #'(evil-window-up :which-key "Window up")
+ "wl"  #'(evil-window-right :which-key "Window right")
+ "wm"  #'(delete-other-windows :which-key "Maximize window")
+ "wu"  #'winner-undo
+ "wr"  #'winner-redo
+ "ww"  #'(evil-window-next :which-key "Goto next window"))
+
+(general-define-key
+ :states '(normal visual emacs motion)
+ :prefix ","
+ :non-normal-prefix "M-SPC m"
+ :keymaps 'org-mode-map
+ "'" #'org-edit-special
+ "e" #'org-export-dispatch
+ "h" #'org-toggle-heading
+ "i" #'org-toggle-item
+ "q" #'org-set-tags-command
+ "t" #'org-todo
+ "x" #'org-toggle-checkbox
+ "a"   '(:ignore t :which-key "attachments")
+ "aa" #'org-attach
+ "ar" #'org-attach-reveal
+ "au" #'org-attach-url
+ "ac" #'org-download-screenshot
+ "l"   '(:ignore t :which-key "link")
+ "li" #'org-id-store-link
+ "ll" 'org-insert-link
+ "ls" 'org-store-link
+ "d"   '(:ignore t :which-key "date/deadline")
+ "dd" #'org-deadline
+ "ds" #'org-schedule
+ "dt" #'org-time-stamp)
+
+;; example
+(general-define-key
+ :states '(normal visual emacs motion)
+ :prefix ","
+ :non-normal-prefix "M-SPC m"
+ :keymaps 'go-mode-map
+ "a" #'go-tag-add
+ "i" #'go-goto-imports      ; Go to imports
+ "h"   '(:ignore t :which-key "help")
+ "." #'godoc-at-point)     ; Lookup in godoc
+
+;; (general-define-key
+;;  :states '(normal visual)
+;;  :keymaps 'magit-mode-map
+;;  "gr" #'magit-refresh)
+
+;; (general-define-key
+;;  :states '(normal visual emacs motion)
+;;  :prefix ","
+;;  :non-normal-prefix "M-SPC m"
+;;  :keymaps 'elfeed-search-mode-map
+;;  "," #'diego/elfeed-filter
+;;  "c" #'elfeed-search-clear-filter)
+
+;; ;; A more intuitive behavior for TAB in magit buffers:
+;; (define-key! 'normal
+;;   (magit-status-mode-map
+;;    magit-stash-mode-map
+;;    magit-revision-mode-map
+;;    magit-process-mode-map
+;;    magit-diff-mode-map)
+;;   [tab] #'magit-section-toggle)
+
+(defvar +default-minibuffer-maps
+  '(minibuffer-local-map
+    minibuffer-local-ns-map
+    minibuffer-local-completion-map
+    minibuffer-local-must-match-map
+    minibuffer-local-isearch-map
+    read-expression-map
+    ivy-minibuffer-map
+    ivy-switch-buffer-map))
+
+;; Minibuffer
+(general-define-key :keymaps '(evil-ex-completion-map evil-ex-search-keymap)
+                    :states  'insert
+                    "C-j"    #'next-complete-history-element
+                    "C-k"    #'previous-complete-history-element)
+
+(general-define-key :keymaps '(evil-ex-completion-map evil-ex-search-keymap)
+                    "C-a"    #'evil-beginning-of-line
+                    "C-b"    #'evil-backward-char
+                    "C-f"    #'evil-forward-char
+                    "C-j"    #'next-complete-history-element
+                    "C-k"    #'previous-complete-history-element)
+
+(general-define-key :keymaps +default-minibuffer-maps
+                    [escape] #'abort-recursive-edit
+                    "C-a"    #'move-beginning-of-line
+                    "C-j"    #'next-line
+                    "C-k"    #'previous-line)
+
+(general-define-key :keymaps +default-minibuffer-maps
+                    :states  'insert
+                    "C-j"    #'next-line
+                    "C-k"    #'previous-line)
+
+(general-define-key :keymaps 'read-expression-map
+                    "C-j"    #'next-line-or-history-element
+                    "C-k"    #'previous-line-or-history-element)
+
+(general-define-key :keymaps 'company-active-map
+                    "TAB"    #'company-complete-selection
+                    "<tab>"  #'company-complete-selection)
+
+(general-define-key :keymaps 'ivy-minibuffer-map
+                    "C-SPC"  #'ivy-call-and-recenter ; preview file
+                    "C-l"    #'ivy-alt-done)
+
+(general-define-key :keymaps 'counsel-ag-map
+                    "C-SPC"  #'ivy-call-and-recenter ; preview
+                    "C-l"    #'ivy-done)
+
+;; I prefer C-c C-c over C-c ' (more consistent)
+(define-key org-src-mode-map (kbd "C-c C-c") #'org-edit-src-exit)
+
+(general-define-key :keymaps 'org-mode-map
+                    "C-j"  #'org-move-subtree-down
+                    "C-k"  #'org-move-subtree-up)
+
+(general-define-key :keymaps 'vterm-mode-map
+                    :states '(normal insert)
+                    "C-j"  #'vterm--self-insert
+                    "C-k"  #'vterm--self-insert)
+
+(evil-define-key* 'normal helpful-mode-map "q" #'kill-buffer-and-window)
+;; (use-package help-mode
+;; :bind
+;; (:map help-mode-map
+;; ("q" . #'kill-buffer-and-window)))
+#+end_src
+
+* Functions
+
+- TODO: document each fn
+
+#+begin_src elisp
+(defun diego/indent-buffer ()
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)))
+
+(defun diego/delete-last-char-eol ()
+  "Delete last character in line"
+  (interactive)
+  (save-excursion
+    (move-end-of-line 1)
+    (delete-backward-char 1)))
+
+(defun diego/emoji-disapproval () (interactive) (insert "ಠ_ಠ"))
+(defun diego/emoji-shrug () (interactive) (insert "¯\\_(ツ)_/¯"))
+(defun diego/emoji-table-flip () (interactive) (insert "(╯°□°）╯︵ ┻━┻"))
+(defun diego/emoji-glasses () (interactive) (insert "(⌐■_■)"))
+(defun diego/emoji-idonteven () (interactive) (insert "¯\(°_°)/¯"))
+
+(defun diego/copy-buffer-name ()
+  "copy buffer name"
+  (interactive)
+  (let ((path (file-name-nondirectory (buffer-file-name))))
+    (message path)
+    (kill-new path)))
+
+(defun diego/copy-file-name ()
+  "copy buffer name"
+  (interactive)
+  (let ((path (buffer-file-name)))
+    (message path)
+    (kill-new path)))
+
+(defun diego/copy-buffer-dir-path ()
+  "copy buffer path to clipboard"
+  (interactive)
+  (message default-directory)
+  (kill-new default-directory))
+
+(defun diego/url-to-markdown-image ()
+  "copy url from clipboard and creates an url src image to paste in a markdown document"
+  (interactive)
+  (kill-new
+   (format "<img src=\"%s\" width=\"50%%\" />" (current-kill 0))))
+
+(defun diego/today-UTC-date ()
+  "copy the full UTC time to clipboard"
+  (interactive)
+  "Inserts the current date in the buffer"
+  ;; nil to use current date, t to use UTC
+  (insert (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t)))
+
+(defun diego/now ()
+  "Inserts the current time in the buffer"
+  (interactive)
+  (insert (format-time-string "%H:%M:%S PT")))
+
+(defun diego--exec-command-replace-region (command)
+  (interactive)
+  (unless mark-active
+    (mark-whole-buffer))
+  (shell-command-on-region
+   (region-beginning) (region-end)
+   command
+   (current-buffer) t "*diego/error-buffer*" t))
+
+(defun diego/minify-json ()
+  "minify json current region"
+  (interactive)
+  (diego--exec-command-replace-region "jq -ScM ."))
+
+(defun diego/prettify-json ()
+  "prettify json current region"
+  (interactive)
+  (diego--exec-command-replace-region "jq -SM ."))
+
+(defun diego/resize-image ()
+  (interactive)
+  (let ((str (concat "convert \"" buffer-file-name "\" -geometry x300 \"" buffer-file-name "\"")))
+    (message str)
+    (shell-command-to-string str)))
+
+(defun diego/fetch-and-rebase-onto-origin-master ()
+  (interactive)
+  (magit-fetch-branch "origin" "master" nil)
+  (magit-git-rebase "origin/master" nil))
+
+(defun diego/fetch-origin-master ()
+  (interactive)
+  (magit-fetch-branch "origin" "master" nil))
+
+(defun diego/git-create-branch-from-origin-master ()
+  "Creates a new branch starting from origin/master."
+  (interactive)
+  (diego/fetch-origin-master)
+  (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/master): " "diego_")))
+    (magit-git-command-topdir
+     (concat "git checkout -b " new_branch_name " origin/master"))))
+
+(defun diego/prettify-jsonv2 ()
+  "prettify json current region"
+  (interactive)
+  (diego--exec-command-replace-region "prettier --parser json"))
+
+(defun diego/prettify-markdown ()
+  "prettify markdown current region"
+  (interactive)
+  (diego--exec-command-replace-region "prettier --parser markdown"))
+
+(defun diego/prettify-yaml ()
+  "prettify yaml current region"
+  (interactive)
+  (diego--exec-command-replace-region "prettier --parser yaml"))
+
+(defun diego/visit-pull-request-url ()
+  "Visit the current branch's PR on Github."
+  (interactive)
+  (browse-url
+   (format "https://github.com/%s/pull/new/%s"
+           (replace-regexp-in-string
+            "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1"
+            (magit-get "remote"
+                       (magit-get-push-remote)
+                       "url"))
+           (magit-get-current-branch))))
+
+(defun diego/kill-close-all-buffers ()
+  (interactive)
+  (let ((keep '("*scratch* *Messages*")))
+    (switch-to-buffer "*scratch*")
+    (delete-other-windows)
+    (mapc
+     (lambda (b)
+       (unless (member (buffer-name b) keep)
+         (kill-buffer b)))
+     (buffer-list))))
+
+(defun diego/safe-erase-buffer ()
+  "Prompt before erasing the content of the file."
+  (interactive)
+  (if (y-or-n-p (format "Erase content of buffer %s ? " (current-buffer)))
+      (erase-buffer)))
+
+(defun diego/copy-whole-buffer-to-clipboard ()
+  "Copy entire buffer to clipboard"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
+
+(defun diego/evil-insert-line-above (count)
+  "Insert one or several lines above the current point's line without changing
+    the current state and point position."
+  (interactive "p")
+  (dotimes (_ count) (save-excursion (evil-insert-newline-above))))
+
+(defun diego/evil-insert-line-below (count)
+  "Insert one or several lines below the current point's line without changing
+    the current state and point position."
+  (interactive "p")
+  (dotimes (_ count) (save-excursion (evil-insert-newline-below))))
+
+(define-transient-command diego/elfeed-filter ()
+  [["Arguments"
+    ("a" "apple" "+apple")
+    ("c" "Tech Crunch" "+techcrunch")
+    ("e" "emacs" "+emacs")
+    ("h" "Hacker News" "+hnews")
+    ("l" "linux" "+linux")
+    ("t" "top" "+top")
+    ("s" "sre" "+sre")
+    ("v" "verge" "+theverge")]
+   ["Reddit"
+    ("p" "r/Programming" "+programming")]
+   ["Actions"
+    ("f" "apply" diego/elfeed-filter-do)
+    ("u" "update" elfeed-update)]])
+
+(defun diego/elfeed-filter-do ()
+  (interactive)
+  (let ((tags (mapconcat 'identity (transient-args 'diego/elfeed-filter) " ")))
+    (elfeed-search-set-filter (format "@2-weeks-ago +unread %s" tags))
+    (goto-char (point-min))))
+
+(defun diego/request-lease-oncall ()
+  (interactive)
+  (browse-url "https://clouddo.shopifycloud.com/permits?renew=oncall-for-prodeng")
+  (browse-url "https://clouddo.shopifycloud.com/permits?renew=access-canada"))
+
+(defun diego/autocapitalize-org-headings ()
+  "Find org headings and capitalize first word"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (org-next-visible-heading 1)
+      (forward-to-word 1)
+      (while (member (word-at-point) '("TODO" "DONE" "CANCELLED"))
+        (forward-to-word 1))
+      (upcase-char 1))))
+
+(defun diego/insert-uuid ()
+  (interactive)
+  (insert (shell-command-to-string "uuidgen")))
+
+
+(defun diego/vterm ()
+  "Switch to (or create) a general vterm called diego/vterm."
+  (interactive)
+  (delete-other-windows)
+  (if (get-buffer "diego/vterm")
+      (progn
+        (set-buffer "diego/vterm")
+        (switch-to-buffer "diego/vterm"))
+    (vterm "diego/vterm")))
+
+(defun diego/insert-filename ()
+  "Insert a filename at point."
+  (interactive)
+  (insert (read-file-name "File:")))
+
+(defun diego/insert-relative-filename ()
+  "Insert a relative filename at point."
+  (interactive)
+  (insert (file-relative-name (read-file-name "File: "))))
+
+(defun diego/browse-current-file ()
+  "Open the current file as a URL using `browse-url'."
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (browse-url (concat "file://" file-name))))
+
+(defun diego/what-the-commit ()
+  (interactive)
+  (insert
+   (with-current-buffer
+       (url-retrieve-synchronously "http://whatthecommit.com")
+     (re-search-backward "<p>\\([^<]+\\)\n<\/p>")
+     (match-string 1))))
+
+(defun diego/google-meet ()
+  "Open Google Meet with Safari with my Google company profile.
+For some reason I'm having video issues with Firefox."
+  (interactive)
+  (setq browse-url-chrome-program "/Applications/Safari.app/Contents/MacOS/Safari")
+  (browse-url-chrome "https://meet.google.com/?authuser=1"))
+#+end_src
+
+* Inspiration
+
+Some parts of my configuration were copied and inspired from:
+- [[https://github.com/hlissner/doom-emacs/][Doom Emacs]]
+- [[https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-emacs.org][Protesilaos Stavrou]]
+- [[https://github.com/noctuid/evil-guide][Emacs/Evil for Vim Users]]
+- [[https://github.com/raxod502/radian/blob/develop/emacs/radian.el][Radian]]
+- [[https://github.com/daviwil/emacs-from-scratch/blob/master/init.el][Systems Crafters - Emacs From Scratch]]
+- [[https://emacs.nasy.moe/][Nasy]]
+- [[https://config.daviwil.com/emacs][Daviwil]]
