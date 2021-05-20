@@ -2217,6 +2217,7 @@ functions for the evil states.
  "ji"  #'imenu
  "jI"  #'imenu-list
  "jb"  #'(bookmark-jump :which-key "Jump to bookmark")
+ "jB"  #'(bookmark-set :which-key "Set bookmark")
  "jj"  #'(avy-goto-char-timer :which-key "Jump to char")
  "jl"  #'(avy-goto-line :which-key "Jump to line")
  "jh"  #'(evil-show-jumps :which-key "Jump history")
