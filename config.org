@@ -915,7 +915,7 @@ https://github.com/noctuid/evil-guide
   (setq evil-kill-on-visual-paste nil) ; don't add the replaced text to the kill ring
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil) ; so we can use evil-collection
-  (setq evil-want-minibuffer nil) ; so I can map C-a, C-j, C-k
+  (setq evil-want-minibuffer nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-d-scroll t)
   (setq evil-want-C-i-jump t)
@@ -2348,64 +2348,6 @@ functions for the evil states.
  "h"   '(:ignore t :which-key "help")
  "." #'godoc-at-point)     ; Lookup in godoc
 
-;; (general-define-key
-;;  :states '(normal visual)
-;;  :keymaps 'magit-mode-map
-;;  "gr" #'magit-refresh)
-
-;; (general-define-key
-;;  :states '(normal visual emacs motion)
-;;  :prefix ","
-;;  :non-normal-prefix "M-SPC m"
-;;  :keymaps 'elfeed-search-mode-map
-;;  "," #'diego/elfeed-filter
-;;  "c" #'elfeed-search-clear-filter)
-
-;; ;; A more intuitive behavior for TAB in magit buffers:
-;; (define-key! 'normal
-;;   (magit-status-mode-map
-;;    magit-stash-mode-map
-;;    magit-revision-mode-map
-;;    magit-process-mode-map
-;;    magit-diff-mode-map)
-;;   [tab] #'magit-section-toggle)
-
-(defvar +default-minibuffer-maps
-  '(minibuffer-local-map
-    minibuffer-local-ns-map
-    minibuffer-local-completion-map
-    minibuffer-local-must-match-map
-    minibuffer-local-isearch-map
-    read-expression-map))
-
-;; Minibuffer
-(general-define-key :keymaps '(evil-ex-completion-map evil-ex-search-keymap)
-                    :states  'insert
-                    "C-j"    #'next-complete-history-element
-                    "C-k"    #'previous-complete-history-element)
-
-(general-define-key :keymaps '(evil-ex-completion-map evil-ex-search-keymap)
-                    "C-a"    #'evil-beginning-of-line
-                    "C-b"    #'evil-backward-char
-                    "C-f"    #'evil-forward-char
-                    "C-j"    #'next-complete-history-element
-                    "C-k"    #'previous-complete-history-element)
-
-(general-define-key :keymaps +default-minibuffer-maps
-                    [escape] #'abort-recursive-edit
-                    "C-a"    #'move-beginning-of-line
-                    "C-j"    #'next-line
-                    "C-k"    #'previous-line)
-
-(general-define-key :keymaps +default-minibuffer-maps
-                    :states  'insert
-                    "C-j"    #'next-line
-                    "C-k"    #'previous-line)
-
-(general-define-key :keymaps 'read-expression-map
-                    "C-j"    #'next-line-or-history-element
-                    "C-k"    #'previous-line-or-history-element)
-
 (general-define-key :keymaps 'company-active-map
                     "TAB"    #'company-complete-selection
                     "<tab>"  #'company-complete-selection)
@@ -2417,15 +2359,7 @@ functions for the evil states.
                     "C-j"  #'org-move-subtree-down
                     "C-k"  #'org-move-subtree-up)
 
-(general-define-key :keymaps 'vterm-mode-map
-                    :states '(normal insert)
-                    "C-j"  #'vterm--self-insert
-                    "C-k"  #'vterm--self-insert)
 (evil-define-key* 'normal helpful-mode-map "q" #'kill-buffer-and-window)
-;; (use-package help-mode
-;; :bind
-;; (:map help-mode-map
-;; ("q" . #'kill-buffer-and-window)))
 #+end_src
 
 * Functions
