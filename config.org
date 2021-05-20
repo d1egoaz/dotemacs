@@ -1487,6 +1487,10 @@ basic just a folder containing some special file (.git or a file called .project
 (use-package recentf
   :config
   (recentf-mode 1))
+
+;; projectile ignored directories
+(with-eval-after-load 'projectile
+  (add-to-list 'projectile-globally-ignored-directories "vendor"))
 #+end_src
 
 ** treemacs.el
@@ -1534,23 +1538,21 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
   (setq lsp-ui-sideline-show-hover nil)
   (setq lsp-ui-doc-enable t)
   (setq lsp-ui-doc-position 'top)
+
   (add-hook 'go-mode-hook #'lsp-deferred))
 #+end_src
 
 ** Go
-*** go-mode.el
-
-#+begin_src elisp
-(use-package go-mode
-  :config
-  (setq godef-command "go doc") ; original godef
-  (setq gofmt-command "goimports")) ; original gofmt
-#+end_src
-
 *** Get latest gopls
 
 #+begin_src sh
 GO111MODULE=on go get golang.org/x/tools/gopls@latest
+#+end_src
+
+*** go-mode.el
+
+#+begin_src elisp
+(use-package go-mode)
 #+end_src
 
 *** Go LSP
