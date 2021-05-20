@@ -2128,6 +2128,7 @@ functions for the evil states.
  "bc"  #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
  "bd"  #'(kill-current-buffer :which-key "Kill current buffer")
  "be"  #'(diego/safe-erase-buffer :which-key "Erase buffer")
+ "bE"  #'(view-echo-area-messages :which-key "Echo area buffer")
  "bf"  #'(format-all-buffer :which-key "Format buffer")
  "bi"  #'(diego/indent-buffer :which-key "Indent buffer")
  "bK"  #'(kill-buffer :which-key "Kill buffer")
