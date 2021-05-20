@@ -1958,7 +1958,6 @@ The table of contents heading may also be set with these tags:
   (use-package toc-org
     :after (org markdown-mode)
     :commands toc-org-enable
-    :hook (org-mode . toc-org-enable)
     :config
     (setq toc-org-max-depth 2)
     (add-hook 'org-mode-hook #'toc-org-mode)
