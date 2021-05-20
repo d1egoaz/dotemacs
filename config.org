@@ -2165,7 +2165,7 @@ functions for the evil states.
  "e"   '(:ignore t :which-key "eval")
  "eb"  #'(eval-buffer :which-key "Eval elisp in buffer")
  "ed"  #'(eval-defun :which-key "Eval defun")
- "ee"  #'(consult-complex-command :which-key "Eval elisp expression")
+ "ee"  #'(eval-expression  :which-key "Eval elisp expression")
  "el"  #'(eval-last-sexp :which-key "Eval last sexression")
  "er"  #'(eval-region :which-key "Eval region")
  ;; Files
