@@ -74,7 +74,6 @@
   - [[#evil-surroundel][evil-surround.el]]
   - [[#evil-tuning][evil Tuning]]
 - [[#completion][Completion]]
-  - [[#enhance-m-x-smexel][Enhance M-x (smex.el)]]
   - [[#preserve-minibuffer-history-with-savehist-mode][Preserve minibuffer history with savehist-mode]]
   - [[#completion-framework-companyel][Completion framework (company.el)]]
   - [[#ivy-counsel-and-swiper][Ivy, Counsel, and Swiper]]
@@ -1027,16 +1026,6 @@ You can delete a surrounding with ds<textobject>.
 #+end_src
 
 * Completion
-** Enhance M-x (smex.el)
-
-[[https://github.com/nonsequitur/smex/blob/master/README.markdown][Smex]] is a package the makes M-x remember our history.
-Now M-x will show our last used commands first.
-
-#+begin_src elisp
-(use-package smex
-  :config
-  (smex-initialize))
-#+end_src
 
 ** Preserve minibuffer history with savehist-mode
 
@@ -2130,20 +2119,20 @@ functions for the evil states.
  "gU"  #'magit-unstage-file
  ;; Help
  "h"   '(:ignore t :which-key "help")
- "hf"  #'(counsel-describe-function :which-key "Describe function/macro")
- "hF"  #'(counsel-describe-face :which-key "Describe face")
+ "hf"  #'(describe-function :which-key "Describe function/macro")
+ "hF"  #'(describe-face :which-key "Describe face")
  "hk"  #'(helpful-key :which-key "Describe key")
  "hl"  #'(counsel-find-library :which-key "Describe library/package")
  "hm"  #'(describe-mode :which-key "Describe mode")
  "hp"  #'(helpful-at-point :which-key "Describe at point")
- "ho"  #'(counsel-describe-symbol :which-key "Describe symbol")
- "hv"  #'(counsel-describe-variable :which-key "Describe variable")
+ "ho"  #'(describe-symbol :which-key "Describe symbol")
+ "hv"  #'(describe-variable :which-key "Describe variable")
  "hw"  #'define-word-at-point
  "hr"  #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
  ;; Insert
  "i"   '(:ignore t :which-key "insert")
- "iu"  #'(counsel-unicode-char :which-key "Unicode char")
- "ir"  #'(counsel-yank-pop :which-key "Register")
+ "iu"  #'(insert-char :which-key "Unicode char")
+ "ir"  #'(yank-pop :which-key "Register")
  "is"  #'(yas-insert-snippet :which-key "Snippet")
  "ik"  #'(diego/evil-insert-line-above :which-key "Line above")
  "ij"  #'(diego/evil-insert-line-below :which-key "Line below")
@@ -2157,7 +2146,7 @@ functions for the evil states.
  "jh"  #'(evil-show-jumps :which-key "Jump history")
  "jm"  #'(evil-show-marks :which-key "Jump to mark")
  "ju"  #'(ffap-menu :which-key "Jump to URL")
- "jr"  #'(counsel-buffer-or-recentf :which-key "Jump to recent file/buffer")
+ "jr"  #'(consult-buffer :which-key "Jump to recent file/buffer")
  ;; LSP
  "l"   '(:ignore t :which-key "lsp")
  "ld"  #'xref-find-definitions
@@ -2198,12 +2187,12 @@ functions for the evil states.
  "p"   '(:ignore t :which-key "project")
  "!"   #'(projectile-run-shell-command-in-root :which-key "Run cmd in project root")
  "pa"  #'(projectile-add-known-project :which-key "Add new project")
- "pb"  #'(counsel-projectile-switch-to-buffer :which-key "Project buffer")
- "pf"  #'(counsel-projectile-find-file :which-key "Project file")
- "pd"  #'(counsel-projectile-find-dir :which-key "Project dir")
+ "pb"  #'(projectile-switch-to-buffer :which-key "Project buffer")
+ "pf"  #'(projectile-find-file :which-key "Project file")
+ "pd"  #'(projectile-find-dir :which-key "Project dir")
  "pd"  #'(projectile-kill-buffers :which-key "Kill project buffers")
- "pp"  #'(counsel-projectile-switch-project :which-key "Switch project")
- "ps"  #'(counsel-projectile-rg :which-key "Project search")
+ "pp"  #'(projectile-switch-project :which-key "Switch project")
+ "ps"  #'(consult-ripgrep :which-key "Project search")
  "pr"  #'(projectile-recentf :which-key "Project recent files")
  ;; Profiler
  "P"   '(:ignore t :which-key "profiler")
@@ -2212,18 +2201,17 @@ functions for the evil states.
  "Pr"  #'(profiler-report :which-key "Profiler report")
  ;; Search
  "s"   '(:ignore t :which-key "search")
- "sB"  #'(swiper-all :which-key "Search all buffers")
  "se"  #'(iedit-mode :which-key "iedit") ; next item TAB
  "sl"  #'(ivy-resume :which-key "Resume")
- "ss"  #'(swiper-isearch :which-key "Search")
- "sp"  #'(counsel-projectile-rg :which-key "Search in project")
+ "ss"  #'(consult-line :which-key "Search")
+ "sp"  #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
  "t"   '(:ignore t :which-key "toggle")
  "tf"  #'toggle-frame-fullscreen
  "th"  #'(diego/toggle-hideshow-all :which-key "Hide/Show code")
  "tn"  #'(global-display-line-numbers-mode :which-key "Line numbers")
  "tt"  #'toggle-truncate-lines
- "tT"  #'(counsel-load-theme :which-key "Toggle theme")
+ "tT"  #'(consult-theme :which-key "Toggle theme")
  "tv"  #'variable-pitch-mode
  "tw"  #'whitespace-mode
  "tW"  #'(visual-line-mode :which-key "Soft line wrapping")
