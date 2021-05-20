@@ -120,6 +120,7 @@
   - [[#helpfulel][helpful.el]]
   - [[#all-the-iconsel][all-the-icons.el]]
   - [[#world-clock][World Clock]]
+  - [[#olivettiel][olivetti.el]]
   - [[#rss-elfeedel][RSS (elfeed.el)]]
 - [[#keybindings][Keybindings]]
   - [[#simplify-leader-bindings-generalel][Simplify Leader Bindings (general.el)]]
@@ -2000,6 +2001,25 @@ Tz zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
   (add-hook 'after-init-hook #'display-time-mode))
 #+end_src
 
+** olivetti.el
+#+begin_src elisp
+(use-package olivetti
+  :config
+  (setq olivetti-minimum-body-width 200)
+  (setq olivetti-recall-visual-line-mode-entry-state t)
+
+  (define-minor-mode diego/olivetti-mode
+    "Toggle buffer-local `olivetti-mode' with additional parameters."
+    :init-value nil
+    :global nil
+    (if diego/olivetti-mode
+        (progn
+          (olivetti-mode 1)
+          (set-window-fringes (selected-window) 0 0))
+      (olivetti-mode -1)
+      (set-window-fringes (selected-window) nil))))
+#+end_src
+
 ** RSS (elfeed.el)
 
 https://github.com/skeeto/elfeed
@@ -2007,16 +2027,44 @@ The best RSS reader.
 
 #+begin_src elisp
 (use-package elfeed
+  :after olivetti
   :commands elfeed
   :config
   (setq elfeed-search-filter "@2-week-ago +unread")
   (setq elfeed-search-date-format '("%a %b-%d" 10 :left))
   (setq elfeed-sort-order 'ascending)
+  (setq elfeed-search-title-max-width 120)
+
+  (defun diego/elfeed-filter-do ()
+    (interactive)
+    (let ((tags (mapconcat 'identity (transient-args 'diego/elfeed-filter) " ")))
+      (elfeed-search-clear-filter)
+      (elfeed-search-set-filter (format "@2-weeks-ago +unread %s" tags))
+      (goto-char (point-min))))
+
+  (define-transient-command diego/elfeed-filter ()
+    [["Arguments"
+      ("a" "apple" "+apple")
+      ("c" "Tech Crunch" "+techcrunch")
+      ("e" "emacs" "+emacs")
+      ("h" "Hacker News" "+hnews")
+      ("l" "linux" "+linux")
+      ("t" "top" "+top")
+      ("s" "sre" "+sre")
+      ("v" "verge" "+theverge")]
+     ["Reddit"
+      ("p" "r/Programming" "+programming")]
+     ["Actions"
+      ("f" "apply" diego/elfeed-filter-do)
+      ("u" "update" elfeed-update)]])
+
   (general-define-key :states 'normal :keymaps 'elfeed-search-mode-map
                       "c" #'elfeed-search-clear-filter
                       "s" #'elfeed-search-live-filter
                       "r" #'elfeed-search-untag-all-unread
-                      "," #'diego/elfeed-filter))
+                      "," #'diego/elfeed-filter)
+  (add-hook 'elfeed-search-mode-hook #'diego/olivetti-mode)
+  (add-hook 'elfeed-show-mode-hook #'diego/olivetti-mode))
 
 (use-package elfeed-org
   :after elfeed
@@ -2180,7 +2228,6 @@ functions for the evil states.
  ;; :desc "Rename"                    "r" #'lsp-rename)
  ;; :desc "show signature"            "s" #'lsp-signature-activate))
  ;; :desc "highliht symbol at point"    "h" #'highlight-symbol-at-point
- ;; :n "t" #'diego/elfeed-ivy-filter
  ;; local mode
  "m"   '(:ignore t :which-key "local mode")
  ;; Narrow
@@ -2530,28 +2577,6 @@ functions for the evil states.
     the current state and point position."
   (interactive "p")
   (dotimes (_ count) (save-excursion (evil-insert-newline-below))))
-
-(define-transient-command diego/elfeed-filter ()
-  [["Arguments"
-    ("a" "apple" "+apple")
-    ("c" "Tech Crunch" "+techcrunch")
-    ("e" "emacs" "+emacs")
-    ("h" "Hacker News" "+hnews")
-    ("l" "linux" "+linux")
-    ("t" "top" "+top")
-    ("s" "sre" "+sre")
-    ("v" "verge" "+theverge")]
-   ["Reddit"
-    ("p" "r/Programming" "+programming")]
-   ["Actions"
-    ("f" "apply" diego/elfeed-filter-do)
-    ("u" "update" elfeed-update)]])
-
-(defun diego/elfeed-filter-do ()
-  (interactive)
-  (let ((tags (mapconcat 'identity (transient-args 'diego/elfeed-filter) " ")))
-    (elfeed-search-set-filter (format "@2-weeks-ago +unread %s" tags))
-    (goto-char (point-min))))
 
 (defun diego/request-lease-oncall ()
   (interactive)
