@@ -1658,6 +1658,14 @@ On the kubel screen, place your cursor on the resource:
 (setq hs-hide-comments-when-hiding-all nil) ; dont' hide the comments too when you do a 'hs-hide-all'
 #+end_src
 
+#+begin_src elisp
+(add-to-list 'hs-special-modes-alist
+              `(ruby-mode
+                ,(rx (or "def" "class" "module" "{" "[")) ; Block start
+                ,(rx (or "}" "]" "end"))                  ; Block end
+                ,(rx (or "#" "=begin"))                   ; Comment start
+                ruby-forward-sexp nil))
+#+end_src
 
 ** Tab binding
 
