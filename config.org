@@ -1669,11 +1669,11 @@ On the kubel screen, place your cursor on the resource:
 
 #+begin_src elisp
 (add-to-list 'hs-special-modes-alist
-              `(ruby-mode
-                ,(rx (or "def" "class" "module" "{" "[")) ; Block start
-                ,(rx (or "}" "]" "end"))                  ; Block end
-                ,(rx (or "#" "=begin"))                   ; Comment start
-                ruby-forward-sexp nil))
+             `(ruby-mode
+               ,(rx (or "def" "class" "module" "{" "[")) ; Block start
+               ,(rx (or "}" "]" "end"))                  ; Block end
+               ,(rx (or "#" "=begin"))                   ; Comment start
+               ruby-forward-sexp nil))
 #+end_src
 
 ** Tab binding
