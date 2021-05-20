@@ -7,9 +7,11 @@
 
 * Table of Contents                                                   :TOC_2:
 - [[#getting-started][Getting Started]]
+  - [[#why-emacs][Why Emacs]]
   - [[#how-i-install-emacs][How I Install Emacs]]
   - [[#lexical-binding][Lexical Binding]]
   - [[#name-and-email][Name And Email]]
+  - [[#emacs-concepts][Emacs Concepts]]
 - [[#package-manager][Package Manager]]
   - [[#native-compilation][Native Compilation]]
   - [[#straightel][straight.el]]
@@ -126,6 +128,22 @@
 - [[#inspiration][Inspiration]]
 
 * Getting Started
+** Why Emacs
+
+- https://www.gnu.org/software/emacs/manual/emacs.html
+- https://github.com/noctuid/evil-guide
+- https://emacs.wordpress.com/2007/01/14/the-ghost-in-the-lisp-machine/
+
+#+begin_quote
+Living in Emacs is addictive. Imagine an operating system where you can switch from writing code to
+browsing the web or chatting without leaving a consistent environment, with the same set of commands
+and shortcuts. Imagine a set of integrated applications where data is seamlessly shared, where any
+single functionality can be tweaked, extended and adapted to your particular needs. Where everything
+is easily scriptable. Imagine, in additon, that the environment provides powerful and complete
+interactive self-documentation facilities with which the user can find out what is available. I have
+yet to find an operating system providing such an integrated environment.
+#+end_quote
+
 ** How I Install Emacs
 
 #+begin_example sh
@@ -146,6 +164,60 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Lexical-Binding.html
 (setq user-full-name "Diego Alvarez")
 (setq user-mail-address "diego.canada@icloud.com")
 #+end_src
+
+** Emacs Concepts
+*** Functions
+In Emacs, every user interaction is a function execution. There are two types of functions in Emacs:
+
+- Normal functions ::
+  These are like functions in other programming languages, and are used for implementing features in
+  Emacs. Users do not need to care about these functions, unless they want to implement something or
+  modify an existing implementation.
+- Commands ::
+  Commands are like functions, but interactive. It means, commands are features provided to users
+  and users directly use them.
+
+*** Basic motion commands
+
+
+Move forward one char: C-f (f stands for forward)
+Move backward one char: C-b (b stands for backward)
+Move upward one line: C-p (p stands for previous)
+Move downward one line: C-n (n stands for next)
+
+Move to beginning of line: C-a
+Move to end of line: C-e
+Move forward one word, M-f.
+Move backward one word, M-b.
+
+Scroll forward one screen: C-v, page down
+Scroll backward one screen: M-v, page up
+Move to the beginning of a sentence: M-a
+Move to the end of a sentence: M-e
+*** Modeline
+The mode line is the empty area below the buffer. It has useful summary information about the buffer
+shown in the window.
+
+*** Minibuffer
+Minibuffer is the small area at the bottom of your Emacs screen.
+
+*** Echo area
+
+Minibuffer can be used for output as well. The echo area is used for displaying messages made with
+the message primitive, and for echoing keystrokes.  Both Minibuffer and Echo Area, although serve
+different purposes, share the same physical space.
+
+*** Frames
+
+An application window in an operating system is called a Frame in Emacs.
+
+*** Window
+
+Emacs can split your frame area into multiple smaller areas. Each such area is called a window.
+
+*** Tutorial
+- https://tuhdo.github.io/emacs-tutor.html
+  -
 
 * Package Manager
 ** Native Compilation
@@ -826,6 +898,9 @@ In emacs, cutting is called killing. Pasting is called yanking.
 
 - Point and Mark ::
 The point refers to the cursor. The mark refers to the other side of a selected region (the “active region”).
+
+- Guides ::
+https://github.com/noctuid/evil-guide
 
 ** evil.el
 
