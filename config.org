@@ -76,7 +76,7 @@
 - [[#completion][Completion]]
   - [[#preserve-minibuffer-history-with-savehist-mode][Preserve minibuffer history with savehist-mode]]
   - [[#completion-framework-companyel][Completion framework (company.el)]]
-  - [[#ivy-counsel-and-swiper][Ivy, Counsel, and Swiper]]
+  - [[#selection-and-narrowing][Selection and Narrowing]]
   - [[#key-bindings-hints-which-keyel][Key bindings hints (which-key.el)]]
 - [[#search-and-replace][Search And Replace]]
   - [[#ctrlf-isearch-replacement][Ctrlf (Isearch replacement)]]
@@ -84,8 +84,6 @@
   - [[#imenu-listel][imenu-list.el]]
   - [[#writable-grep-wgrepel][Writable grep (wgrep.el)]]
   - [[#visual-regex][Visual regex]]
-  - [[#projectile-ignored-directories][Projectile ignored directories]]
-  - [[#consultel][consult.el]]
 - [[#project-management][Project Management]]
   - [[#git][Git]]
   - [[#projectile][Projectile]]
@@ -1077,161 +1075,134 @@ backends, modules for displaying them are frontends.
   (global-company-mode 1))
 #+end_src
 
-** Ivy, Counsel, and Swiper
+** Selection and Narrowing
+*** selectrum.el
 
-I currently use Ivy, Counsel, and Swiper to navigate around files, buffers, and projects super
-quickly. Here are some workflow notes on how to best use Ivy:
-
-While in an Ivy minibuffer, you can search within the current results by using S-Space.  To quickly
-jump to an item in the minibuffer, use C-' to get Avy line jump keys.  To see actions for the
-selected minibuffer item, use M-o and then press the action's key.  Super useful: Use C-c C-o to
-open ivy-occur to open the search results in a separate buffer. From there you can click any item to
-perform the ivy action.
-
-*** Ivy
-**** What is Ivy?
-Ivy, counsel, and swiper are a generic completion mechanism for Emacs.
-
-Ivy is a completion framework. Ivy comes with Counsel and Swiper.
-Ivy doesn't try to do too many things, instead it provides an interface to *list, search, filter and perform actions on a collection of "things"*.
-These "things" can range from strings to buffers, Ivy doesn't really care. It just provides a way for the user to interact with this collection.
-
-Ivy-rich allows us to add descriptions alongside the commands in M-x.
-**** Usage
-***** Creating a list
-Ivy is simple to work with. The following code creates a simplified version of the buffer list using Ivy.
-
-#+begin_example elisp
-(ivy-read "My buffers: " (mapcar #'buffer-name (buffer-list)))
-#+end_example
-
-***** Actions
-The ivy-read function takes a number of optional keyword arguments after the collection of results.
-
-Actions invoke a function on the selected candidate. The default action is bound to RET. When working in the Ivy minibuffer, hit M-o to see available actions.
-
-#+begin_example elisp :export none
-(ivy-read "My buffers: "
-        (mapcar #'buffer-name (buffer-list))
-        :action '(1 ;; index (1 based) of the default action
-                    ("s" (lambda (x)
-                        (switch-to-buffer x)) "switch")))
-#+end_example
-
-**** Installing Ivy And Basic Setup
+https://github.com/raxod502/selectrum
 
 #+begin_src elisp
-(use-package ivy
+(use-package selectrum
+  :config
+  (setq selectrum-max-window-height 17)
+  (selectrum-mode 1))
+
+(use-package selectrum-prescient
+  :after selectrum
+  :config
+  (selectrum-prescient-mode 1))
+#+end_src
+
+*** consult.el
+
+https://github.com/minad/consult#use-package-example
+https://github.com/minad/consult/wiki
+
+M-m quick select
+M-i quick insert
+M-w copy
+
+#+begin_src elisp
+(use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
-  (ivy-mode 1)
+  (setq consult-find-command "fd --color=never --full-path ARG OPTS")
+  (setq consult-async-refresh-delay 0.3)
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
   :config
-  (setq ivy-count-format "(%d/%d) ")
-  ;; don't show recent files in switch-buffer
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-wrap t) ; cycle past the last and the first candidates respectively.
-  ;; The default sorter is much to slow and the default for `ivy-sort-max-size'
-  ;; is way too big (30,000). Turn it down so big repos affect project
-  ;; navigation less.
-  (setq ivy-sort-max-size 7500)
-  ;; Counsel changes a lot of ivy's state at startup; to control for that, we
-  ;; need to load it as early as possible. Some packages (like `ivy-prescient')
-  ;; require this.
-  (setq ivy-extra-directories nil); Remove ./ and ../ from file commands
-  (setq ivy-height 17)
-  (setq ivy-fixed-height-minibuffer t) ; make sure it always uses the same height
-  ;; enable ability to select prompt (alternative to `ivy-immediate-done')
-  (setq ivy-use-selectable-prompt t)
-  ;; The following line removes '^' in things like counsel-M-x and other ivy/counsel prompts. Most of the
-  ;; time, I'm searching for a command without knowing what it begins with.
-  (setq ivy-initial-inputs-alist nil) ;
-  (require 'counsel nil t))
+  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+  (setq consult-narrow-key ">")
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (kbd "M-p"))
+  :bind (
+         ([remap apropos] . consult-apropos)
+         ([remap bookmark-jump]            . #'consult-bookmark)
+         ([remap imenu]                    . #'consult-imenu)
+         ([remap load-theme]               . #'consult-theme)
+         ([remap locate]                   . #'consult-locate)
+         ([remap org-goto]                 . #'consult-org-heading)
+         ([remap switch-to-buffer] . consult-buffer)
+         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
+         ([remap yank-pop]                 . #'consult-yank-pop)
+         ([remap recentf-open-files]       . #'consult-recent-file)))
+
+(use-package consult-lsp
+  :after (consult lsp)
+  :config
+  (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
 #+end_src
 
-*** ivy-rich.el
-#+begin_src elisp
-
-(use-package ivy-rich
-  :after (ivy counsel projectile)
-  :config
-  (setq ivy-rich-path-style 'full)
-  (setq ivy-virtual-abbreviate 'full)
-  (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
-  (ivy-rich-project-root-cache-mode 1))
-#+end_src
-
-*** Counsel
-
-Counsel comes with Ivy and provides some useful commands, such as counsel-M-x and counsel-find-file.
-These functions use the ivy-read function and provide useful actions on the selection candidate.
+*** embark.el
 
 #+begin_src elisp
-(use-package counsel
-  :after ivy
-  :config
-  (counsel-mode 1)
-  (setq counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
+;; https://github.com/oantolin/embark
+(use-package embark
   :bind
-  ([remap bookmark-jump]            . #'counsel-bookmark)
-  ([remap describe-bindings]        . #'counsel-descbinds)
-  ([remap describe-face]            . #'counsel-faces)
-  ([remap describe-function]        . #'counsel-describe-function)
-  ([remap describe-variable]        . #'counsel-describe-variable)
-  ([remap describe-symbol]          . #'counsel-describe-symbol)
-  ([remap evil-ex-registers]        . #'counsel-evil-registers)
-  ([remap evil-show-marks]          . #'counsel-mark-ring)
-  ([remap execute-extended-command] . #'counsel-M-x)
-  ([remap find-file]                . #'counsel-find-file)
-  ([remap find-library]             . #'counsel-find-library)
-  ([remap imenu]                    . #'counsel-imenu)
-  ([remap info-lookup-symbol]       . #'counsel-info-lookup-symbol)
-  ([remap load-theme]               . #'counsel-load-theme)
-  ([remap locate]                   . #'counsel-locate)
-  ([remap org-goto]                 . #'counsel-org-goto)
-  ([remap org-set-tags-command]     . #'counsel-org-tag)
-  ([remap recentf-open-files]       . #'counsel-recentf)
-  ([remap set-variable]             . #'counsel-set-variable)
-  ([remap swiper]                   . #'counsel-grep-or-swiper)
-  ([remap unicode-chars-list-chars] . #'counsel-unicode-char)
-  ([remap yank-pop]                 . #'counsel-yank-pop))
+  (("M-a" . embark-act)       ;; pick some comfortable binding
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
-(use-package counsel-projectile :after (counsel projectile)
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
   :config
-  (counsel-projectile-mode 1)
-  :bind
-  ([remap projectile-find-dir]         . #'counsel-projectile-find-dir)
-  ([remap projectile-switch-to-buffer] . #'counsel-projectile-switch-to-buffer)
-  ([remap projectile-grep]             . #'counsel-projectile-grep)
-  ([remap projectile-ag]               . #'counsel-projectile-rg)
-  ([remap projectile-switch-project]   . #'counsel-projectile-switch-project))
+  (setq embark-action-indicator
+        (lambda (map _target)
+          (which-key--show-keymap "Embark" map nil nil 'no-paging)
+          #'which-key--hide-popup-ignore-command)
+        embark-become-indicator embark-action-indicator)
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :after (embark consult))
 #+end_src
 
-*** ivy-postrame.el
+*** marginalia.el
+
+#+begin_example
+ "Return symbol class characters for symbol S.
+Function:
+f function
+c command
+m macro
+! advised
+o obsolete
+Variable:
+u custom
+v variable
+l local
+\* modified
+o obsolete
+Other:
+a face
+t cl-type"
+#+end_example
 
 #+begin_src elisp
-(use-package ivy-posframe
+(use-package marginalia
+  :init
+  (marginalia-mode 1))
+
+;; https://github.com/muffinmad/emacs-mini-frame
+(use-package mini-frame
+  :after selectrum
   :config
-  (setq ivy-posframe-parameters
-        '((left-fringe . 2)
-          (right-fringe . 2)
-          (internal-border-width . 2)
-          ))
-  (setq ivy-posframe-height-alist
-        '((swiper . 15)
-          (swiper-isearch . 15)
-          (t . 15)))
-  (setq ivy-posframe-display-functions-alist
-        '((complete-symbol . ivy-posframe-display-at-point)
-          (swiper . nil)
-          (swiper-isearch . nil)
-          (t . ivy-posframe-display-at-frame-center)))
-  (ivy-posframe-mode 1))
-#+end_src
+  ;; selectrum will use a mini-frame automatically
+  (setq selectrum-display-action nil)
+  (setq mini-frame-background-color-function #'(lambda () (modus-themes-color 'bg-special-cold)))
+  (setq mini-frame-show-parameters '((top    . 0.2)
+                                     (width  . 0.8)
+                                     (left   . 0.5)
+                                     (height . 17)))
+  (mini-frame-mode 1))
 
-*** Swiper
-
-#+begin_src elisp
-(use-package swiper :after ivy)
+(setq magit-completing-read-function #'selectrum-completing-read)
 #+end_src
 
 *** prescient.el
@@ -1245,11 +1216,6 @@ Package `prescient' is a library for intelligent sorting and filtering in variou
   :config
   (prescient-persist-mode 1); Remember usage statistics across Emacs sessions.
   (setq prescient-sort-full-matches-first t))
-
-(use-package ivy-prescient
-  :after (ivy counsel)
-  :config
-  (ivy-prescient-mode 1))
 
 (use-package company-prescient
   :after company
@@ -1313,9 +1279,6 @@ search interfaces in web browsers and other programs (think of what happens when
 (use-package avy
   :init
   (avy-setup-default))
-
-(use-package ivy-avy
-  :after (ivy avy))
 #+end_src
 
 ** imenu-list.el
@@ -1332,12 +1295,7 @@ Emacs plugin to show the current buffer's imenu entries in a seperate buffer.
 With =wgrep= we can directly edit the results of a =grep= and save the
 changes to all affected buffers.
 
-I press C-c C-o (ivy-occur) in the search result. It opens an ivy-occur buffer.
-C-c C-e: Apply the changes to file buffers.
-C-c C-k: Discard all changes and exit.
 To save all buffers that wgrep has changed, run M-x wgrep-save-all-buffers
-
-I switch to this buffer and press C-x C-q (ivy-wgrep-change-to-wgrep-mode) to edit it. I can now change each variable name globally using normal search and replace techniques.
 I then press C-c C-c (wgrep-finish-edit).
 
 #+begin_src elisp
@@ -1360,11 +1318,6 @@ example, Python or Perl regexps.
   :bind (([remap query-replace-regexp] . #'vr/query-replace)))
 #+end_src
 
-** Projectile ignored directories
-
-#+begin_src elisp
-(add-to-list 'projectile-globally-ignored-directories "vendor")
-#+end_src
 * Project Management
 ** Git
 
@@ -1446,7 +1399,7 @@ basic just a folder containing some special file (.git or a file called .project
 (use-package projectile
   :after magit
   :config
-  (setq projectile-completion-system 'ivy)
+  (setq projectile-completion-system 'default) ; to use selectrum which relies on default
   (setq projectile-enable-caching t)
   (setq projectile-require-project-root nil) ; run projectile commands on current not project dir
   (projectile-global-mode 1)
@@ -1490,7 +1443,6 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
 (use-package lsp-mode
   :after go-mode
   :commands (lsp lsp-deferred)
-  :hook (go-mode . lsp-deferred)
   :bind (:map lsp-mode-map
               ("TAB" . #'completion-at-point))
   :config
@@ -1505,15 +1457,12 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
   (setq lsp-ui-sideline-enable t)
   (setq lsp-ui-sideline-show-hover nil)
   (setq lsp-ui-doc-enable t)
-  (setq lsp-ui-doc-position 'top))
-
-(use-package lsp-ivy
-  :after lsp
-  :commands lsp-ivy-workspace-symbol lsp-ivy-global-workspace-symbol)
+  (setq lsp-ui-doc-position 'top)
+  (add-hook 'go-mode-hook #'lsp-deferred))
 #+end_src
 
-*** Go
-**** go-mode.el
+** Go
+*** go-mode.el
 
 #+begin_src elisp
 (use-package go-mode
@@ -1936,16 +1885,11 @@ Increase the maximum level for Imenu access to Org headlines.
 
 #+begin_src elisp
 (use-package helpful
-  :after counsel
   :bind (
          ([remap describe-function] . #'helpful-callable)
          ([remap describe-variable] . #'helpful-variable)
          ([remap describe-symbol]   . #'helpful-symbol)
-         ([remap describe-key]      . #'helpful-key))
-  :config
-  (setq counsel-describe-function-function #'helpful-callable)
-  (setq counsel-describe-variable-function #'helpful-variable)
-  (setq counsel-describe-symbol-function #'helpful-symbol))
+         ([remap describe-key]      . #'helpful-key)))
 #+end_src
 
 Always select the help window (t).
@@ -2037,8 +1981,8 @@ functions for the evil states.
  :keymaps 'override
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
- "SPC" #'(counsel-M-x :which-key "M-x")
- "'"   #'(ivy-resume :which-key "Resume last search")
+ "SPC" #'(execute-extended-command :which-key "M-x")
+ "'"   #'(selectrum-repeat :which-key "Resume last search")
  ">"   #'(er/expand-region :which-key "Expand region")
  "u"   #'(universal-argument-more :which-key "Universal argument")
  "x"  #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
@@ -2050,13 +1994,13 @@ functions for the evil states.
  "ae"  #'(elfeed :which-key "Elfeed - RSS")
  "ak"  #'(kubel :which-key "Kubel")
  "ap"  #'(list-processes :which-key "List process")
- "aP"  #'(counsel-list-processes :which-key "Kill process")
+ "aP"  #'(list-processes :which-key "Kill process")
  "at"  #'((lambda () (interactive) (treemacs-select-window)(treemacs-display-current-project-exclusively)) :which-key "Treemacs project")
  "aT"  #'(treemacs :which-key "Toggle Treemacs")
  "av"  #'vterm
  ;; Buffers
  "b"   '(:ignore t :which-key "buffers")
- "bb"  #'(ivy-switch-buffer :which-key "Switch buffer")
+ "bb"  #'(consult-buffer :which-key "Switch buffer")
  "bB"  #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
  "bc"  #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
  "bd"  #'(kill-current-buffer :which-key "Kill current buffer")
@@ -2085,7 +2029,7 @@ functions for the evil states.
  "e"   '(:ignore t :which-key "eval")
  "eb"  #'(eval-buffer :which-key "Eval elisp in buffer")
  "ed"  #'(eval-defun :which-key "Eval defun")
- "ee"  #'(eval-expression :which-key "Eval elisp expression")
+ "ee"  #'(consult-complex-command :which-key "Eval elisp expression")
  "el"  #'(eval-last-sexp :which-key "Eval last sexression")
  "er"  #'(eval-region :which-key "Eval region")
  ;; Files
@@ -2093,13 +2037,12 @@ functions for the evil states.
  "fC"  #'(copy-file :which-key "Copy file")
  "fD"  #'(delete-file :which-key "Delete file")
  "ff"  #'(find-file :which-key "Find file")
- "fj"  #'(counsel-file-jump :which-key "Jump to file curr dir")
  "fJ"  #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
  "fp"  #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
+ "fr"  #'(consult-recent-file :which-key "Recent files")
  "fR"  #'(rename-file :which-key "Rename file")
  "fs"  #'(save-buffer :which-key "Save file")
  "fS"  #'(write-file :which-key "Save file as...")
- "fr"  #'(counsel-recentf :which-key "Recent files")
  "fy"  #'(diego/copy-file-name :which-key "Yank file path")
  ;; Git
  "g"   '(:ignore t :which-key "git")
@@ -2122,7 +2065,6 @@ functions for the evil states.
  "hf"  #'(describe-function :which-key "Describe function/macro")
  "hF"  #'(describe-face :which-key "Describe face")
  "hk"  #'(helpful-key :which-key "Describe key")
- "hl"  #'(counsel-find-library :which-key "Describe library/package")
  "hm"  #'(describe-mode :which-key "Describe mode")
  "hp"  #'(helpful-at-point :which-key "Describe at point")
  "ho"  #'(describe-symbol :which-key "Describe symbol")
@@ -2132,10 +2074,10 @@ functions for the evil states.
  ;; Insert
  "i"   '(:ignore t :which-key "insert")
  "iu"  #'(insert-char :which-key "Unicode char")
- "ir"  #'(yank-pop :which-key "Register")
  "is"  #'(yas-insert-snippet :which-key "Snippet")
  "ik"  #'(diego/evil-insert-line-above :which-key "Line above")
  "ij"  #'(diego/evil-insert-line-below :which-key "Line below")
+ "iy"  #'(consult-yank-pop :which-key "Insert Yank")
  ;; Jump
  "j"   '(:ignore t :which-key "jump")
  "ji"  #'imenu
@@ -2202,7 +2144,6 @@ functions for the evil states.
  ;; Search
  "s"   '(:ignore t :which-key "search")
  "se"  #'(iedit-mode :which-key "iedit") ; next item TAB
- "sl"  #'(ivy-resume :which-key "Resume")
  "ss"  #'(consult-line :which-key "Search")
  "sp"  #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
@@ -2299,9 +2240,7 @@ functions for the evil states.
     minibuffer-local-completion-map
     minibuffer-local-must-match-map
     minibuffer-local-isearch-map
-    read-expression-map
-    ivy-minibuffer-map
-    ivy-switch-buffer-map))
+    read-expression-map))
 
 ;; Minibuffer
 (general-define-key :keymaps '(evil-ex-completion-map evil-ex-search-keymap)
@@ -2335,14 +2274,6 @@ functions for the evil states.
                     "TAB"    #'company-complete-selection
                     "<tab>"  #'company-complete-selection)
 
-(general-define-key :keymaps 'ivy-minibuffer-map
-                    "C-SPC"  #'ivy-call-and-recenter ; preview file
-                    "C-l"    #'ivy-alt-done)
-
-(general-define-key :keymaps 'counsel-ag-map
-                    "C-SPC"  #'ivy-call-and-recenter ; preview
-                    "C-l"    #'ivy-done)
-
 ;; I prefer C-c C-c over C-c ' (more consistent)
 (define-key org-src-mode-map (kbd "C-c C-c") #'org-edit-src-exit)
 
@@ -2354,7 +2285,6 @@ functions for the evil states.
                     :states '(normal insert)
                     "C-j"  #'vterm--self-insert
                     "C-k"  #'vterm--self-insert)
-
 (evil-define-key* 'normal helpful-mode-map "q" #'kill-buffer-and-window)
 ;; (use-package help-mode
 ;; :bind
