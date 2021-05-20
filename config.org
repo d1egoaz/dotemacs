@@ -410,7 +410,7 @@ increased by our more expensive LSP module, and where needed.
 ** Increase fill column width
 
 #+begin_src elisp
-(setq fill-column 100)
+(setq-default fill-column 100)
 #+end_src
 
 ** Fonts
