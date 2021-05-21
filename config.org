@@ -807,6 +807,15 @@ on =auto-revert-mode= for the change to take effect.
 (global-auto-revert-mode 1)
 #+end_src
 
+** Restore cursor to last visited place in a file
+
+This means when you visit a file, point goes to the last place where it was when you previously
+visited the same file.
+
+#+begin_src elisp
+(save-place-mode 1)
+#+end_src
+
 * Editor
 ** Default coding system
 
