@@ -464,6 +464,7 @@ CTRL plus =/- for zooming in/out.
           (2 . rainbow-line)
           (t . no-bold)))
   (setq modus-themes-hl-line 'underline-neutral)
+  (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g
   (setq modus-themes-org-blocks 'gray-background)
   (setq modus-themes-paren-match 'intense-bold) ; {nil,'subtle-bold,'intense,'intense-bold}
   (setq modus-themes-prompts 'intense) ; {nil,'subtle,'intense}
