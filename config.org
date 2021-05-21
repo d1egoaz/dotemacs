@@ -453,7 +453,7 @@ CTRL plus =/- for zooming in/out.
 (global-set-key (kbd "s--") #'text-scale-decrease)
 #+end_src
 
-** Theme
+** Theme (modus-themes.el)
 #+begin_src elisp
 (use-package modus-themes
   :init
@@ -1154,8 +1154,15 @@ backends, modules for displaying them are frontends.
 #+end_src
 
 ** Selection and Narrowing
+
+Selectrum, Consult, Embark, Marginalia, and Prescient.
+Individual packages that work well together.
+
+I am loving this new combination of tools. Lightweight and fast.
+
 *** selectrum.el
 
+Vertical selection.
 https://github.com/raxod502/selectrum
 
 #+begin_src elisp
@@ -1295,6 +1302,7 @@ t cl-type"
 https://github.com/raxod502/prescient.el
 
 Package `prescient' is a library for intelligent sorting and filtering in various contexts.
+Filters most recent completions to the top of the list.
 
 #+begin_src elisp
 (use-package prescient
