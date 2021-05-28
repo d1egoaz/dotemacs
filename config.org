@@ -708,6 +708,21 @@ them whenever another command is invoked.
 ;;   (define-key map ">" #'enlarge-window-horizontally)
 ;;   (define-key map "<" #'shrink-window-horizontally)))
 #+end_src
+
+#+begin_src elisp
+(defun split-window-horizontally-3 ()
+  (interactive)
+  (delete-other-windows)
+  (split-window-horizontally)
+  (split-window-horizontally)
+  (balance-windows)
+  (other-window -1))
+
+(defun follow-mode-3 ()
+  (interactive)
+  (split-window-horizontally-3)
+  (follow-mode 1))
+#+end_src
 ** Jump to windows (ace-window.el)
 
 Package for selecting a window to switch to.
