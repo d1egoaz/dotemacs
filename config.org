@@ -2184,6 +2184,11 @@ The best RSS reader.
   (elfeed-org))
 #+end_src
 
+** rainbow-mode.el
+
+#+begin_src elisp
+(use-package rainbow-mode)
+#+end_src
 * Keybindings
 ** Simplify Leader Bindings (general.el)
 
