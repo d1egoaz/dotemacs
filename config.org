@@ -35,11 +35,13 @@
   - [[#disable-toolbars-and-scrollbars][Disable toolbars and scrollbars]]
   - [[#increase-fill-column-width][Increase fill column width]]
   - [[#fonts][Fonts]]
-  - [[#theme][Theme]]
+  - [[#theme-modus-themesel][Theme (modus-themes.el)]]
 - [[#buffers][Buffers]]
   - [[#scratch-buffer][Scratch buffer]]
 - [[#mode-line][Mode line]]
   - [[#make-it-compact][Make it compact]]
+  - [[#format][Format]]
+  - [[#move-evil-mode-line-to-beginning][Move evil mode line to beginning]]
   - [[#hide-mode-line-minor-modes][Hide mode line minor modes]]
   - [[#show-current-command-in-the-mode-line-keycastel][Show current command in the mode line (keycast.el)]]
   - [[#show-column-number][Show column number]]
@@ -48,13 +50,15 @@
 - [[#windows][Windows]]
   - [[#window-rules][Window rules]]
   - [[#jump-to-windows-ace-windowel][Jump to windows (ace-window.el)]]
-  - [[#restore-old-window-configurations-winnerel][Restore old window configurations (winner.el)]]
+  - [[#window-history-winnerel][Window history (winner.el)]]
+- [[#workspaces-tab-barel][Workspaces (tab-bar.el)]]
 - [[#files][Files]]
   - [[#dont-prompt-for-confirmation-when-we-create-a-new-file-or-buffer][Don't prompt for confirmation when we create a new file or buffer.]]
   - [[#create-missing-directories-when-using-find-file][Create missing directories when using find file]]
   - [[#follow-symlinks-when-opening-files][Follow symlinks when opening files.]]
   - [[#disable-the-warning-x-and-y-are-the-same-file][Disable the warning X and Y are the same file]]
   - [[#disable-file-changed-on-disk-messages][Disable file changed on disk messages]]
+  - [[#restore-cursor-to-last-visited-place-in-a-file][Restore cursor to last visited place in a file]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
   - [[#new-line-at-eof][New line at EOF]]
@@ -108,6 +112,8 @@
   - [[#flyspellel][flyspell.el]]
   - [[#define-word][Define word]]
   - [[#buff-moveel][buff-move.el]]
+  - [[#ripgrepel][ripgrep.el]]
+  - [[#ieditel][iedit.el]]
 - [[#org-mode][Org Mode]]
   - [[#orgel][org.el]]
   - [[#org-downloadel][org-download.el]]
@@ -122,11 +128,20 @@
   - [[#world-clock][World Clock]]
   - [[#olivettiel][olivetti.el]]
   - [[#rss-elfeedel][RSS (elfeed.el)]]
+  - [[#rainbow-modeel][rainbow-mode.el]]
+  - [[#emacs-everywhereel][emacs-everywhere.el]]
 - [[#keybindings][Keybindings]]
   - [[#simplify-leader-bindings-generalel][Simplify Leader Bindings (general.el)]]
   - [[#bindings][Bindings]]
 - [[#functions][Functions]]
 - [[#inspiration][Inspiration]]
+- [[#pending-tasks-36][Pending tasks]]
+  - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
+  - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
+  - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
+  - [[#replace-projectile-by-projectel][Replace projectile by project.el]]
+  - [[#fix-org-toc][Fix org toc]]
+  - [[#make-elfeed-entry-buffer-show-below-elfeed-search][Make elfeed entry buffer show below elfeed search]]
 
 * Getting Started
 ** Why Emacs
@@ -2910,3 +2925,21 @@ Some parts of my configuration were copied and inspired from:
 - [[https://github.com/daviwil/emacs-from-scratch/blob/master/init.el][Systems Crafters - Emacs From Scratch]]
 - [[https://emacs.nasy.moe/][Nasy]]
 - [[https://config.daviwil.com/emacs][Daviwil]]
+
+
+* Pending tasks [3/6]
+** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
+** DONE Replace persp-mode by tab-bar
+** DONE Replace doom-mode-line by normal mode-line
+** TODO Replace projectile by project.el
+:LOGBOOK:
+- State "TODO"       from              [2021-05-28 Fri 16:47]
+:END:
+** TODO Fix org toc
+:LOGBOOK:
+- State "TODO"       from              [2021-05-28 Fri 16:49]
+:END:
+** TODO Make elfeed entry buffer show below elfeed search
+:LOGBOOK:
+- State "TODO"       from              [2021-05-28 Fri 16:50]
+:END:
