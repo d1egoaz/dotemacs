@@ -2387,13 +2387,14 @@ functions for the evil states.
  "p"   '(:ignore t :which-key "project")
  "!"   #'(projectile-run-shell-command-in-root :which-key "Run cmd in project root")
  "pa"  #'(projectile-add-known-project :which-key "Add new project")
- "pb"  #'(projectile-switch-to-buffer :which-key "Project buffer")
- "pf"  #'(projectile-find-file :which-key "Project file")
+ "pb"  #'(project-switch-to-buffer :which-key "Project buffer")
+ "pf"  #'(project-find-file :which-key "Project file")
  "pd"  #'(projectile-find-dir :which-key "Project dir")
  "pd"  #'(projectile-kill-buffers :which-key "Kill project buffers")
  "pp"  #'(projectile-switch-project :which-key "Switch project")
- "ps"  #'(consult-ripgrep :which-key "Project search")
+ ;; "ps"  #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Project search")
  "pr"  #'(projectile-recentf :which-key "Project recent files")
+ "pv"  #'(projectile-run-vterm :which-key "Project vterm")
  ;; Profiler
  "P"   '(:ignore t :which-key "profiler")
  "Ps"  #'(profiler-start :which-key "Profiler start")
@@ -2403,6 +2404,7 @@ functions for the evil states.
  "s"   '(:ignore t :which-key "search")
  "se"  #'(iedit-mode :which-key "iedit") ; next item TAB
  "ss"  #'(consult-line :which-key "Search")
+ ;; "sp"  #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Search in project")
  "sp"  #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
  "t"   '(:ignore t :which-key "toggle")
