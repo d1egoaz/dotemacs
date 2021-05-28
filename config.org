@@ -1748,16 +1748,26 @@ On the kubel screen, place your cursor on the resource:
 ;;   hs-hide-initial-comment-block
 
 #+begin_src elisp
-(setq hs-hide-comments-when-hiding-all nil) ; dont' hide the comments too when you do a 'hs-hide-all'
-#+end_src
+(use-package hideshow
+  :config
+  (setq hs-hide-comments-when-hiding-all nil) ; dont' hide the comments too when you do a 'hs-hide-all'
 
-#+begin_src elisp
-(add-to-list 'hs-special-modes-alist
-             `(ruby-mode
-               ,(rx (or "def" "class" "module" "{" "[")) ; Block start
-               ,(rx (or "}" "]" "end"))                  ; Block end
-               ,(rx (or "#" "=begin"))                   ; Comment start
-               ruby-forward-sexp nil))
+  ;; Global hide/show toggle
+  (defvar diego--my-hs-hide nil "Current state of hideshow for toggling all.")
+  (defun diego/toggle-hideshow-all ()
+    "Toggle hideshow all."
+    (interactive)
+    (setq diego--my-hs-hide (not diego--my-hs-hide))
+    (if diego--my-hs-hide
+        (hs-hide-all)
+      (hs-show-all)))
+
+  (add-to-list 'hs-special-modes-alist
+               `(ruby-mode
+                 ,(rx (or "def" "class" "module" "{" "[")) ; Block start
+                 ,(rx (or "}" "]" "end"))                  ; Block end
+                 ,(rx (or "#" "=begin"))                   ; Comment start
+                 ruby-forward-sexp nil)))
 #+end_src
 
 ** Tab binding
@@ -1801,19 +1811,6 @@ Hideshow mode is a buffer-local minor mode that allows you to selectively displa
 
 #+begin_src elisp
 (add-hook 'go-mode-hook #'hs-minor-mode)
-#+end_src
-
-*** Global hide/show toggle
-
-#+begin_src elisp
-(defvar diego--my-hs-hide nil "Current state of hideshow for toggling all.")
-(defun diego/toggle-hideshow-all ()
-  "Toggle hideshow all."
-  (interactive)
-  (setq diego--my-hs-hide (not diego--my-hs-hide))
-  (if diego--my-hs-hide
-      (hs-hide-all)
-    (hs-show-all)))
 #+end_src
 
 * Productivity
