@@ -2244,9 +2244,9 @@ functions for the evil states.
  "x"  #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
  [tab] #'tab-hs-hide
  ;; Apps
- "ad"  #'(dired-jump :which-key "Dired current dir")
  "a"   '(:ignore t :which-key "apps")
  "ac"  #'(world-clock :which-key "World clock")
+ "ad"  #'(dired-jump :which-key "Dired current dir")
  "ae"  #'(elfeed :which-key "Elfeed - RSS")
  "ak"  #'(kubel :which-key "Kubel")
  "ap"  #'(list-processes :which-key "List process")
@@ -2407,7 +2407,8 @@ functions for the evil states.
  ;; Toggle
  "t"   '(:ignore t :which-key "toggle")
  "tf"  #'toggle-frame-fullscreen
- "th"  #'(diego/toggle-hideshow-all :which-key "Hide/Show code")
+ "th"  #'(hs-toggle-hiding :which-key "Hide/Show block")
+ "tH"  #'(diego/toggle-hideshow-all :which-key "Hide/Show All")
  "tn"  #'(global-display-line-numbers-mode :which-key "Line numbers")
  "tt"  #'toggle-truncate-lines
  "tT"  #'(consult-theme :which-key "Toggle theme")
@@ -2429,9 +2430,8 @@ functions for the evil states.
  "wk"  #'(evil-window-up :which-key "Window up")
  "wl"  #'(evil-window-right :which-key "Window right")
  "wm"  #'(delete-other-windows :which-key "Maximize window")
- "wu"  #'winner-undo
- "wr"  #'winner-redo
- "ww"  #'(evil-window-next :which-key "Goto next window"))
+ "wz"  #'winner-undo
+ "wr"  #'winner-redo)
 
 (general-define-key
  :states '(normal visual emacs motion)
