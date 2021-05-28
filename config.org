@@ -1314,7 +1314,8 @@ t cl-type"
   :config
   ;; selectrum will use a mini-frame automatically
   (setq selectrum-display-action nil)
-  (setq mini-frame-background-color-function #'(lambda () (modus-themes-color 'bg-special-cold)))
+  (setq mini-frame-resize nil)
+  (setq mini-frame-background-color-function #'(lambda () (modus-themes-color 'bg-inactive)))
   (setq mini-frame-show-parameters '((top    . 0.2)
                                      (width  . 0.8)
                                      (left   . 0.5)
