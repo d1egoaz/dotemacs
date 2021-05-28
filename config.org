@@ -2712,6 +2712,15 @@ For some reason I'm having video issues with Firefox."
   (interactive)
   (setq browse-url-chrome-program "/Applications/Safari.app/Contents/MacOS/Safari")
   (browse-url-chrome "https://meet.google.com/?authuser=1"))
+
+(defun diego/make-orgcapture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "alfredoc") (width . 80) (height . 16)
+                (top . 400) (left . 300)))
+  (select-frame-by-name "alfredoc")
+  (org-capture))
+
 #+end_src
 
 * Inspiration
