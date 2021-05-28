@@ -386,10 +386,11 @@ Start the Emacs server from this instance so that all =emacsclient= calls are ro
 ** Increase read output from processes
 
 Increase how much is read from processes in a single chunk (default is 4kb). This is further
-increased by our more expensive LSP module, and where needed.
+increased by our more expensive LSP module, and where needed. LSP is improved by increasing this
+value.
 
 #+begin_src elisp
-(setq read-process-output-max (* 64 1024))  ; 64kb
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
 
 ** Scroll compilation output to first error
@@ -1127,8 +1128,8 @@ backends, modules for displaying them are frontends.
 #+begin_src elisp
 (use-package company
   :config
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 2)
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 1)
   (setq company-require-match 'never)
   (setq company-frontends
         '(company-pseudo-tooltip-frontend  ; always show candidates in overlay tooltip
@@ -1230,8 +1231,9 @@ M-w copy
          ([remap yank-pop]                 . #'consult-yank-pop)
          ([remap recentf-open-files]       . #'consult-recent-file)))
 
+;; https://github.com/gagbo/consult-lsp
 (use-package consult-lsp
-  :after (consult lsp)
+  :after (consult lsp-mode)
   :config
   (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
 #+end_src
@@ -1541,32 +1543,76 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
 
 (use-package treemacs-projectile
   :after (treemacs projectile))
+
+(use-package lsp-treemacs
+  :commands lsp-treemacs-errors-list
+  :after lsp-mode
+  :config
+  (setq lsp-treemacs-detailed-outline nil))
+;; (add-hook 'go-mode-hook #'lsp-treemacs-symbols))
+
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :config (treemacs-set-scope-type 'Perspectives))
+
 #+end_src
 
 * Development
 ** Language Server Support (LSP)
 
+https://emacs-lsp.github.io/lsp-mode/page/main-features/
+https://github.com/emacs-lsp/lsp-treemacs
+
+- lsp-treemacs-symbols
+- lsp-treemacs-errors-list
+- lsp-treemacs-references/lsp-treemacs-implementations
+- lsp-treemacs-call-hierarchy
+
+- consult-lsp-diagnostics
+- consult-lsp-symbols
+
 #+begin_src elisp
 (use-package lsp-mode
   :after go-mode
-  :commands (lsp lsp-deferred)
+  :commands lsp
   :bind (:map lsp-mode-map
               ("TAB" . #'completion-at-point))
   :config
   (lsp-enable-which-key-integration t)
-  (setq lsp-go-goimports-local "github.com/Shopify/"))
+  (setq lsp-go-goimports-local "github.com/Shopify/")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
+  ;; Project errors on modeline
+  (setq lsp-modeline-diagnostics-enable t)
+  (setq lsp-modeline-diagnostics-scope :workspace)
+  ;; For a UI feedback on headerline of the document
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+
+  (add-hook 'go-mode-hook #'lsp)
+  (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
+  (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references))
 
 (use-package lsp-ui
   :after lsp-mode
   :commands lsp-ui-mode
-  :hook (lsp-mode . lsp-ui-mode)
   :config
+  ;; Show informations of the symbols on the current line
   (setq lsp-ui-sideline-enable t)
   (setq lsp-ui-sideline-show-hover nil)
+  (setq lsp-ui-sideline-show-code-actions t)
+
+  ;; Add peek feature
+  (setq lsp-ui-peek-enable t)
+  ;; lsp-ui-peek-show-directory show the directory of files
+
+  ;; Show object documentation at point in a child frame.
   (setq lsp-ui-doc-enable t)
   (setq lsp-ui-doc-position 'top)
 
-  (add-hook 'go-mode-hook #'lsp-deferred))
+  ;; imenu
+  (setq lsp-ui-imenu-enable t)
+  (setq lsp-ui-imenu-auto-refresh t)
+
+  (add-hook 'lsp-mode-hook #'lsp-ui-mode))
 #+end_src
 
 ** Go
@@ -1579,7 +1625,10 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
 *** go-mode.el
 
 #+begin_src elisp
-(use-package go-mode)
+(use-package go-mode
+  :config
+  (setq godef-command "go doc") ; original godef
+  (setq gofmt-command "goimports")) ; original gofmt
 #+end_src
 
 *** Go LSP
@@ -1757,7 +1806,6 @@ Hideshow mode is a buffer-local minor mode that allows you to selectively displa
 (use-package flycheck
   :config
   (global-flycheck-mode 1))
-;;:hook (lsp-mode . flycheck-mode))
 #+end_src
 
 ** Snippets (yasnippet.el)
@@ -2258,6 +2306,7 @@ functions for the evil states.
  "ln" #'lsp-ui-find-next-reference
  "lp" #'lsp-ui-find-prev-reference
  "lr"  #'xref-find-references
+ "lR"  #'lsp-rename
  "lt"  #'lsp-goto-type-definition
  "lX"  #'lsp-execute-code-action
  ;; "ls"  #'lsp-lens-show
@@ -2361,16 +2410,14 @@ functions for the evil states.
  "ds" #'org-schedule
  "dt" #'org-time-stamp)
 
-;; example
 (general-define-key
  :states '(normal visual emacs motion)
  :prefix ","
  :non-normal-prefix "M-SPC m"
  :keymaps 'go-mode-map
  "a" #'go-tag-add
- "i" #'go-goto-imports      ; Go to imports
- "h"   '(:ignore t :which-key "help")
- "." #'godoc-at-point)     ; Lookup in godoc
+ "i" #'go-goto-imports
+ "." #'godoc-at-point)
 
 (general-define-key :keymaps 'company-active-map
                     "TAB"    #'company-complete-selection
