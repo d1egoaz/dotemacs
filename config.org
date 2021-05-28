@@ -582,8 +582,8 @@ them whenever another command is invoked.
       (remove-hook 'pre-command-hook 'keycast--update)))
 
   (add-to-list 'global-mode-string '("" mode-line-keycast " "))
-  (set-face-attribute 'keycast-key nil :height 0.7)
-  (set-face-attribute 'keycast-command nil :height 0.6)
+  (set-face-attribute 'keycast-key nil :height 1.0)
+  (set-face-attribute 'keycast-command nil :height 0.5)
   (keycast-mode 1))
 #+end_src
 
