@@ -1550,7 +1550,8 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
 (use-package treemacs
   :config
   (setq treemacs-git-mode 'simple)
-  (setq treemacs-tag-follow-mode nil))
+  (setq treemacs-tag-follow-mode nil)
+  (treemacs-resize-icons 12))
 
 (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
 
