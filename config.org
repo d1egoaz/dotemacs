@@ -1911,6 +1911,18 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 (use-package buffer-move)
 #+end_src
 
+** ripgrep.el
+
+#+begin_src elisp
+(use-package ripgrep)
+#+end_src
+
+** iedit.el
+
+#+begin_src elisp
+(use-package iedit)
+#+end_src
+
 * Org Mode
 ** org.el
 
