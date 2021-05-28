@@ -512,13 +512,13 @@ CTRL plus =/- for zooming in/out.
   (defun diego/make-new-scratch-buffer ()
     "New temporary scratch buffer with a random name."
     (interactive)
-    (switch-to-buffer (make-temp-name "*scratch-"))
+    (switch-to-buffer (concat (make-temp-name "*scratch-") "*"))
     (org-mode))
 
   (defun diego/make-new-scratch-buffer-go-babel ()
     "New temporary scratch buffer with a random name with go-babel enabled."
     (interactive)
-    (switch-to-buffer (make-temp-name "*scratch-go-"))
+    (switch-to-buffer (concat (make-temp-name "*scratch-go") "*"))
     (insert "
 \#+begin_src go
 package main
