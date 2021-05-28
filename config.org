@@ -2229,7 +2229,7 @@ functions for the evil states.
 (define-key evil-normal-state-map "Q" (kbd "@@"))
 
 ;; ESC Cancels All
-(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+(define-key global-map [escape] #'keyboard-escape-quit)
 (global-set-key (kbd "M-o") #'ace-window)
 
 (general-define-key
