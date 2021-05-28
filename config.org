@@ -541,13 +541,44 @@ func main() {
 (setq mode-line-compact t)
 #+end_src
 
+** Format
+
+#+begin_src elisp
+(defun diego/current-tab-name ()
+  (interactive)
+  (alist-get 'name (tab-bar--current-tab)))
+
+(setq-default mode-line-format
+              '("%e"
+                mode-line-front-space
+                "[" (:eval (diego/current-tab-name)) "]"
+                " "
+                mode-line-buffer-identification  " "
+                mode-line-position
+                minions-mode-line-modes
+                (vc-mode vc-mode) " "
+                mode-line-misc-info
+                mode-line-mule-info
+                mode-line-client
+                mode-line-modified
+                mode-line-remote
+                mode-line-frame-identification
+                mode-line-end-spaces))
+#+end_src
+
+** Move evil mode line to beginning
+
+#+begin_src elisp
+(setq evil-mode-line-format '(before . mode-line-front-space))
+#+end_src
+
 ** Hide mode line minor modes
 
 #+begin_src elisp
 (use-package minions
   :config
   (setq minions-mode-line-lighter "+")
-  (setq minions-direct '(flymake-mode projectile-mode))
+  (setq minions-direct '(flymake-mode lsp-mode))
   (minions-mode 1))
 #+end_src
 
@@ -1609,6 +1640,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
 *** transient.el
 
 Package `transient' is the interface used by Magit to display popups.
+TODO remove use package as it's now part of Emacs
 
 #+begin_src elisp
 (use-package transient
