@@ -613,9 +613,22 @@ them whenever another command is invoked.
 * Windows
 ** Window rules
 
+The =display-buffer-alist= is a rule-set for controlling the placement of windows.
+
 #+begin_src elisp
+;; Clicking a link from the *Help* buffer opens source code in the same window:
+
+(defun diego--display-buffer-from-help-p (b _a)
+  (unless current-prefix-arg
+    (with-current-buffer (window-buffer)
+      (print major-mode)
+      (or
+       (eq major-mode 'help-mode)
+       (eq major-mode 'helpful-mode)))))
+
 (setq display-buffer-alist
-      `(;; top side window
+      `(
+        ;; top side window
         ("\\*\\(world-clock\\).*"
          (display-buffer-in-side-window)
          (window-height . 0.16)
@@ -655,15 +668,17 @@ them whenever another command is invoked.
          (window-width . 0.30)
          (side . left)
          (slot . 0))
+        ;; if buffer is opened from a help* mode, open it in that window
+        (diego--display-buffer-from-help-p
+         (display-buffer-in-side-window)
+         ;; display-buffer-in-side-window
+         (window-width . 0.30)
+         (side . left)
+         (slot . 0))
         ;; right side window
         ("\\*compilation\\*"
          (display-buffer-in-side-window)
          (window-width . 0.40)
-         (side . right)
-         (slot . 0))
-        ("\\*Faces\\*"
-         (display-buffer-in-side-window)
-         (window-width . 0.25)
          (side . right)
          (slot . 0))
         ;; bottom buffer (NOT side window)
@@ -677,7 +692,33 @@ them whenever another command is invoked.
         ;; below currect window
         ("\\*Calendar.*"
          (display-buffer-reuse-mode-window display-buffer-below-selected)
-         (window-height . shrink-window-if-larger-than-buffer))))
+         (window-height . shrink-window-if-larger-than-buffer))
+        ("\\*elfeed-search\\*"
+         (display-buffer-in-tab)
+         (tab-name . "*elfeed*"))
+        ("\\*elfeed-entry\\*"
+         (display-buffer-reuse-mode-window display-buffer-below-selected)
+         (window-height . shrink-window-if-larger-than-buffer))
+        ;; custom rules
+        ;; tabs
+        ("\\*scratch.*"
+         (display-buffer-in-tab (tab-name . "*scratch*")))
+        ;; open buffers in its respective tab, if tab doesn't exist, create it
+        ((lambda (b _a)
+           (buffer-local-value 'buffer-file-name
+                               (get-buffer b)))
+         display-buffer-in-tab
+         (tab-name lambda
+                   (b _a)
+                   (let
+                       ((root
+                         (vc-git-root
+                          (buffer-file-name b))))
+                     (message root)
+                     (if root
+                         (diego/project-name-from-root root)
+                       "*special*"))))
+        ))
 (setq window-combination-resize t)
 (setq even-window-sizes 'height-only)
 (setq window-sides-vertical nil)
@@ -766,10 +807,100 @@ o - maximize current window
 (?? aw-show-dispatch-help))
 "List of actions for `aw-dispatch-default'.")
 
-** Restore old window configurations (winner.el)
+** Window history (winner.el)
+
+Winner is a built-in tool that keeps a record of buffer and window layout changes.
 
 #+begin_src elisp
-(winner-mode 1)
+(use-package winner
+  :config
+  (add-hook 'after-init-hook #'winner-mode))
+#+end_src
+
+* Workspaces (tab-bar.el)
+
+#+begin_src elisp
+(use-package tab-bar
+  :after projectile
+  :config
+  (defun diego/name-tab-by-project-or-default ()
+    "Return project name if in a project, or default tab-bar name if not.
+The default tab-bar name uses the buffer name."
+    (interactive)
+    (let ((project-name (projectile-project-name)))
+      (if (string= "-" project-name)
+          (tab-bar-tab-name-current)
+        (projectile-project-name))))
+
+  (setq tab-bar-mode t)
+
+  ;; Get the current tab name for use in some other display
+  (defun diego/current-tab-name ()
+    (interactive)
+    (alist-get 'name (tab-bar--current-tab)))
+
+  (defun diego/tab--tab-bar-tabs ()
+    (mapcar (lambda (tab)
+              (alist-get 'name tab))
+            (tab-bar-tabs)))
+
+  (defun diego/get-buffer-tab ()
+    (interactive)
+    (let* (
+           (tabs (diego/tab--tab-bar-tabs))
+           (proj (projectile-project-name))
+           )
+      (message "Project: %s " proj)
+      (message "member?: %s " (member proj tabs))
+      (if (member proj tabs)
+          (progn
+            (message ">> switching to existing project")
+            (tab-switch proj))
+        (progn
+          (message ">> new tab %s" proj)
+          (tab-new)
+          (tab-rename proj)))))
+
+  (defun diego/create-or-select-tab ()
+    (interactive)
+    (let* (
+           (tabs (diego/tab--tab-bar-tabs))
+           (proj (projectile-project-name))
+           )
+      (message "Project: %s " proj)
+      (message "member?: %s " (member proj tabs))
+      (if (member proj tabs)
+          (progn
+            (message ">> switching to existing project")
+            (tab-switch proj))
+        (progn
+          (message ">> new tab %s" proj)
+          (tab-new)
+          (tab-rename proj)))))
+
+  (defun diego/project-name-from-root (project-root)
+    (file-name-nondirectory (directory-file-name project-root)))
+
+  (global-tab-line-mode 1))
+
+;; https://emacs.stackexchange.com/a/64486
+;; (push '(
+;;         (lambda (b _a) (buffer-local-value 'buffer-file-name (get-buffer b)))
+;;         .
+;;         (display-buffer-in-tab (tab-name . (lambda (b _a)
+;;                                              (let ((root (vc-git-root (buffer-file-name b))))
+;;                                                (if root
+;;                                                    (diego/project-name-from-root root)
+;;                                                  "*special*")))))
+;;         ) display-buffer-alist)
+
+(defun my/find-vc-root ()
+  "Retuns the repository root as per [vc]."
+  (vc-git-root (buffer-file-name)))
+
+(use-package tab-bar-echo-area
+  :config
+  (tab-bar-echo-area-mode 1))
 #+end_src
 
 * Files
@@ -1523,11 +1654,11 @@ basic just a folder containing some special file (.git or a file called .project
   (setq projectile-completion-system 'default) ; to use selectrum which relies on default
   (setq projectile-enable-caching t)
   (setq projectile-require-project-root nil) ; run projectile commands on current not project dir
-  (projectile-global-mode 1)
   (mapc #'projectile-add-known-project
         (mapcar #'file-name-as-directory (magit-list-repos)))
   ;; write to persistent `projectile-known-projects-file'
-  (projectile-save-known-projects))
+  (projectile-save-known-projects)
+  (projectile-global-mode 1))
 
 (use-package recentf
   :config
@@ -2228,6 +2359,10 @@ functions for the evil states.
 ;; repeat last macro with Q
 (define-key evil-normal-state-map "Q" (kbd "@@"))
 
+;; move between tabs (workspaces)
+(define-key evil-normal-state-map (kbd "gt") #'tab-next)
+(define-key evil-normal-state-map (kbd "gT") #'tab-recent)
+
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
 (global-set-key (kbd "M-o") #'ace-window)
@@ -2242,7 +2377,17 @@ functions for the evil states.
  ">"   #'(er/expand-region :which-key "Expand region")
  "u"   #'(universal-argument-more :which-key "Universal argument")
  "x"  #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
- [tab] #'tab-hs-hide
+ ;; Tabs
+ "TAB"   '(:ignore t :which-key "workspaces")
+ "TAB TAB"  #'(tab-switch :which-key "Switch workspace")
+ "TAB d"  #'(tab-bar-close-tab-by-name :which-key "Close workspace")
+ "TAB p"  #'(tab-previous :which-key "Previous workspace")
+ "TAB n"  #'(tab-next :which-key "Next workspace")
+ "TAB l"  #'(tab-recent :which-key "Recent workspace")
+ ;; "TAB TAB"  #'(persp-switch :which-key "Switch workspace")
+ ;; "TAB d"  #'(persp-kill :which-key "Close workspace")
+ ;; "TAB p"  #'(persp-prev :which-key "Previous workspace")
+ ;; "TAB n"  #'(persp-next :which-key "Next workspace")
  ;; Apps
  "a"   '(:ignore t :which-key "apps")
  "ac"  #'(world-clock :which-key "World clock")
