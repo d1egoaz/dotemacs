@@ -2140,10 +2140,11 @@ The best RSS reader.
   :after olivetti
   :commands elfeed
   :config
-  (setq elfeed-search-filter "@2-week-ago +unread")
   (setq elfeed-search-date-format '("%a %b-%d" 10 :left))
-  (setq elfeed-sort-order 'ascending)
+  (setq elfeed-search-filter "@2-week-ago +unread")
   (setq elfeed-search-title-max-width 120)
+  (setq elfeed-show-truncate-long-urls t)
+  (setq elfeed-sort-order 'ascending)
 
   (defun diego/elfeed-filter-do ()
     (interactive)
