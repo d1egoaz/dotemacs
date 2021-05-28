@@ -2189,6 +2189,23 @@ The best RSS reader.
 #+begin_src elisp
 (use-package rainbow-mode)
 #+end_src
+
+** emacs-everywhere.el
+
+By default, emacs-everywhere-insert-selection is a hook in emacs-everywhere-init-hooks, and will insert the last text selection into your new buffer. To clear this, type DEL or C-SPC before anything else.
+
+Once you’ve finished and want to insert the text into the window you triggered Emacs Everywhere from, just press C-c C-c.
+
+#+begin_src elisp
+(use-package emacs-everywhere
+:config
+(setq emacs-everywhere-frame-parameters
+  `((name . "emacs-everywhere")
+    (width . 120)
+    (height . 20)))
+)
+#+end_src
+
 * Keybindings
 ** Simplify Leader Bindings (general.el)
 
