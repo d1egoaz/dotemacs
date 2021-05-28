@@ -900,8 +900,11 @@ underlines in a sequence of letters as if it was a letter itself. In contrast, i
 underscore is often a non-word character like operators, e.g. +.
 
 #+begin_src elisp
-(modify-syntax-entry ?_ "w")
-(modify-syntax-entry ?- "w")
+(defun diego--treat-chars-as-word-char ()
+  (modify-syntax-entry ?/ "w")
+  (modify-syntax-entry ?_ "w")
+  (modify-syntax-entry ?- "w"))
+(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
 
 ** Whitespace cleanup on buffer save
