@@ -1216,7 +1216,6 @@ M-w copy
 
 #+begin_src elisp
 (use-package consult
-  :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq consult-find-command "fd --color=never --full-path ARG OPTS")
   (setq consult-async-refresh-delay 0.3)
@@ -1225,15 +1224,15 @@ M-w copy
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
   :config
+  ;; (setq consult-preview-key nil)
+  ;; vc.el
+  (setq consult-project-root-function #'vc-root-dir)
   ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
-  (setq consult-narrow-key ">")
   ;; (setq consult-preview-key 'any)
   ;; (setq consult-preview-key (kbd "M-p"))
 
-  ;; https://github.com/raxod502/selectrum/issues/425#issuecomment-777520569
- ;; [[file:straight/repos/selectrum/selectrum.el::nil str))]]
-  (set-face-attribute 'selectrum-current-candidate nil :background (modus-themes-color 'bg-special-warm))
-
+  (setq consult-narrow-key ">")
+  (set-face-attribute 'selectrum-current-candidate nil :background (modus-themes-color 'cyan-intense-bg))
   :bind (
          ([remap apropos] . consult-apropos)
          ([remap bookmark-jump]            . #'consult-bookmark)
