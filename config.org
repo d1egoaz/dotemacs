@@ -30,7 +30,6 @@
   - [[#use-short-answers-yn][Use short answers y/n]]
   - [[#server-mode][Server mode]]
   - [[#increase-read-output-from-processes][Increase read output from processes]]
-  - [[#scroll-compilation-output-to-first-error][Scroll compilation output to first error]]
 - [[#ui---lets-make-emacs-look-a-little-better][UI - Let's make Emacs look a little better.]]
   - [[#disable-toolbars-and-scrollbars][Disable toolbars and scrollbars]]
   - [[#increase-fill-column-width][Increase fill column width]]
@@ -80,7 +79,7 @@
   - [[#evil-surroundel][evil-surround.el]]
   - [[#evil-tuning][evil Tuning]]
 - [[#completion][Completion]]
-  - [[#preserve-minibuffer-history-with-savehist-mode][Preserve minibuffer history with savehist-mode]]
+  - [[#preserve-history-with-savehist-mode][Preserve history with savehist-mode]]
   - [[#completion-framework-companyel][Completion framework (company.el)]]
   - [[#selection-and-narrowing][Selection and Narrowing]]
   - [[#key-bindings-hints-which-keyel][Key bindings hints (which-key.el)]]
@@ -102,6 +101,8 @@
   - [[#kubernetes][Kubernetes]]
   - [[#hideshowel][hideshow.el]]
   - [[#tab-binding][Tab binding]]
+  - [[#compilation-mode][Compilation mode]]
+  - [[#restclientel][restclient.el]]
 - [[#productivity][Productivity]]
   - [[#syntax-checking-flycheckel][Syntax checking (flycheck.el)]]
   - [[#snippets-yasnippetel][Snippets (yasnippet.el)]]
@@ -114,6 +115,7 @@
   - [[#buff-moveel][buff-move.el]]
   - [[#ripgrepel][ripgrep.el]]
   - [[#ieditel][iedit.el]]
+  - [[#which-function-modeel][which-function-mode.el]]
 - [[#org-mode][Org Mode]]
   - [[#orgel][org.el]]
   - [[#org-downloadel][org-download.el]]
@@ -135,11 +137,12 @@
   - [[#bindings][Bindings]]
 - [[#functions][Functions]]
 - [[#inspiration][Inspiration]]
-- [[#pending-tasks-36][Pending tasks]]
+- [[#pending-tasks-47][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
   - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
   - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
   - [[#replace-projectile-by-projectel][Replace projectile by project.el]]
+  - [[#replace-selectrum-by-vertico][Replace selectrum by vertico]]
   - [[#fix-org-toc][Fix org toc]]
   - [[#make-elfeed-entry-buffer-show-below-elfeed-search][Make elfeed entry buffer show below elfeed search]]
 
@@ -407,7 +410,6 @@ value.
 #+begin_src elisp
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
-
 
 * UI - Let's make Emacs look a little better.
 ** Disable toolbars and scrollbars
@@ -1072,7 +1074,7 @@ underscore is often a non-word character like operators, e.g. +.
 
 #+begin_src elisp
 (defun diego--treat-chars-as-word-char ()
-  (modify-syntax-entry ?/ "w")
+  ;; (modify-syntax-entry ?/ "w")
   (modify-syntax-entry ?_ "w")
   (modify-syntax-entry ?- "w"))
 (add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
@@ -1301,16 +1303,20 @@ You can delete a surrounding with ds<textobject>.
 
 * Completion
 
-** Preserve minibuffer history with savehist-mode
+** Preserve history with savehist-mode
 
 #+begin_src elisp
-(savehist-mode 1)
+(use-package savehist
+  :init
+  (savehist-mode)
+  :config
+  (setq   history-delete-duplicates t))
 #+end_src
 
 ** Completion framework (company.el)
 
-Company is a modular completion framework.  Modules for retrieving completion candidates are called
-backends, modules for displaying them are frontends.
+Company is a modular completion framework. Modules for retrieving completion
+candidates are called backends, modules for displaying them are frontends.
 
 #+begin_src elisp
 (use-package company
@@ -1353,27 +1359,48 @@ backends, modules for displaying them are frontends.
 
 ** Selection and Narrowing
 
-Selectrum, Consult, Embark, Marginalia, and Prescient.
+Vertico, Consult, Embark, Marginalia, and Orderless.
 Individual packages that work well together.
 
 I am loving this new combination of tools. Lightweight and fast.
 
-*** selectrum.el
-
-Vertical selection.
-https://github.com/raxod502/selectrum
+*** vertico.el
 
 #+begin_src elisp
-(use-package selectrum
+(use-package vertico
+  :init
+  (vertico-mode)
   :config
-  (setq selectrum-max-window-height 17)
-  (setq selectrum-extend-current-candidate-highlight t)
-  (selectrum-mode 1))
+  (setq vertico-cycle t))
 
-(use-package selectrum-prescient
-  :after selectrum
-  :config
-  (selectrum-prescient-mode 1))
+
+
+;; Allow reuse of minibuffer histry (like helm/ivy-resume or selectrum-last
+(use-package uchronia
+  :straight (:type git :host github :repo "minad/uchronia")
+  :hook (after-init . uchronia-mode))
+#+end_src
+
+#+begin_src elisp
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Grow and shrink minibuffer
+  (setq resize-mini-windows 'grow-only)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete)
+  (setq enable-recursive-minibuffers t))
 #+end_src
 
 *** consult.el
@@ -1392,51 +1419,65 @@ M-w copy
   (setq consult-async-refresh-delay 0.3)
   (setq consult-fontify-preserve t)
   ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+  (setq completion-in-region-function #'consult-completion-in-region)
+  (setq xref-show-xrefs-function #'consult-xref)
+  (setq xref-show-definitions-function #'consult-xref)
   :config
-  ;; (setq consult-preview-key nil)
-  ;; vc.el
-  (setq consult-project-root-function #'vc-root-dir)
-  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key (kbd "M-p"))
+  (setq consult-preview-key (kbd "C-SPC"))
+  (setq consult-project-root-function #'vc-root-dir) ; vc.el
 
   (setq consult-narrow-key ">")
-  (set-face-attribute 'selectrum-current-candidate nil :background (modus-themes-color 'cyan-intense-bg))
+  (setq consult-widen-key "<")
+  (setq consult-async-input-debounce 0.1)
+  (setq consult-async-input-throttle 0.1)
+  (setq consult-async-refresh-delay 0.1)
+  (setq consult-async-min-input 1)
+
+  ;;(set-face-attribute 'selectrum-current-candidate nil :background (modus-themes-color 'cyan-intense-bg))
   :bind (
-         ([remap apropos] . consult-apropos)
-         ([remap bookmark-jump]            . #'consult-bookmark)
-         ([remap imenu]                    . #'consult-imenu)
-         ([remap load-theme]               . #'consult-theme)
-         ([remap locate]                   . #'consult-locate)
-         ([remap org-goto]                 . #'consult-org-heading)
-         ([remap switch-to-buffer] . consult-buffer)
-         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
-         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
-         ([remap yank-pop]                 . #'consult-yank-pop)
-         ([remap recentf-open-files]       . #'consult-recent-file)))
+         ([remap apropos]                       . #'consult-apropos)
+         ([remap bookmark-jump]                 . #'consult-bookmark)
+         ([remap evil-show-marks]               . #'consult-mark)
+         ([remap goto-line]                     . #'consult-goto-line)
+         ([remap imenu]                         . #'consult-imenu)
+         ([remap load-theme]                    . #'consult-theme)
+         ([remap locate]                        . #'consult-locate)
+         ([remap org-goto]                      . #'consult-org-heading)
+         ([remap switch-to-buffer]              . #'consult-buffer)
+         ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame]  . #'consult-buffer-other-frame)
+         ([remap yank-pop]                      . #'consult-yank-pop)
+         ([remap recentf-open-files]            . #'consult-recent-file)))
 
 ;; https://github.com/gagbo/consult-lsp
 (use-package consult-lsp
   :after (consult lsp-mode)
   :config
   (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
+
+(use-package consult-flycheck
+  :after (consult flycheck))
 #+end_src
 
 *** embark.el
 
+https://github.com/oantolin/embark
+https://github.com/oantolin/embark/wiki/Default-Actions
+
 #+begin_src elisp
-;; https://github.com/oantolin/embark
 (use-package embark
   :bind
-  (("M-a" . embark-act)       ;; pick some comfortable binding
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+  (("M-a"                     . #'embark-act)       ;; pick some comfortable binding
+   ("C-h B"                   . #'embark-bindings)
+   ([remap describe-bindings] . #'embark-bindings)) ;; alternative for `describe-bindings'
 
   :init
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
+
+  ;; If you want to see the actions and their key bindings, but want to use the
+  ;; key bindings rather than completing the command name
   (setq embark-action-indicator
         (lambda (map _target)
           (which-key--show-keymap "Embark" map nil nil 'no-paging)
@@ -1450,7 +1491,29 @@ M-w copy
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :after (embark consult))
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(with-eval-after-load 'embark
+  (with-eval-after-load 'marginalia
+    (embark-define-keymap embark-straight-map
+      ("u" straight-visit-package-website)
+      ("r" straight-get-recipe)
+      ("i" straight-use-package)
+      ("c" straight-check-package)
+      ("F" straight-pull-package)
+      ("f" straight-fetch-package)
+      ("p" straight-push-package)
+      ("n" straight-normalize-package)
+      ("m" straight-merge-package))
+
+    (add-to-list 'embark-keymap-alist '(straight . embark-straight-map))
+
+    (add-to-list 'marginalia-prompt-categories '("recipe\\|package" . straight))))
 #+end_src
 
 *** marginalia.el
@@ -1478,43 +1541,60 @@ t cl-type"
 (use-package marginalia
   :init
   (marginalia-mode 1))
-
-;; https://github.com/muffinmad/emacs-mini-frame
-(use-package mini-frame
-  :after selectrum
-  :config
-  ;; selectrum will use a mini-frame automatically
-  (setq selectrum-display-action nil)
-  (setq mini-frame-resize nil)
-  (setq mini-frame-background-color-function #'(lambda () (modus-themes-color 'bg-inactive)))
-  (setq mini-frame-show-parameters '((top    . 0.2)
-                                     (width  . 0.8)
-                                     (left   . 0.5)
-                                     (height . 17)))
-  (mini-frame-mode 1))
-
-(setq magit-completing-read-function #'selectrum-completing-read)
 #+end_src
 
-*** prescient.el
+*** orderless.el
 
-https://github.com/raxod502/prescient.el
-
-Package `prescient' is a library for intelligent sorting and filtering in various contexts.
-Filters most recent completions to the top of the list.
+Use the `orderless' completion style.
 
 #+begin_src elisp
-(use-package prescient
-  :config
-  (prescient-persist-mode 1); Remember usage statistics across Emacs sessions.
-  (setq prescient-sort-full-matches-first t))
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless))
+  (setq completion-pcm-word-delimiters "-_./:| ")
+  (setq completion-category-defaults nil)
+  ;; Enable `partial-completion' for files to allow path expansion.
+  (setq completion-category-overrides '((file (styles . (partial-completion)))))
+  (setq completions-format 'one-column)
+  (setq completions-detailed t)
 
-(use-package company-prescient
-  :after company
-  :config
-  (company-prescient-mode 1))
+  (defun diego--orderless-initialism-dispatcher (pattern _index _total)
+    (when (string-suffix-p "," pattern)
+      `(orderless-strict-leading-initialism . ,(substring pattern 1))))
 
+  (defun without-if-bang (pattern _index _total)
+    (cond
+     ((equal "!" pattern)
+      '(orderless-literal . ""))
+     ((string-prefix-p "!" pattern)
+      `(orderless-without-literal . ,(substring pattern 1)))))
+
+  (setq orderless-matching-styles '(orderless-regexp))
+  ;; (setq orderless-matching-styles '(orderless-regexp orderless-strict-leading-initialism))
+
+  (setq orderless-style-dispatchers '(without-if-bang diego--orderless-literal-dispatcher diego--orderless-initialism-dispatcher))
+  ;; (setq orderless-style-dispatchers nil)
+
+  ;; (setq orderless-skip-highlighting (lambda () selectrum-is-active))
+  (setq orderless-skip-highlighting nil)
+  (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
+  (setq selectrum-refine-candidates-function #'orderless-filter)
+
+  ;; Pressing SPC takes you out of completion, so with the default separator you
+  ;; are limited to one component, which is no fun. To fix this add a separator
+  ;; that is allowed to occur in identifiers, for example, for Emacs Lisp code
+  ;; you could use an ampersand:
+  (setq orderless-component-separator "[ +]")
+  ;; The matching portions of candidates aren’t highlighted. That’s because
+  ;; company-capf is hard-coded to look for the completions-common-part face, and
+  ;; it only use one face, company-echo-common to highlight candidates.
+  (defun just-one-face (fn &rest args)
+    (let ((orderless-match-faces [completions-common-part]))
+      (apply fn args)))
+
+  (advice-add 'company-capf--candidates :around #'just-one-face))
 #+end_src
+
 
 ** Key bindings hints (which-key.el)
 
@@ -2436,7 +2516,9 @@ functions for the evil states.
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "SPC" #'(execute-extended-command :which-key "M-x")
- "'"   #'(selectrum-repeat :which-key "Resume last search")
+ ;; "'"   #'(selectrum-repeat :which-key "Resume last search")
+ "'"   #'(uchronia-repeat :which-key "Resume last search")
+ "\""   #'(uchronia-select :which-key "Select last search")
  ">"   #'(er/expand-region :which-key "Expand region")
  "u"   #'(universal-argument-more :which-key "Universal argument")
  "x"  #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
@@ -2961,6 +3043,9 @@ vterm buffer."
                      compilation-save-buffers-predicate)
   (setq-default compilation-directory default-directory)
   (compilation-start command t))
+(defun diego/consult-line-symbol-at-point ()
+  (interactive)
+  (consult-line (thing-at-point 'symbol)))
 #+end_src
 
 * Inspiration
@@ -2974,14 +3059,17 @@ Some parts of my configuration were copied and inspired from:
 - [[https://emacs.nasy.moe/][Nasy]]
 - [[https://config.daviwil.com/emacs][Daviwil]]
 
-
-* Pending tasks [3/6]
+* Pending tasks [4/7]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
 ** TODO Replace projectile by project.el
 :LOGBOOK:
 - State "TODO"       from              [2021-05-28 Fri 16:47]
+:END:
+** DONE Replace selectrum by vertico
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2021-06-04 Fri 13:37]
 :END:
 ** TODO Fix org toc
 :LOGBOOK:
