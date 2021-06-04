@@ -408,11 +408,6 @@ value.
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
 
-** Scroll compilation output to first error
-
-#+begin_src elisp
-(setq compilation-scroll-output 'first-error)
-#+end_src
 
 * UI - Let's make Emacs look a little better.
 ** Disable toolbars and scrollbars
@@ -593,7 +588,7 @@ func main() {
 (use-package minions
   :config
   (setq minions-mode-line-lighter "+")
-  (setq minions-direct '(flymake-mode lsp-mode))
+  (setq minions-direct '(flymake-mode lsp-mode compilation-shell-minor-mode))
   (minions-mode 1))
 #+end_src
 
@@ -1990,6 +1985,28 @@ Hideshow mode is a buffer-local minor mode that allows you to selectively displa
 (add-hook 'go-mode-hook #'hs-minor-mode)
 #+end_src
 
+** Compilation mode
+
+*** Scroll compilation output to first error
+
+#+begin_src elisp
+(setq compilation-scroll-output 'first-error)
+#+end_src
+
+*** Enable ASCII Colours
+
+However, most of the time I open a compilation buffer in comint mode, which will
+use vterm and won't have any issues.
+
+#+begin_src elisp
+(use-package xterm-color
+  :config
+  (setq compilation-environment '("TERM=xterm-256color"))
+  (defun diego--advice-compilation-filter (f proc string)
+    (funcall f proc (xterm-color-filter string)))
+  (advice-add 'compilation-filter :around #'diego--advice-compilation-filter))
+#+end_src
+
 * Productivity
 ** Syntax checking (flycheck.el)
 
@@ -2471,15 +2488,17 @@ functions for the evil states.
  "bY"  #'(diego/copy-whole-buffer-to-clipboard :which-key "Copy buffer to clipboard")
  ;; Compile
  "c"   '(:ignore t :which-key "compile")
- "cc"  #'projectile-compile-project
- "cr"  #'recompile
+ "cc"  #'recompile
+ "cC"  #'diego/project-compile
  ;; Evaluate elisp expressions
- "e"   '(:ignore t :which-key "eval")
+ "e"   '(:ignore t :which-key "eval/error")
  "eb"  #'(eval-buffer :which-key "Eval elisp in buffer")
  "ed"  #'(eval-defun :which-key "Eval defun")
  "ee"  #'(eval-expression  :which-key "Eval elisp expression")
  "el"  #'(eval-last-sexp :which-key "Eval last sexression")
  "er"  #'(eval-region :which-key "Eval region")
+ "en"  #'(next-error :which-key "Next error")
+ "ep"  #'(previous-error :which-key "Previous error")
  ;; Files
  "f"   '(:ignore t :which-key "files")
  "fC"  #'(copy-file :which-key "Copy file")
@@ -2912,6 +2931,32 @@ For some reason I'm having video issues with Firefox."
   (select-frame-by-name "alfredoc")
   (org-capture))
 
+(defun diego/project-compile ()
+  "Run `diego/compile' in the project root."
+  (declare (interactive-only compile))
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
+    (call-interactively #'diego/compile)))
+
+(defun diego/compile (command &optional comint)
+  "Copied from compile, but passing t at the last line to enable comint on a
+vterm buffer."
+  (interactive
+   (list
+    (let ((command (eval compile-command)))
+      (if (or compilation-read-command current-prefix-arg)
+          (compilation-read-command command)
+        command))
+    (consp current-prefix-arg)))
+  (unless (equal command (eval compile-command))
+    (setq compile-command command))
+  (save-some-buffers (not compilation-ask-about-save)
+                     compilation-save-buffers-predicate)
+  (setq-default compilation-directory default-directory)
+  (compilation-start command t))
 #+end_src
 
 * Inspiration
