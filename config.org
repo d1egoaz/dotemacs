@@ -2472,12 +2472,11 @@ Once you’ve finished and want to insert the text into the window you triggered
 
 #+begin_src elisp
 (use-package emacs-everywhere
-:config
-(setq emacs-everywhere-frame-parameters
-  `((name . "emacs-everywhere")
-    (width . 120)
-    (height . 20)))
-)
+  :config
+  (setq emacs-everywhere-frame-parameters
+        `((name . "emacs-everywhere")
+          (width . 120)
+          (height . 20))))
 #+end_src
 
 * Keybindings
