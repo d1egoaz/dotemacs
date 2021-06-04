@@ -1076,7 +1076,7 @@ underscore is often a non-word character like operators, e.g. +.
   ;; (modify-syntax-entry ?/ "w")
   (modify-syntax-entry ?_ "w")
   (modify-syntax-entry ?- "w"))
-(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
+;;(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
 
 ** Whitespace cleanup on buffer save
@@ -1555,9 +1555,9 @@ Use the `orderless' completion style.
   (setq completions-format 'one-column)
   (setq completions-detailed t)
 
-  (defun diego--orderless-initialism-dispatcher (pattern _index _total)
+  (defun diego/orderless-initialism-dispatcher (pattern _index _total)
     (when (string-suffix-p "," pattern)
-      `(orderless-strict-leading-initialism . ,(substring pattern 1))))
+      `(orderless-strict-initialism . ,(substring pattern 0 -1))))
 
   (defun without-if-bang (pattern _index _total)
     (cond
@@ -1566,10 +1566,10 @@ Use the `orderless' completion style.
      ((string-prefix-p "!" pattern)
       `(orderless-without-literal . ,(substring pattern 1)))))
 
-  (setq orderless-matching-styles '(orderless-regexp))
+  (setq orderless-matching-styles '(orderless-regexp orderless-strict-initialism))
   ;; (setq orderless-matching-styles '(orderless-regexp orderless-strict-leading-initialism))
 
-  (setq orderless-style-dispatchers '(without-if-bang diego--orderless-literal-dispatcher diego--orderless-initialism-dispatcher))
+  (setq orderless-style-dispatchers '(without-if-bang diego/orderless-initialism-dispatcher))
   ;; (setq orderless-style-dispatchers nil)
 
   ;; (setq orderless-skip-highlighting (lambda () selectrum-is-active))
