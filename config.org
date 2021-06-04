@@ -2639,6 +2639,10 @@ functions for the evil states.
  "w-"  #'(evil-window-split :which-key "Horizontal split window")
  "w/"  #'(evil-window-vsplit :which-key "Vertical split window")
  "wd"  #'(evil-window-delete :which-key "Close window")
+ "wD"  #'ace-delete-window
+ "we"   '(:ignore t :which-key "enlarge")
+ "wel" #'enlarge-window-horizontally
+ "weh" #'shrink-window-horizontally
  "wh"  #'(evil-window-left :which-key "Window left")
  "wj"  #'(evil-window-down :which-key "Window down")
  "wk"  #'(evil-window-up :which-key "Window up")
