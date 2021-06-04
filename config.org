@@ -922,8 +922,7 @@ The default tab-bar name uses the buffer name."
           (tab-rename proj)))))
 
   (defun diego/project-name-from-root (project-root)
-    (file-name-nondirectory (directory-file-name project-root)))
-  (global-tab-line-mode 1))
+    (file-name-nondirectory (directory-file-name project-root))))
 
 ;; https://emacs.stackexchange.com/a/64486
 ;; (push '(
@@ -1372,8 +1371,6 @@ I am loving this new combination of tools. Lightweight and fast.
   (vertico-mode)
   :config
   (setq vertico-cycle t))
-
-
 
 ;; Allow reuse of minibuffer histry (like helm/ivy-resume or selectrum-last
 (use-package uchronia
@@ -2210,13 +2207,13 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 ** which-function-mode.el
 
 #+begin_src elisp
+(which-function-mode 1)
+;; Show the current function name in the header line
 (setq-default header-line-format
               '((which-func-mode ("" which-func-format " "))))
-(setq mode-line-misc-info
-      ;; We remove Which Function Mode from the mode line, because it's mostly
-      ;; invisible here anyway.
-      (assq-delete-all 'which-func-mode mode-line-misc-info))
-(which-function-mode 1)
+;; We remove Which Function Mode from the mode line, because it's mostly
+;; invisible here anyway.
+(setq mode-line-misc-info (assq-delete-all 'which-function-mode mode-line-misc-info))
 #+end_src
 
 * Org Mode
