@@ -2526,6 +2526,7 @@ functions for the evil states.
  :keymaps 'override
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
+ "" nil ; to fix evil in some buffers, like *Messages*
  "SPC" #'(execute-extended-command :which-key "M-x")
  ;; "'"   #'(selectrum-repeat :which-key "Resume last search")
  "'"   #'(uchronia-repeat :which-key "Resume last search")
