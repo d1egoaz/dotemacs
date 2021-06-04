@@ -2624,10 +2624,10 @@ functions for the evil states.
  "gF"  #'magit-fetch-all
  "gP"  #'magit-pull-branch
  "gf"  #'magit-fetch
- "gl"  #'magit-log
- "gL"  '(:ignore t :which-key "git link")
- "gLm" #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link master")
- "gLL" #'(git-link :which-key "git link branch")
+ "gl"  '(:ignore t :which-key "git link")
+ "glm" #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link master")
+ "gll" #'(git-link :which-key "git link branch")
+ "gL"  #'magit-log
  "gp"  #'magit-push-current
  "gr"  #'magit-rebase
  "gR"  #'vc-revert
