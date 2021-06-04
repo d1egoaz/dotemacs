@@ -760,7 +760,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
                        ((root
                          (vc-git-root
                           (buffer-file-name b))))
-                     (message root)
+                     ;; (message root)
                      (if root
                          (diego/project-name-from-root root)
                        "*special*"))))
@@ -896,14 +896,14 @@ The default tab-bar name uses the buffer name."
            (tabs (diego/tab--tab-bar-tabs))
            (proj (projectile-project-name))
            )
-      (message "Project: %s " proj)
-      (message "member?: %s " (member proj tabs))
+      ;; (message "Project: %s " proj)
+      ;; (message "member?: %s " (member proj tabs))
       (if (member proj tabs)
           (progn
-            (message ">> switching to existing project")
+            ;; (message ">> switching to existing project")
             (tab-switch proj))
         (progn
-          (message ">> new tab %s" proj)
+          ;; (message ">> new tab %s" proj)
           (tab-new)
           (tab-rename proj)))))
 
@@ -913,20 +913,19 @@ The default tab-bar name uses the buffer name."
            (tabs (diego/tab--tab-bar-tabs))
            (proj (projectile-project-name))
            )
-      (message "Project: %s " proj)
-      (message "member?: %s " (member proj tabs))
+      ;; (message "Project: %s " proj)
+      ;; (message "member?: %s " (member proj tabs))
       (if (member proj tabs)
           (progn
-            (message ">> switching to existing project")
+            ;; (message ">> switching to existing project")
             (tab-switch proj))
         (progn
-          (message ">> new tab %s" proj)
+          ;; (message ">> new tab %s" proj)
           (tab-new)
           (tab-rename proj)))))
 
   (defun diego/project-name-from-root (project-root)
     (file-name-nondirectory (directory-file-name project-root)))
-
   (global-tab-line-mode 1))
 
 ;; https://emacs.stackexchange.com/a/64486
