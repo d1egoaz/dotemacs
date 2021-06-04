@@ -2633,6 +2633,7 @@ functions for the evil states.
  "gR"  #'vc-revert
  "gS"  #'magit-stage-file
  "gU"  #'magit-unstage-file
+ "gv"  #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
  ;; Help
  "h"   '(:ignore t :which-key "help")
  "hf"  #'(describe-function :which-key "Describe function/macro")
