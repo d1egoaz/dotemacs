@@ -150,7 +150,6 @@
 ** Why Emacs
 
 - https://www.gnu.org/software/emacs/manual/emacs.html
-- https://github.com/noctuid/evil-guide
 - https://emacs.wordpress.com/2007/01/14/the-ghost-in-the-lisp-machine/
 
 #+begin_quote
@@ -161,6 +160,7 @@ single functionality can be tweaked, extended and adapted to your particular nee
 is easily scriptable. Imagine, in additon, that the environment provides powerful and complete
 interactive self-documentation facilities with which the user can find out what is available. I have
 yet to find an operating system providing such an integrated environment.
+-  January 14, 2007 — jao
 #+end_quote
 
 ** How I Install Emacs
@@ -172,6 +172,11 @@ brew install emacs-plus@28 --with-no-frame-refocus --with-native-comp
 ** Lexical Binding
 
 https://www.gnu.org/software/emacs/manual/html_node/elisp/Lexical-Binding.html
+
+It eliminates the problem of which variables lambda-expressions use (when they
+attempt to use variables from their surrounding context), and much easier for
+the compiler to optimize, because it doesn't need to worry about variables
+escaping their lexical context.
 
 #+begin_src elisp
 ;; -*- lexical-binding: t; -*-
@@ -196,35 +201,43 @@ In Emacs, every user interaction is a function execution. There are two types of
   Commands are like functions, but interactive. It means, commands are features provided to users
   and users directly use them.
 
-*** Basic motion commands
+*** Basic motion commands in Emacs
 
+Some of the commands don't work on evil mode, but it's a good idea to know how
+to move on Emacs when evil is not available.
 
-Move forward one char: C-f (f stands for forward)
-Move backward one char: C-b (b stands for backward)
-Move upward one line: C-p (p stands for previous)
-Move downward one line: C-n (n stands for next)
+| Keymap | Command                             |
+|--------+-------------------------------------|
+| C-f    | Move forward one char               |
+| C-b    | Move backward one char              |
+|--------+-------------------------------------|
+| C-p    | Move upward one line                |
+| C-n    | Move downward one line              |
+| C-a    | Move to beginning of line           |
+| C-e    | Move to end of line                 |
+|--------+-------------------------------------|
+| M-f    | Move forward one word               |
+| M-b    | Move backward one word              |
+|--------+-------------------------------------|
+| C-v    | Scroll forward one screen           |
+| M-v    | Scroll backward one screen          |
+|--------+-------------------------------------|
+| M-a    | Move to the beginning of a sentence |
 
-Move to beginning of line: C-a
-Move to end of line: C-e
-Move forward one word, M-f.
-Move backward one word, M-b.
-
-Scroll forward one screen: C-v, page down
-Scroll backward one screen: M-v, page up
-Move to the beginning of a sentence: M-a
-Move to the end of a sentence: M-e
 *** Modeline
-The mode line is the empty area below the buffer. It has useful summary information about the buffer
-shown in the window.
+
+The mode line is the empty area below the buffer. It has useful summary
+information about the buffer shown in the window.
 
 *** Minibuffer
+
 Minibuffer is the small area at the bottom of your Emacs screen.
 
 *** Echo area
 
-Minibuffer can be used for output as well. The echo area is used for displaying messages made with
-the message primitive, and for echoing keystrokes.  Both Minibuffer and Echo Area, although serve
-different purposes, share the same physical space.
+Minibuffer can be used for output as well. The echo area is used for displaying
+messages. Both Minibuffer and Echo Area, although serve different purposes,
+share the same physical space.
 
 *** Frames
 
