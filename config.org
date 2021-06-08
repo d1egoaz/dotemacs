@@ -3100,8 +3100,10 @@ vterm buffer."
 * Inspiration
 
 Some parts of my configuration were copied and inspired from:
-- [[https://github.com/hlissner/doom-emacs/][Doom Emacs]]
-- [[https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-emacs.org][Protesilaos Stavrou]]
+
+- [[https://github.com/syl20bnr/spacemacs/][Spacemacs]] (This is where my Emacs journey began)
+- [[https://github.com/hlissner/doom-emacs/][Doom Emacs]] (Where my Emacs skill improved)
+- [[https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-emacs.org][Protesilaos Stavrou]] (Where I learned to appreciate vanilla Emacs)
 - [[https://github.com/noctuid/evil-guide][Emacs/Evil for Vim Users]]
 - [[https://github.com/raxod502/radian/blob/develop/emacs/radian.el][Radian]]
 - [[https://github.com/daviwil/emacs-from-scratch/blob/master/init.el][Systems Crafters - Emacs From Scratch]]
