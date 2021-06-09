@@ -1325,12 +1325,16 @@ Add/change surrounding to text objects.
 
 ** Preserve history with savehist-mode
 
+Run =(delete-dups extended-command-history)= for example to delete duplicates
+from previous history files.
+
 #+begin_src elisp
 (use-package savehist
   :init
   (savehist-mode)
   :config
-  (setq   history-delete-duplicates t))
+  (setq history-length 100)
+  (setq history-delete-duplicates t))
 #+end_src
 
 ** Completion framework (company.el)
@@ -1817,6 +1821,8 @@ basic just a folder containing some special file (.git or a file called .project
 
 (use-package recentf
   :config
+  (setq recentf-max-menu-items 200)
+  (setq recentf-max-saved-items 50)
   (recentf-mode 1))
 
 ;; projectile ignored directories
