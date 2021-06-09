@@ -1456,6 +1456,15 @@ M-w copy
   (setq consult-async-refresh-delay 0.4)
   (setq consult-async-min-input 1)
 
+  ;; Makes only the open buffers list visible when calling consult-buffer command
+  ;; by hiding the other sources, but still allowing the narrowing to recent
+  ;; files (by typing f SPC), bookmarks (m SPC) and project buffer and/or files
+  ;; (p SPC).  Hide all sources, except normal buffers in consult-buffer by
+  ;; default
+  (dolist (src consult-buffer-sources)
+    (unless (eq src 'consult--source-buffer)
+      (set src (plist-put (symbol-value src) :hidden t))))
+
   (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
   :bind (
          ([remap apropos]                       . #'consult-apropos)
@@ -1580,23 +1589,38 @@ Use the `orderless' completion style.
   (setq completion-category-overrides '((file (styles . (partial-completion)))))
   (setq completions-format 'one-column)
   (setq completions-detailed t)
-
-  (defun diego/orderless-initialism-dispatcher (pattern _index _total)
-    (when (string-suffix-p "," pattern)
-      `(orderless-strict-initialism . ,(substring pattern 0 -1))))
-
-  (defun without-if-bang (pattern _index _total)
+  :config
+  ;; adapted from https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
+  ;; Recognizes the following patterns:
+  ;; * ~flex flex~
+  ;; * =literal literal=
+  ;; * ,initialism initialism,
+  ;; * !without-literal without-literal!
+  ;; * .ext (file extension)
+  ;; * regexp$ (regexp matching at end)
+  (defun diego/orderless-dispatch (pattern _index _total)
     (cond
-     ((equal "!" pattern)
-      '(orderless-literal . ""))
-     ((string-prefix-p "!" pattern)
-      `(orderless-without-literal . ,(substring pattern 1)))))
+     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+     ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
+     ;; File extensions
+     ((string-match-p "\\`\\.." pattern) `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
+     ;; Ignore single !
+     ((string= "!" pattern) `(orderless-literal . ""))
+     ;; Without literal
+     ((string-prefix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 1)))
+     ((string-suffix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 0 -1)))
+     ;; Initialism strict matching
+     ((string-prefix-p "," pattern) `(orderless-strict-initialism . ,(substring pattern 1)))
+     ((string-suffix-p "," pattern) `(orderless-strict-initialism . ,(substring pattern 0 -1)))
+     ;; Literal matching
+     ((string-prefix-p "=" pattern) `(orderless-literal . ,(substring pattern 1)))
+     ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))
+     ;; Flex matching
+     ((string-prefix-p "~" pattern) `(orderless-flex . ,(substring pattern 1)))
+     ((string-suffix-p "~" pattern) `(orderless-flex . ,(substring pattern 0 -1)))))
 
   (setq orderless-matching-styles '(orderless-regexp orderless-strict-initialism))
-  ;; (setq orderless-matching-styles '(orderless-regexp orderless-strict-leading-initialism))
-
-  (setq orderless-style-dispatchers '(without-if-bang diego/orderless-initialism-dispatcher))
-  ;; (setq orderless-style-dispatchers nil)
+  (setq orderless-style-dispatchers '(diego/orderless-dispatch))
 
   ;; (setq orderless-skip-highlighting (lambda () selectrum-is-active))
   (setq orderless-skip-highlighting nil)
