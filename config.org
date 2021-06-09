@@ -1291,6 +1291,36 @@ Add/change surrounding to text objects.
 (add-hook 'with-editor-mode-hook #'evil-insert-state)
 #+end_src
 
+*** Bind evil-jump-forward for GUI
+
+#+begin_src elisp
+(define-key evil-motion-state-map (kbd "C-o") 'better-jumper-jump-backward)
+(define-key evil-motion-state-map (kbd "<C-i>") 'better-jumper-jump-forward)
+#+end_src
+
+** better-jump.el
+
+#+begin_src elisp
+(use-package better-jumper
+  :init
+  (global-set-key [remap evil-jump-forward]  #'better-jumper-jump-forward)
+  (global-set-key [remap evil-jump-backward] #'better-jumper-jump-backward)
+  (global-set-key [remap xref-pop-marker-stack] #'better-jumper-jump-backward)
+  :config
+
+  (defun evil-better-jumper/set-jump-a (orig-fn &rest args)
+    "Set a jump point and ensure ORIG-FN doesn't set any new jump points."
+    (better-jumper-set-jump (if (markerp (car args)) (car args)))
+    (let ((evil--jumps-jumping t)
+          (better-jumper--jumping t))
+      (apply orig-fn args)))
+
+  ;; Create a jump point before jumping with imenu.
+  (advice-add #'imenu :around #'evil-better-jumper/set-jump-a)
+
+  (better-jumper-mode 1))
+#+end_src
+
 * Completion
 
 ** Preserve history with savehist-mode
