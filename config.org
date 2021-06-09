@@ -1450,12 +1450,12 @@ M-w copy
 
   (setq consult-narrow-key ">")
   (setq consult-widen-key "<")
-  (setq consult-async-input-debounce 0.1)
-  (setq consult-async-input-throttle 0.1)
-  (setq consult-async-refresh-delay 0.1)
+  (setq consult-async-input-debounce 0.2)
+  (setq consult-async-input-throttle 0.5)
+  (setq consult-async-refresh-delay 0.4)
   (setq consult-async-min-input 1)
 
-  ;;(set-face-attribute 'selectrum-current-candidate nil :background (modus-themes-color 'cyan-intense-bg))
+  (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
   :bind (
          ([remap apropos]                       . #'consult-apropos)
          ([remap bookmark-jump]                 . #'consult-bookmark)
