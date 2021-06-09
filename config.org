@@ -3079,20 +3079,22 @@ For some reason I'm having video issues with Firefox."
         (compilation-buffer-name-function
          (or project-compilation-buffer-name-function
              compilation-buffer-name-function)))
-    (call-interactively #'diego/compile)))
+    (diego/compile (completing-read "Compile command: " compile-history))))
 
-(defun diego/compile (command &optional comint)
+(defun diego/compile (command)
   "Copied from compile, but passing t at the last line to enable comint on a
 vterm buffer."
   (interactive
    (list
-    (let ((command (eval compile-command)))
+    (let ((command (eval compile-command))
+          (comint-prompt-read-only t))
       (if (or compilation-read-command current-prefix-arg)
           (compilation-read-command command)
         command))
     (consp current-prefix-arg)))
   (unless (equal command (eval compile-command))
     (setq compile-command command))
+  (save-buffer)
   (save-some-buffers (not compilation-ask-about-save)
                      compilation-save-buffers-predicate)
   (setq-default compilation-directory default-directory)
@@ -3101,16 +3103,25 @@ vterm buffer."
 (defun diego/dev-run (cmd)
   "Ask for a dev command to run."
   (interactive "sEnter dev command: ")
-  (diego/compile (concat "/opt/dev/bin/dev " cmd) t))
+  (diego/compile (concat "/opt/dev/bin/dev " cmd)))
 
 (defun diego/dev ()
   "Runs a dev command."
   (interactive)
-  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command:" '(up down build test))) t))
+  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command:" '(up down build test)))))
 
 (defun diego/consult-line-symbol-at-point ()
   (interactive)
   (consult-line (thing-at-point 'symbol)))
+
+(defun diego/go-run-test-current-function ()
+  (interactive)
+  (if (string-match "_test\\.go" buffer-file-name)
+      (save-excursion
+        (move-end-of-line nil)
+        (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?\\([[:alnum:]]+\\))[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
+        (diego/compile (concat "go test -v -run=" (match-string-no-properties 3))))
+    (message "Must be in a _test.go file to run go-run-test-current-function")))
 #+end_src
 
 * Inspiration
