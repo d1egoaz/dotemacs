@@ -2113,6 +2113,19 @@ use vterm and won't have any issues.
   (advice-add 'compilation-filter :around #'diego--advice-compilation-filter))
 #+end_src
 
+** restclient.el
+
+#+begin_src elisp
+(use-package restclient
+  :mode
+  ("\\.http\\'" . restclient-mode)
+  :general
+  (:keymaps 'restclient-mode-map
+            :prefix ","
+            "e"  #'restclient-http-send-current
+            "E"  #'restclient-http-send-current-raw
+            "c"  #'restclient-copy-curl-command))
+#+end_src
 * Productivity
 ** Syntax checking (flycheck.el)
 
