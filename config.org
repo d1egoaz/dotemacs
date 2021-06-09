@@ -547,13 +547,13 @@ Command/Super plus =/- for zooming in/out.
   (defun diego/make-new-scratch-buffer ()
     "New temporary scratch buffer with a random name."
     (interactive)
-    (switch-to-buffer (concat (make-temp-name "*scratch-") "*"))
+    (switch-to-buffer-other-window (concat (make-temp-name "*scratch-") "*"))
     (org-mode))
 
   (defun diego/make-new-scratch-buffer-go-babel ()
     "New temporary scratch buffer with a random name with go-babel enabled."
     (interactive)
-    (switch-to-buffer (concat (make-temp-name "*scratch-go") "*"))
+    (switch-to-buffer-other-window (concat (make-temp-name "*scratch-go") "*"))
     (insert "
 \#+begin_src go
 package main
@@ -790,7 +790,12 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ;; right side window
         ("\\*compilation\\*"
          (display-buffer-in-side-window)
-         (window-width . 0.40)
+         (window-width . 0.50)
+         (side . bottom)
+         (slot . 0))
+        ("\\*Ilist\\*"
+         (display-buffer-in-side-window)
+         (window-width . 0.20)
          (side . right)
          (slot . 0))
         ;; bottom buffer (NOT side window)
@@ -801,7 +806,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ("\\*.*\\(e?shell\\|v?term\\).*"
          (display-buffer-reuse-mode-window display-buffer-at-bottom)
          (window-height . 0.2))
-        ;; below currect window
+        ;; below current window
         ("\\*Calendar.*"
          (display-buffer-reuse-mode-window display-buffer-below-selected)
          (window-height . shrink-window-if-larger-than-buffer))
@@ -809,13 +814,16 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (display-buffer-in-tab)
          (tab-name . "*elfeed*"))
         ("\\*elfeed-entry\\*"
-         (display-buffer-reuse-mode-window display-buffer-below-selected)
-         (window-height . shrink-window-if-larger-than-buffer))
+         (display-buffer-in-side-window)
+         (side . bottom)
+         (window-height . 0.7))
         ;; custom rules
         ;; tabs
         ("\\*scratch.*"
-         (display-buffer-in-tab (tab-name . "*scratch*")))
+         (display-buffer-in-tab)
+         (tab-name . "*scratch*"))
         ;; open buffers in its respective tab, if tab doesn't exist, create it
+        ;; idea from https://emacs.stackexchange.com/a/64486
         ((lambda (b _a)
            (buffer-local-value 'buffer-file-name
                                (get-buffer b)))
@@ -826,7 +834,8 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
                        ((root
                          (vc-git-root
                           (buffer-file-name b))))
-                     ;; (message root)
+
+                     (message "root %s"root)
                      (if root
                          (diego/project-name-from-root root)
                        "*special*"))))
@@ -850,9 +859,9 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
   (balance-windows)
   (other-window -1))
 
-(defun follow-mode-3 ()
+(defun diego/follow-mode-3 ()
   (interactive)
-  (split-window-horizontally-3)
+  (diego/split-window-horizontally-3)
   (follow-mode 1))
 #+end_src
 
@@ -2542,6 +2551,7 @@ functions for the evil states.
  "bb"  #'(consult-buffer :which-key "Switch buffer")
  "bB"  #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
  "bc"  #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+ "bC"  #'((lambda () (interactive) (switch-to-buffer "*compilation*")) :which-key "Compilation buffer")
  "bd"  #'(kill-current-buffer :which-key "Kill current buffer")
  "be"  #'(diego/safe-erase-buffer :which-key "Erase buffer")
  "bE"  #'(view-echo-area-messages :which-key "Echo area buffer")
@@ -2717,6 +2727,8 @@ functions for the evil states.
  ;; Window manipulation
  "w"   '(:ignore t :which-key "windows")
  "wa"  #'ace-window
+ "wb"  #'balance-windows
+ "wB"  #'balance-windows-area
  "w-"  #'(evil-window-split :which-key "Horizontal split window")
  "w/"  #'(evil-window-vsplit :which-key "Vertical split window")
  "wd"  #'(evil-window-delete :which-key "Close window")
@@ -2724,6 +2736,8 @@ functions for the evil states.
  "we"   '(:ignore t :which-key "enlarge")
  "wel" #'enlarge-window-horizontally
  "weh" #'shrink-window-horizontally
+ "wf"  #'fit-window-to-buffer
+ "wF"  #'diego/follow-mode-3
  "wh"  #'(evil-window-left :which-key "Window left")
  "wj"  #'(evil-window-down :which-key "Window down")
  "wk"  #'(evil-window-up :which-key "Window up")
