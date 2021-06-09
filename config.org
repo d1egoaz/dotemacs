@@ -376,13 +376,21 @@ Disables .#file.ext creation.
 (setq  create-lockfiles nil)
 #+end_src
 
-** Disable files backup
+** Enable files backup
 
 #+begin_src elisp
 (setq delete-by-moving-to-trash t)
-(setq make-backup-files nil)
-(setq vc-make-backup-files nil)
-(setq auto-save-default nil)
+;; to disable backups:
+;; (setq make-backup-files nil)
+;; (setq vc-make-backup-files nil)
+;; (setq auto-save-default nil)
+
+;; trying creating backups:
+(setq auto-save-default t)
+(setq delete-old-versions -1)
+(setq make-backup-files t)
+(setq vc-make-backup-files t)
+(setq version-control t)
 #+end_src
 
 ** Kill ring not save duplicates
