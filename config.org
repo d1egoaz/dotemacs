@@ -248,16 +248,14 @@ An application window in an operating system is called a Frame in Emacs.
 Emacs can split your frame area into multiple smaller areas. Each such area is called a window.
 
 *** Tutorial
+
 - https://tuhdo.github.io/emacs-tutor.html
-  -
 
 * Package Manager
 ** Native Compilation
 
-Silence compiler warnings as they can be pretty disruptive.
-
 #+begin_src elisp
-(setq native-comp-async-report-warnings-errors nil)
+(setq native-comp-async-report-warnings-errors nil) ; Silence compiler warnings as they can be pretty disruptive.
 (setq native-comp-async-query-on-exit t)
 (setq native-comp-async-jobs-number 4)
 (setq native-comp-deferred-compilation t)
@@ -265,10 +263,13 @@ Silence compiler warnings as they can be pretty disruptive.
 
 ** straight.el
 
-[[https://github.com/raxod502/straight.el][straight.el]] operates by cloning Git repositories and then symlinking files into Emacs' load path.
+*=straight= is configured and installed in early-init.el.*
+
+straight.el operates by cloning Git repositories and then symlinking files into
+Emacs' load path.
 
 =straight-use-package= package name is a *symbol* not a string.
-*straight configuration is done in =early-init.el=*
+=straight-visit-package-website= to visit package URL.
 
 *** Update Packages
 
@@ -290,13 +291,19 @@ Read version lockfile and restore package versions to those listed.
 
 ** use-package.el
 
+*=use-package= is configured and installed in early-init.el.*
+
+Package =use-package= provides a handy macro by the same name which is
+essentially a wrapper around =with-eval-after-load= with a lot of handy
+syntactic sugar and useful features.
+
 A common use-package declaration looks like this:
 
 #+begin_example elisp
 (use-package <package-name>
    ;; The :init configuration is always executed (Not lazy)
     :init
-   ;; <commands to auto load>
+   ;; commands to auto load
     :commands
    ;; Configure other variables and modes in the :config section,
    ;; after lazily loading the package.
@@ -304,11 +311,6 @@ A common use-package declaration looks like this:
    ;; key bindings for this package>
     :bind)
 #+end_example
-
-Package =use-package= provides a handy macro by the same name which is essentially a wrapper around
-=with-eval-after-load= with a lot of handy syntactic sugar and useful features.
-
-*=use-package= is installed in early-init.el.*
 
 ** Keep .emacs.d clean (no-littering.el)
 
@@ -323,11 +325,12 @@ Package =use-package= provides a handy macro by the same name which is essential
 * General Emacs Base Settings
 ** Garbage collection
 
-Enforce a sneaky Garbage Collection strategy to minimize GC interference with user activity.  During
-normal use a high GC threshold is set.  When idling GC is triggered and a low threshold is set.
+Enforce a sneaky Garbage Collection strategy to minimize GC interference with
+user activity. During normal use a high GC threshold is set.  When idling GC is
+triggered and a low threshold is set.
 
-This is important as Emacs just dies trying to collect GC due to the huge initial GC threshold in
-=early-init.el=.
+This is important as Emacs just dies trying to collect GC due to the huge
+initial GC threshold in =early-init.el=.
 
 #+begin_src elisp
 (use-package gcmh
@@ -335,15 +338,17 @@ This is important as Emacs just dies trying to collect GC due to the huge initia
   (gcmh-mode 1))
 #+end_src
 
-** Change startup message
+** Disable startup messages and bell
 
 #+begin_src elisp
-(setq-default initial-scratch-message ";; Happy hacking d1egoaz - Emacs ♥\n\n")
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
+
+(setq ring-bell-function 'ignore)
+(setq visible-bell nil)
 #+end_src
 
 ** Authinfo
-
-Sensitive credentials.
 
 #+begin_src elisp
 (setq auth-sources '("~/.authinfo.gpg"))
@@ -355,16 +360,6 @@ Emacs can be prompted for the PIN of GPG private keys.
 
 #+begin_src elisp
 (setq epg-pinentry-mode 'loopback)
-#+end_src
-
-** Disable startup messages and bell
-
-#+begin_src elisp
-(setq inhibit-startup-screen t)
-(setq inhibit-startup-message t)
-
-(setq ring-bell-function 'ignore)
-(setq visible-bell nil)
 #+end_src
 
 ** Disable exit confirmation
@@ -408,7 +403,8 @@ yes-or-no-p uses shorter answers "y" or "n".
 
 ** Server mode
 
-Start the Emacs server from this instance so that all =emacsclient= calls are routed here.
+Start the Emacs server from this instance so that all =emacsclient= calls are
+routed here.
 
 #+begin_src elisp
 (server-start)
@@ -416,12 +412,11 @@ Start the Emacs server from this instance so that all =emacsclient= calls are ro
 
 ** Increase read output from processes
 
-Increase how much is read from processes in a single chunk (default is 4kb). This is further
-increased by our more expensive LSP module, and where needed. LSP is improved by increasing this
-value.
+Increase how much is read from processes in a single chunk (default is
+4kb). LSP is improved by increasing this value.
 
 #+begin_src elisp
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq read-process-output-max (* 1024 1024)) ; 1mb
 #+end_src
 
 * UI - Let's make Emacs look a little better.
@@ -472,7 +467,7 @@ Copied from https://github.com/dunn/company-emoji
 
 *** Zooming In and Out
 
-CTRL plus =/- for zooming in/out.
+Command/Super plus =/- for zooming in/out.
 
 #+begin_src elisp
 (global-set-key (kbd "s-=") #'text-scale-increase)
@@ -513,7 +508,13 @@ CTRL plus =/- for zooming in/out.
 #+end_src
 
 * Buffers
+
 ** Scratch buffer
+*** Change initial scratch buffer message
+
+#+begin_src elisp
+(setq-default initial-scratch-message ";; Happy hacking d1egoaz - Emacs ♥\n\n")
+#+end_src
 
 *** Protect scratch buffer against accidental kill
 
@@ -523,6 +524,7 @@ CTRL plus =/- for zooming in/out.
 #+end_src
 
 *** Initial major mode
+
 #+begin_src elisp
 (setq initial-major-mode 'org-mode)
 #+end_src
@@ -609,8 +611,8 @@ func main() {
 
 ** Show current command in the mode line (keycast.el)
 
-[[https://github.com/tarsius/keycast][Keycast]] mode shows the current command and its key or mouse binding in the mode line, and updates
-them whenever another command is invoked.
+Keycast mode shows the current command and its key or mouse binding in the mode
+line, and updates them whenever another command is invoked.
 
 #+begin_src elisp
 (use-package moody) ; required by keycast window predicate
@@ -667,52 +669,98 @@ them whenever another command is invoked.
 #+end_src
 
 * Windows
+** Jump to windows (ace-window.el)
+
+Package for selecting a window to switch to.
+https://github.com/abo-abo/ace-window
+
+- Change the action midway:
+You can also start by calling ace-window and then decide to switch the action to delete or swap etc. By default the bindings are:
+
+| Keymap | Command                                                |
+|--------+--------------------------------------------------------|
+| x      | delete window                                          |
+| m      | swap windows                                           |
+| M      | move window                                            |
+| c      | copy window                                            |
+| j      | select buffer                                          |
+| n      | select the previous window                             |
+| u      | select buffer in the other window                      |
+| c      | split window fairly, either vertically or horizontally |
+| v      | split window vertically                                |
+| b      | split window horizontally                              |
+| o      | maximize current window                                |
+| ?      | show these command bindings                            |
+|        |                                                        |
+
+| Keymap  | Command         |
+|---------+-----------------|
+| SPC w a | Select a window |
+| SPC w D | Delete a window |
+
+#+begin_src elisp
+(use-package ace-window
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+end_src
+
 ** Window rules
 
 The =display-buffer-alist= is a rule-set for controlling the placement of windows.
 
 #+begin_src elisp
-;; Clicking a link from the *Help* buffer opens source code in the same window:
+;; make pop-to-buffer obey display-buffer-alist
+(setq switch-to-buffer-obey-display-actions t)
 
+(defun diego--debug-buffer-alist (b a)
+  "Clicking a link from the *Help* buffer opens source code in the same window."
+  (message "b:%s" b)
+  (print a)
+  nil
+  )
 (defun diego--display-buffer-from-help-p (b _a)
+  "Clicking a link from the *Help* buffer opens source code in the same window."
   (unless current-prefix-arg
     (with-current-buffer (window-buffer)
-      (print major-mode)
       (or
        (eq major-mode 'help-mode)
        (eq major-mode 'helpful-mode)))))
 
 (setq display-buffer-alist
       `(
+        (diego--debug-buffer-alist)
         ;; top side window
-        ("\\*\\(world-clock\\).*"
+        ("\\*world-clock\\*"
          (display-buffer-in-side-window)
          (window-height . 0.16)
          (side . top)
          (slot . -1))
-        ("\\*\\(Flymake\\|Package-Lint\\|vc-git :\\).*"
+        ("\\*\\(Flymake\\|vc-git :\\).*"
          (display-buffer-in-side-window)
          (window-height . 0.16)
          (side . top)
          (slot . 0))
-        ("\\*Messages.*"
+        ("\\*Messages\\*"
          (display-buffer-in-side-window)
          (window-height . 0.16)
          (side . top)
          (slot . 1))
-        ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\)\\*"
+        ("\\*\\(Backtrace\\|Warnings\\)\\*"
          (display-buffer-in-side-window)
          (window-height . 0.16)
          (side . top)
          (slot . 2)
          (window-parameters . ((no-other-window . t))))
         ;; bottom side window
-        ("\\*\\(Embark\\)?.*Completions.*"
+        ("\\*\\(Embark\\)?.*Completions.*$"
          (display-buffer-in-side-window)
          (side . bottom)
          (slot . 0)
          (window-parameters . ((no-other-window . t)
                                (mode-line-format . none))))
+        ("\\*kubel [^-].*"
+         (display-buffer-in-tab)
+         (tab-name . "*kubel*"))
         ("\\*kubel -.*"
          (display-buffer-in-side-window)
          (window-height . 0.8)
@@ -779,35 +827,14 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
 (setq even-window-sizes 'height-only)
 (setq window-sides-vertical nil)
 (setq switch-to-buffer-in-dedicated-window 'pop)
+
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'custom-mode-hook #'visual-line-mode)
 (define-key global-map (kbd "<f6>") #'window-toggle-side-windows)
-
-;; (Let ((map global-map))
-;;   (define-key map (kbd "s-n") #'next-buffer)
-;;   (define-key map (kbd "s-p") #'previous-buffer)
-;;   (define-key map (kbd "s-o") #'other-window)
-;;   (define-key map (kbd "s-2") #'split-window-below)
-;;   (define-key map (kbd "s-3") #'split-window-right)
-;;   (define-key map (kbd "s-0") #'delete-window)
-;;   (define-key map (kbd "s-1") #'delete-other-windows)
-;;   (define-key map (kbd "s-!") #'delete-other-windows-vertically) ; s-S-1
-;;   (define-key map (kbd "s-5") #'delete-frame)
-;;   (define-key map (kbd "C-x _") #'balance-windows)      ; underscore
-;;   (define-key map (kbd "C-x -") #'fit-window-to-buffer) ; hyphen
-;;   (define-key map (kbd "C-x +") #'balance-windows-area)
-;;   (define-key map (kbd "s-q") #'window-toggle-side-windows)
-;;   (define-key map (kbd "C-x }") #'enlarge-window)
-;;   (define-key map (kbd "C-x {") #'shrink-window)
-;;   (define-key map (kbd "C-x >") #'enlarge-window-horizontally) ; override `scroll-right'
-;;   (define-key map (kbd "C-x <") #'shrink-window-horizontally)) ; override `scroll-left'
-;; (let ((map resize-window-repeat-map))
-;;   (define-key map ">" #'enlarge-window-horizontally)
-;;   (define-key map "<" #'shrink-window-horizontally)))
 #+end_src
 
 #+begin_src elisp
-(defun split-window-horizontally-3 ()
+(defun diego/split-window-horizontally-3 ()
   (interactive)
   (delete-other-windows)
   (split-window-horizontally)
@@ -820,52 +847,15 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
   (split-window-horizontally-3)
   (follow-mode 1))
 #+end_src
-** Jump to windows (ace-window.el)
-
-Package for selecting a window to switch to.
-https://github.com/abo-abo/ace-window
-
-- Change the action midway:
-
-You can also start by calling ace-window and then decide to switch the action to delete or swap etc. By default the bindings are:
-
-x - delete window
-m - swap windows
-M - move window
-c - copy window
-j - select buffer
-n - select the previous window
-u - select buffer in the other window
-c - split window fairly, either vertically or horizontally
-v - split window vertically
-b - split window horizontally
-o - maximize current window
-? - show these command bindings
-
-#+begin_src elisp
-(use-package ace-window
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
-#+end_src
-
-(defvar aw-dispatch-alist
-'((?x aw-delete-window "Delete Window")
-(?m aw-swap-window "Swap Windows")
-(?M aw-move-window "Move Window")
-(?c aw-copy-window "Copy Window")
-(?j aw-switch-buffer-in-window "Select Buffer")
-(?n aw-flip-window)
-(?u aw-switch-buffer-other-window "Switch Buffer Other Window")
-(?c aw-split-window-fair "Split Fair Window")
-(?v aw-split-window-vert "Split Vert Window")
-(?b aw-split-window-horz "Split Horz Window")
-(?o delete-other-windows "Delete Other Windows")
-(?? aw-show-dispatch-help))
-"List of actions for `aw-dispatch-default'.")
 
 ** Window history (winner.el)
 
 Winner is a built-in tool that keeps a record of buffer and window layout changes.
+
+| Keymap  | Command     |
+|---------+-------------|
+| SPC w z | Winner undo |
+| SPC w r | Winner redo |
 
 #+begin_src elisp
 (use-package winner
@@ -874,6 +864,14 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 #+end_src
 
 * Workspaces (tab-bar.el)
+
+| Keymap      | Command                  |
+|-------------+--------------------------|
+| SPC TAB TAB | Switch workspaces (tabs) |
+| SPC TAB l   | Switch to recent tab     |
+| SPC TAB p   | Previous tab             |
+| SPC TAB n   | Next tab                 |
+| SPC TAB d   | Close tab by name        |
 
 #+begin_src elisp
 (use-package tab-bar
@@ -906,14 +904,10 @@ The default tab-bar name uses the buffer name."
            (tabs (diego/tab--tab-bar-tabs))
            (proj (projectile-project-name))
            )
-      ;; (message "Project: %s " proj)
-      ;; (message "member?: %s " (member proj tabs))
       (if (member proj tabs)
           (progn
-            ;; (message ">> switching to existing project")
             (tab-switch proj))
         (progn
-          ;; (message ">> new tab %s" proj)
           (tab-new)
           (tab-rename proj)))))
 
@@ -923,34 +917,15 @@ The default tab-bar name uses the buffer name."
            (tabs (diego/tab--tab-bar-tabs))
            (proj (projectile-project-name))
            )
-      ;; (message "Project: %s " proj)
-      ;; (message "member?: %s " (member proj tabs))
       (if (member proj tabs)
           (progn
-            ;; (message ">> switching to existing project")
             (tab-switch proj))
         (progn
-          ;; (message ">> new tab %s" proj)
           (tab-new)
           (tab-rename proj)))))
 
   (defun diego/project-name-from-root (project-root)
     (file-name-nondirectory (directory-file-name project-root))))
-
-;; https://emacs.stackexchange.com/a/64486
-;; (push '(
-;;         (lambda (b _a) (buffer-local-value 'buffer-file-name (get-buffer b)))
-;;         .
-;;         (display-buffer-in-tab (tab-name . (lambda (b _a)
-;;                                              (let ((root (vc-git-root (buffer-file-name b))))
-;;                                                (if root
-;;                                                    (diego/project-name-from-root root)
-;;                                                  "*special*")))))
-;;         ) display-buffer-alist)
-
-(defun my/find-vc-root ()
-  "Retuns the repository root as per [vc]."
-  (vc-git-root (buffer-file-name)))
 
 (use-package tab-bar-echo-area
   :config
@@ -1089,6 +1064,7 @@ underscore is often a non-word character like operators, e.g. +.
   ;; (modify-syntax-entry ?/ "w")
   (modify-syntax-entry ?_ "w")
   (modify-syntax-entry ?- "w"))
+;; TODO: @d1egoaz 2021-06-09: disabled as it's conflicting with orderless
 ;;(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
 
@@ -1155,32 +1131,15 @@ Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
   (setq evil-collection-setup-debugger-keys nil)
   :config
   (evil-collection-init '(calendar comint company compile dired docker docview ediff elfeed elisp-mode elisp-refs eshell flycheck flymake go-mode help helpful ibuffer imenu imenu-list magit ocurr popup vterm wgrep which-key xref))
-  (evil-collection-magit-setup)
-  ;; q is enough; ESC is way too easy for a vimmer to accidentally press,
-  ;; especially when traversing modes in magit buffers.
-  ;;(evil-define-key* 'normal magit-status-mode-map [escape] nil)
-  ;; Some extra vim-isms I thought were missing from upstream
-  (evil-define-key* '(normal visual) magit-mode-map
-    "zt" #'evil-scroll-line-to-top
-    "zz" #'evil-scroll-line-to-center
-    "zb" #'evil-scroll-line-to-bottom
-    "gi" #'forge-jump-to-issues
-    "gm" #'forge-jump-to-pullreqs
-    "gr" #'magit-refresh))
-;; A more intuitive behavior for TAB in magit buffers:
-;; (define-key! 'normal
-;;   (magit-status-mode-map
-;;    magit-stash-mode-map
-;;    magit-revision-mode-map
-;;    magit-process-mode-map
-;;    magit-diff-mode-map)
-;;   [tab] #'magit-section-toggle)
-
+  (evil-collection-magit-setup))
 #+end_src
 
 ** goto-chg.el
 
-g; and g,
+| Keymap | Command                  |
+|--------+--------------------------|
+| g;     | goto-last-change         |
+| g,     | goto-last-change-reverse |
 
 #+begin_src elisp
 (use-package goto-chg :after evil)
@@ -1223,8 +1182,12 @@ function(|arg2, arg3)
 
 evil-commentary is an Emacs package for evil-mode that intends to make it easy to comment out (lines of) code:
 
-=gcc= comments out a line (takes a count)
-=gc~ comments out the target of a motion, e.g. ~gcap= to comment out a paragraph (normal state) and gc to comment out the selection (visual state).
+| Keymap | Command                             |
+|--------+-------------------------------------|
+| gcc    | comment out a line                  |
+| gc~    | comments out the target of a motion |
+| gcap   | comment out a paragrah              |
+| gc     | comment out selection               |
 
 #+begin_src elisp
 (use-package evil-commentary
@@ -1238,16 +1201,16 @@ evil-commentary is an Emacs package for evil-mode that intends to make it easy t
 
 Easy text exchange operator for Evil.
 
-gx (evil-exchange)
+On the first use, define (and highlight) the first {motion} to exchange. On the
+second use, define the second {motion} and perform the exchange.
 
-On the first use, define (and highlight) the first {motion} to exchange. On the second use, define the second {motion} and perform the exchange.
+=gx= can also be used from visual mode, which is sometimes easier than coming up with the right {motion}
 
-gX (evil-exchange-cancel)
-
-Notes
-gx (and gX) can also be used from visual mode, which is sometimes easier than coming up with the right {motion}
-If you're using the same motion again (e.g. exchanging two words using gxiw), you can use . (evil-repeat) the second time.
-gxx exchanges lines.
+| Keymap | Command                   |
+|--------+---------------------------|
+| gx     | evil exchange             |
+| .      | repeat motion to exchange |
+| gX     | evil exchange cancel      |
 
 #+begin_src elisp
 (use-package evil-exchange
@@ -1275,15 +1238,13 @@ Customizable key sequence to escape from insert state and everything else in Ema
 
 ** evil-surround.el
 
-Add surrounding
+Add/change surrounding to text objects.
 
-You can surround in visual-state with S<textobject> or gS<textobject>. Or in normal-state with
-ys<textobject> or yS<textobject>.  Change surrounding
-
-You can change a surrounding with cs<old-textobject><new-textobject>.
-Delete surrounding
-
-You can delete a surrounding with ds<textobject>.
+| Keymap         | Command                         |
+|----------------+---------------------------------|
+| S<textobject>  | Add surrounding in region       |
+| ys<textobject> | Add surrounding in normal state |
+| ds<textobject> | Delete surrounding              |
 
 #+begin_src elisp
 (use-package evil-surround
@@ -1371,8 +1332,8 @@ candidates are called backends, modules for displaying them are frontends.
 
 ** Selection and Narrowing
 
-Vertico, Consult, Embark, Marginalia, and Orderless.
 Individual packages that work well together.
+Vertico, Consult, Embark, Marginalia, and Orderless.
 
 I am loving this new combination of tools. Lightweight and fast.
 
@@ -1385,7 +1346,7 @@ I am loving this new combination of tools. Lightweight and fast.
   :config
   (setq vertico-cycle t))
 
-;; Allow reuse of minibuffer histry (like helm/ivy-resume or selectrum-last
+;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
 (use-package uchronia
   :straight (:type git :host github :repo "minad/uchronia")
   :hook (after-init . uchronia-mode))
@@ -1640,11 +1601,13 @@ If t, open the *scratch* buffer.
 * Search And Replace
 ** Ctrlf (Isearch replacement)
 
-C-s search forward.
-C-r search backward (it should be already in Isearch)
-
 Package `ctrlf' provides a replacement for `isearch' that is more similar to the tried-and-true text
 search interfaces in web browsers and other programs (think of what happens when you type ctrl+F).
+
+| Keymap | Command                                           |
+|--------+---------------------------------------------------|
+| C-s    | search forward.                                   |
+| C-r    | search backward (it should be already in Isearch) |
 
 #+begin_src elisp
 (use-package ctrlf
@@ -1722,7 +1685,6 @@ Keybindings: https://github.com/emacs-evil/evil-collection/tree/master/modes/mag
 
 *** magit.el
 
-
 Keys:
 https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-collection-magit.el#L280-L309
 
@@ -1744,6 +1706,11 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
   (transient-append-suffix 'magit-fetch "-p"
     '("-t" "Fetch all tags" ("-t" "--tags"))))
 
+(evil-define-key* '(normal visual) magit-mode-map
+  "zt" #'evil-scroll-line-to-top
+  "zz" #'evil-scroll-line-to-center
+  "zb" #'evil-scroll-line-to-bottom
+  "gr" #'magit-refresh))
 #+end_src
 
 *** transient.el
@@ -1941,6 +1908,21 @@ https://github.com/pope/ob-go
   :straight (ob-go :type git :host github :repo "pope/ob-go"))
 #+end_src
 
+*** Custom bindings
+
+#+begin_src elisp
+(general-define-key
+ :states '(normal visual emacs motion)
+ :prefix ","
+ :non-normal-prefix "M-SPC m"
+ :keymaps 'go-mode-map
+ "a" #'go-tag-add
+ "i" #'go-goto-imports
+ "." #'godoc-at-point
+ "t"   '(:ignore t :which-key "test")
+ "tt" #'diego/go-run-test-current-function)
+#+end_src
+
 ** Markdown
 
 #+begin_src elisp
@@ -1985,7 +1967,6 @@ On the kubel screen, place your cursor on the resource:
 | F        | set output format                      |
 | g        | refresh                                |
 | h        | help popup                             |
-| h        | help popup                             |
 | l        | log popup                              |
 | n        | set namespace                          |
 | o        | describe popup                         |
@@ -1993,7 +1974,7 @@ On the kubel screen, place your cursor on the resource:
 | m        | unmark item                            |
 | u        | unmark item                            |
 | M        | mark all                               |
-| U        | mark all                               |
+| U        | Unmark all                             |
 | R        | set resource                           |
 | M-n, M-p | next/previous highlight                |
 |----------+----------------------------------------|
@@ -2009,6 +1990,9 @@ On the kubel screen, place your cursor on the resource:
 #+end_src
 
 ** hideshow.el
+
+Hideshow mode is a buffer-local minor mode that allows you to selectively
+display portions of a program, which are referred to as blocks.
 
 ;;   hs-hide-block                      C-c @ C-h
 ;;   hs-show-block                      C-c @ C-s
@@ -2042,43 +2026,6 @@ On the kubel screen, place your cursor on the resource:
                  ruby-forward-sexp nil)))
 #+end_src
 
-** Tab binding
-
-Hideshow mode is a buffer-local minor mode that allows you to selectively display portions of a program, which are referred to as blocks
-
-#+begin_src elisp
-;; copy pasted from https://lists.gnu.org/archive/html/emacs-devel/2011-04/msg00562.html
-
-;; called once on a line that contains a hidden block, shows the
-;; block; otherwise calls the default action of TAB; called twice on a
-;; line that does not contain a hidden block, hide the block from the
-;; current position of the cursor
-(defun diego/tab-hs-hide ( &optional arg )
-  (interactive "P")
-  (let ((sl (save-excursion (move-beginning-of-line nil) (point) ) )
-        (el (save-excursion (move-end-of-line nil) (point) ) )
-        obj)
-    (catch 'stop
-      (dotimes (i (- el sl))
-        (mapc
-         (lambda (overlay)
-           (when (eq 'hs (overlay-get overlay 'invisible))
-             (setq obj t)))
-         (overlays-at (+ i sl)))
-        (and obj (throw 'stop 'stop) ) ) )
-    (cond ((and (null obj)
-                (eq last-command this-command) )
-           (hs-hide-block) )
-          (obj
-           (progn
-             (move-beginning-of-line nil)
-             (hs-show-block) ) )
-          (t
-           (save-excursion
-             (funcall (lookup-key (current-global-map) (kbd "^I") ) arg ) ) ) )
-    ) )
-#+end_src
-
 *** Enabling it in some modes
 
 #+begin_src elisp
@@ -2086,6 +2033,12 @@ Hideshow mode is a buffer-local minor mode that allows you to selectively displa
 #+end_src
 
 ** Compilation mode
+
+*** Ignore duplicates
+
+#+begin_src elisp
+(setq comint-input-ignoredups t)
+#+end_src
 
 *** Scroll compilation output to first error
 
@@ -2797,14 +2750,6 @@ functions for the evil states.
  "ds" #'org-schedule
  "dt" #'org-time-stamp)
 
-(general-define-key
- :states '(normal visual emacs motion)
- :prefix ","
- :non-normal-prefix "M-SPC m"
- :keymaps 'go-mode-map
- "a" #'go-tag-add
- "i" #'go-goto-imports
- "." #'godoc-at-point)
 
 (general-define-key :keymaps 'company-active-map
                     "TAB"    #'company-complete-selection
@@ -3101,16 +3046,16 @@ vterm buffer."
 
 Some parts of my configuration were copied and inspired from:
 
-- [[https://github.com/syl20bnr/spacemacs/][Spacemacs]] (This is where my Emacs journey began)
-- [[https://github.com/hlissner/doom-emacs/][Doom Emacs]] (Where my Emacs skill improved)
-- [[https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-emacs.org][Protesilaos Stavrou]] (Where I learned to appreciate vanilla Emacs)
+- [[https://github.com/syl20bnr/spacemacs/][Spacemacs]]
+- [[https://github.com/hlissner/doom-emacs/][Doom Emacs]]
+- [[https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-emacs.org][Protesilaos Stavrou]]
 - [[https://github.com/noctuid/evil-guide][Emacs/Evil for Vim Users]]
 - [[https://github.com/raxod502/radian/blob/develop/emacs/radian.el][Radian]]
 - [[https://github.com/daviwil/emacs-from-scratch/blob/master/init.el][Systems Crafters - Emacs From Scratch]]
-- [[https://emacs.nasy.moe/][Nasy]]
 - [[https://config.daviwil.com/emacs][Daviwil]]
+- [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [4/7]
+* Pending tasks [4/9]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
@@ -3129,4 +3074,14 @@ Some parts of my configuration were copied and inspired from:
 ** TODO Make elfeed entry buffer show below elfeed search
 :LOGBOOK:
 - State "TODO"       from              [2021-05-28 Fri 16:50]
+:END:
+** TODO Enable multiple cursors
+:LOGBOOK:
+- State "TODO"       from              [2021-06-09 Wed 12:56]
+:END:
+evil-mc, multiple-cursors
+https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Bmisc/multiple-cursors/packages.el
+** TODO Use use-package :bind
+:LOGBOOK:
+- State "TODO"       from              [2021-06-09 Wed 12:56]
 :END:
