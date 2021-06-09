@@ -1795,7 +1795,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
   "zt" #'evil-scroll-line-to-top
   "zz" #'evil-scroll-line-to-center
   "zb" #'evil-scroll-line-to-bottom
-  "gr" #'magit-refresh))
+  "gr" #'magit-refresh)
 #+end_src
 
 *** transient.el
