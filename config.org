@@ -486,16 +486,16 @@ Command/Super plus =/- for zooming in/out.
 #+begin_src elisp
 (use-package modus-themes
   :init
-
-  (setq modus-themes-completions 'moderate) ; {nil,'moderate,'opinionated}
+  (setq modus-themes-completions 'opinionated) ; {nil,'moderate,'opinionated}
   (setq modus-themes-fringes 'subtle) ; {nil,'subtle,'intense}
   (setq modus-themes-headings '((1 . section) (2 . rainbow-line) (t . no-bold))) ; Lots of options---continue reading the manual
   (setq modus-themes-hl-line 'underline-accented)
-  ;; (setq modus-themes-mode-line '3d)
+  (setq modus-themes-links 'faint)
+  (setq modus-themes-mode-line 'accented-3d)
   (setq modus-themes-org-blocks 'gray-background)
-  (setq modus-themes-paren-match 'intense-bold) ; {nil,'subtle-bold,'intense,'intense-bold}
+  (setq modus-themes-paren-match 'intense-bold)
   (setq modus-themes-prompts 'intense-accented)
-  (setq modus-themes-region 'bg-only) ; {nil,'no-extend,'bg-only,'bg-only-no-extend}
+  (setq modus-themes-region 'accent)
   (setq modus-themes-scale-1 1.1)
   (setq modus-themes-scale-2 1.15)
   (setq modus-themes-scale-3 1.21)
