@@ -1885,20 +1885,22 @@ https://github.com/emacs-lsp/lsp-treemacs
 #+begin_src elisp
 (use-package lsp-mode
   :after go-mode
-  :commands lsp
+  :commands lsp-deferred
+  :hook (go-mode .  lsp-deferred)
   :bind (:map lsp-mode-map
               ("TAB" . #'completion-at-point))
   :config
   (lsp-enable-which-key-integration t)
-  (setq lsp-go-goimports-local "github.com/Shopify/")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
+
+  (setq lsp-go-goimports-local "github.com/Shopify/")
   ;; Project errors on modeline
   (setq lsp-modeline-diagnostics-enable t)
   (setq lsp-modeline-diagnostics-scope :workspace)
+
   ;; For a UI feedback on headerline of the document
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
 
-  (add-hook 'go-mode-hook #'lsp)
   (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
   (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references))
 
@@ -2207,8 +2209,11 @@ A simpler version of Smartparens.
 (use-package flyspell
   :after org
   :config
-  (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
   (add-hook 'text-mode-hook 'flyspell-mode))
+
+(use-package flyspell-correct
+  :after flyspell)
 #+end_src
 
 ** Define word
