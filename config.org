@@ -1079,11 +1079,18 @@ underscore is often a non-word character like operators, e.g. +.
 
 #+begin_src elisp
 (defun diego--treat-chars-as-word-char ()
+  ;; TODO: @d1egoaz 2021-06-09: disabled as it's conflicting with orderless
   ;; (modify-syntax-entry ?/ "w")
-  (modify-syntax-entry ?_ "w")
-  (modify-syntax-entry ?- "w"))
-;; TODO: @d1egoaz 2021-06-09: disabled as it's conflicting with orderless
-;;(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
+  ;; (modify-syntax-entry ?_ "w")
+  ;; (modify-syntax-entry ?- "w")
+  ;; modify it in some specific modes
+  (modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
+  (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
+  (modify-syntax-entry ?/ "w" emacs-lisp-mode-syntax-table)
+  (modify-syntax-entry ?_ "w" org-mode-syntax-table)
+  (modify-syntax-entry ?- "w" org-mode-syntax-table)
+  (modify-syntax-entry ?/ "w" org-mode-syntax-table))
+(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
 
 ** Whitespace cleanup on buffer save
