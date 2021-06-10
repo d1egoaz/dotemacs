@@ -1736,9 +1736,15 @@ changes to all affected buffers.
 To save all buffers that wgrep has changed, run M-x wgrep-save-all-buffers
 I then press C-c C-c (wgrep-finish-edit).
 
+    consult-line -> embark-export to occur-mode buffer -> occur-edit-mode for editing of matches in buffer.
+    consult-grep -> embark-export to grep-mode buffer -> wgrep for editing of all matches.
+
 #+begin_src elisp
 (use-package wgrep
-  :config (setq wgrep-auto-save-buffer t))
+  :after embark
+  :config
+  (setq wgrep-auto-save-buffer t)
+  (add-hook 'embark-after-export-hook #'wgrep-change-to-wgrep-mode))
 #+end_src
 
 ** Visual regex
