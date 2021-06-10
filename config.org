@@ -1457,8 +1457,8 @@ M-w copy
 
   (setq consult-narrow-key ">")
   (setq consult-widen-key "<")
-  (setq consult-async-input-debounce 0.2)
-  (setq consult-async-input-throttle 0.5)
+  (setq consult-async-input-debounce 0.5)
+  (setq consult-async-input-throttle 0.8)
   (setq consult-async-refresh-delay 0.4)
   (setq consult-async-min-input 1)
 
