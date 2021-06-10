@@ -725,8 +725,8 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
   "Clicking a link from the *Help* buffer opens source code in the same window."
   (message "b:%s" b)
   (print a)
-  nil
-  )
+  nil)
+
 (defun diego--display-buffer-from-help-p (b _a)
   "Clicking a link from the *Help* buffer opens source code in the same window."
   (unless current-prefix-arg
@@ -737,7 +737,6 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
 
 (setq display-buffer-alist
       `(
-        (diego--debug-buffer-alist)
         ;; top side window
         ("\\*world-clock\\*"
          (display-buffer-in-side-window)
