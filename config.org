@@ -1249,15 +1249,14 @@ Customizable key sequence to escape from insert state and everything else in Ema
 
 #+begin_src elisp
 (use-package evil-escape
+  :straight (:type git :host github :repo "hlissner/evil-escape")
   :after evil
   :commands evil-escape
-  :init
-  (setq evil-escape-excluded-states '(normal visual multiedit emacs motion))
-  (setq evil-escape-delay 0.15)
-  (setq-default evil-escape-key-sequence "jk")
-  (evil-define-key* '(insert replace visual operator) 'global "\C-g" #'evil-escape)
+  :hook (after-init . evil-escape-mode)
   :config
-  (evil-escape-mode 1))
+  (setq evil-escape-excluded-states '(normal visual multiedit emacs motion))
+  (setq evil-escape-delay 0.2)
+  (setq-default evil-escape-key-sequence "jk"))
 #+end_src
 
 ** evil-surround.el
