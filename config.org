@@ -760,7 +760,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (slot . 2)
          (window-parameters . ((no-other-window . t))))
         ;; bottom side window
-        ("\\*\\(Embark\\)?.*Completions.*$"
+        ("\\*\\(Embark\\)?.*Completions.*"
          (display-buffer-in-side-window)
          (side . bottom)
          (slot . 0)
