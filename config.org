@@ -1589,7 +1589,6 @@ Use the `orderless' completion style.
 (use-package orderless
   :init
   (setq completion-styles '(orderless))
-  (setq completion-pcm-word-delimiters "-_./:| ")
   (setq completion-category-defaults nil)
   ;; Enable `partial-completion' for files to allow path expansion.
   (setq completion-category-overrides '((file (styles . (partial-completion)))))
