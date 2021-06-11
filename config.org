@@ -309,9 +309,17 @@ A common use-package declaration looks like this:
    ;; Configure other variables and modes in the :config section,
    ;; after lazily loading the package.
     :config
-   ;; key bindings for this package>
+    ;; configure hooks
+    :hook
+     ;; key bindings for this package>
     :bind)
 #+end_example
+
+
+#+begin_src elisp
+(setq use-package-hook-name-suffix nil)
+#+end_src
+
 
 ** Keep .emacs.d clean (no-littering.el)
 
@@ -876,8 +884,8 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 
 #+begin_src elisp
 (use-package winner
-  :config
-  (add-hook 'after-init-hook #'winner-mode))
+  :hook
+  (after-init-hook . winner-mode))
 #+end_src
 
 * Workspaces (tab-bar.el)
@@ -893,6 +901,10 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 #+begin_src elisp
 (use-package tab-bar
   :after projectile
+  :general
+  (general-nmap
+    "gt"  #'tab-next
+    "gT"  #'tab-recent)
   :config
   (defun diego/name-tab-by-project-or-default ()
     "Return project name if in a project, or default tab-bar name if not.
@@ -1134,6 +1146,9 @@ https://github.com/noctuid/evil-guide
   (setq evil-want-C-u-delete t) ; when insert mode
   (setq evil-undo-system 'undo-redo) ; default to natively Emacs 28
   :config
+  ;; set up some basic equivalents for vim mapping functions. This creates
+  ;; global key definition functions for the evil states.
+  (general-evil-setup t) ; https://github.com/noctuid/general.el#vim-like-definers
   (evil-mode 1))
 #+end_src
 
@@ -1312,8 +1327,11 @@ Add/change surrounding to text objects.
   (global-set-key [remap evil-jump-forward]  #'better-jumper-jump-forward)
   (global-set-key [remap evil-jump-backward] #'better-jumper-jump-backward)
   (global-set-key [remap xref-pop-marker-stack] #'better-jumper-jump-backward)
+  :general
+  (general-nvmap
+    "C-o" #'better-jumper-jump-backward
+    "C-i" #'better-jumper-jump-forward)
   :config
-
   (defun evil-better-jumper/set-jump-a (orig-fn &rest args)
     "Set a jump point and ensure ORIG-FN doesn't set any new jump points."
     (better-jumper-set-jump (if (markerp (car args)) (car args)))
@@ -1323,7 +1341,6 @@ Add/change surrounding to text objects.
 
   ;; Create a jump point before jumping with imenu.
   (advice-add #'imenu :around #'evil-better-jumper/set-jump-a)
-
   (better-jumper-mode 1))
 #+end_src
 
@@ -1384,7 +1401,10 @@ candidates are called backends, modules for displaying them are frontends.
   ;; above the cursor if necessary.
   (setq company-tooltip-limit 20)
   (setq company-tooltip-minimum company-tooltip-limit)
-  (global-company-mode 1))
+  (global-company-mode 1)
+  :bind (:map company-active-map
+              ("TAB"   . #'company-complete-selection)
+              ("<tab>" . #'company-complete-selection)))
 #+end_src
 
 ** Selection and Narrowing
@@ -1406,7 +1426,8 @@ I am loving this new combination of tools. Lightweight and fast.
 ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
 (use-package uchronia
   :straight (:type git :host github :repo "minad/uchronia")
-  :hook (after-init . uchronia-mode))
+  :hook
+  (after-init-hook . uchronia-mode))
 #+end_src
 
 #+begin_src elisp
@@ -1423,12 +1444,13 @@ I am loving this new combination of tools. Lightweight and fast.
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
-  (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t)
+  :hook
+  (minibuffer-setup-hook . cursor-intangible-mode))
 #+end_src
 
 *** consult.el
@@ -1489,8 +1511,8 @@ M-w copy
 ;; https://github.com/gagbo/consult-lsp
 (use-package consult-lsp
   :after (consult lsp-mode)
-  :config
-  (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
+  :bind
+  (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
 (use-package consult-flycheck
   :after (consult flycheck))
@@ -1503,11 +1525,6 @@ https://github.com/oantolin/embark/wiki/Default-Actions
 
 #+begin_src elisp
 (use-package embark
-  :bind
-  (("M-a"                     . #'embark-act)       ;; pick some comfortable binding
-   ("C-h B"                   . #'embark-bindings)
-   ([remap describe-bindings] . #'embark-bindings)) ;; alternative for `describe-bindings'
-
   :init
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
@@ -1524,7 +1541,12 @@ https://github.com/oantolin/embark/wiki/Default-Actions
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
-                 (window-parameters (mode-line-format . none)))))
+                 (window-parameters (mode-line-format . none))))
+  :bind
+  (("M-a"                     . #'embark-act)
+   ("C-h B"                   . #'embark-bindings)
+   ;; alternative for `describe-bindings'
+   ([remap describe-bindings] . #'embark-bindings)))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -1533,7 +1555,7 @@ https://github.com/oantolin/embark/wiki/Default-Actions
   ;; if you want to have consult previews as you move around an
   ;; auto-updating embark collect buffer
   :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (with-eval-after-load 'embark
   (with-eval-after-load 'marginalia
@@ -1735,15 +1757,16 @@ changes to all affected buffers.
 To save all buffers that wgrep has changed, run M-x wgrep-save-all-buffers
 I then press C-c C-c (wgrep-finish-edit).
 
-    consult-line -> embark-export to occur-mode buffer -> occur-edit-mode for editing of matches in buffer.
-    consult-grep -> embark-export to grep-mode buffer -> wgrep for editing of all matches.
+consult-line -> embark-export to occur-mode buffer -> occur-edit-mode for editing of matches in buffer.
+consult-grep -> embark-export to grep-mode buffer -> wgrep for editing of all matches.
 
 #+begin_src elisp
 (use-package wgrep
   :after embark
   :config
   (setq wgrep-auto-save-buffer t)
-  (add-hook 'embark-after-export-hook #'wgrep-change-to-wgrep-mode))
+  :hook
+  (embark-after-export-hook . wgrep-change-to-wgrep-mode))
 #+end_src
 
 ** Visual regex
@@ -1779,6 +1802,12 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
 #+begin_src elisp
 (use-package magit
   :after transient
+  :general
+  (general-nvmap :keymaps 'magit-mode-map
+    "zt" #'evil-scroll-line-to-top
+    "zz" #'evil-scroll-line-to-center
+    "zb" #'evil-scroll-line-to-bottom
+    "gr" #'magit-refresh)
   :config
   (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
   (setq magit-save-repository-buffers nil) ; Don't autosave repo buffers
@@ -1793,12 +1822,6 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
 
   (transient-append-suffix 'magit-fetch "-p"
     '("-t" "Fetch all tags" ("-t" "--tags"))))
-
-(evil-define-key* '(normal visual) magit-mode-map
-  "zt" #'evil-scroll-line-to-top
-  "zz" #'evil-scroll-line-to-center
-  "zb" #'evil-scroll-line-to-bottom
-  "gr" #'magit-refresh)
 #+end_src
 
 *** transient.el
@@ -1895,7 +1918,6 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
   :after lsp-mode
   :config
   (setq lsp-treemacs-detailed-outline nil))
-;; (add-hook 'go-mode-hook #'lsp-treemacs-symbols))
 
 (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
@@ -1921,9 +1943,6 @@ https://github.com/emacs-lsp/lsp-treemacs
 (use-package lsp-mode
   :after go-mode
   :commands lsp-deferred
-  :hook (go-mode .  lsp-deferred)
-  :bind (:map lsp-mode-map
-              ("TAB" . #'completion-at-point))
   :config
   (lsp-enable-which-key-integration t)
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
@@ -1937,7 +1956,11 @@ https://github.com/emacs-lsp/lsp-treemacs
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
 
   (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
-  (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references))
+  (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
+  :hook
+  (go-mode-hook . lsp-deferred)
+  :bind (:map lsp-mode-map
+              ("TAB" . #'completion-at-point)))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -1960,7 +1983,12 @@ https://github.com/emacs-lsp/lsp-treemacs
   (setq lsp-ui-imenu-enable t)
   (setq lsp-ui-imenu-auto-refresh t)
 
-  (add-hook 'lsp-mode-hook #'lsp-ui-mode))
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+  :hook ((lsp-mode-hook . lsp-ui-mode)
+         (go-mode-hook . lsp-go-install-save-hooks)))
 #+end_src
 
 ** Go
@@ -1977,16 +2005,6 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
   :config
   (setq godef-command "go doc") ; original godef
   (setq gofmt-command "goimports")) ; original gofmt
-#+end_src
-
-*** Go LSP
-
-#+begin_src elisp
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 #+end_src
 
 *** ob-go.el
@@ -2115,13 +2133,9 @@ display portions of a program, which are referred to as blocks.
                  ,(rx (or "def" "class" "module" "{" "[")) ; Block start
                  ,(rx (or "}" "]" "end"))                  ; Block end
                  ,(rx (or "#" "=begin"))                   ; Comment start
-                 ruby-forward-sexp nil)))
-#+end_src
-
-*** Enabling it in some modes
-
-#+begin_src elisp
-(add-hook 'go-mode-hook #'hs-minor-mode)
+                 ruby-forward-sexp nil))
+  :hook
+  (go-mode-hook . hs-minor-mode))
 #+end_src
 
 ** Compilation mode
@@ -2156,14 +2170,13 @@ use vterm and won't have any issues.
 
 #+begin_src elisp
 (use-package restclient
-  :mode
-  ("\\.http\\'" . restclient-mode)
-  :general
-  (:keymaps 'restclient-mode-map
-            :prefix ","
-            "e"  #'restclient-http-send-current
-            "E"  #'restclient-http-send-current-raw
-            "c"  #'restclient-copy-curl-command))
+  :mode ("\\.http\\'" . restclient-mode)
+  :general (general-nvmap
+             :keymaps 'restclient-mode-map
+             :prefix ","
+             "e"  #'restclient-http-send-current
+             "E"  #'restclient-http-send-current-raw
+             "c"  #'restclient-copy-curl-command))
 #+end_src
 * Productivity
 ** Syntax checking (flycheck.el)
@@ -2243,9 +2256,8 @@ A simpler version of Smartparens.
 #+begin_src elisp
 (use-package flyspell
   :after org
-  :config
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode))
+  :hook ((prog-mode-hook . flyspell-prog-mode)
+         (text-mode-hook . flyspell-mode)))
 
 (use-package flyspell-correct
   :after flyspell)
@@ -2295,6 +2307,39 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 
 #+begin_src elisp
 (use-package org
+  :general
+  ;; I prefer C-c C-c over C-c ' (more consistent)
+  (:keymaps 'org-src-mode-map
+            "C-c C-c" #'org-edit-src-exit)
+  (:keymaps 'org-mode-map
+            "C-j"  #'org-move-subtree-down
+            "C-k"  #'org-move-subtree-up)
+  ;; local leader
+  (general-define-key
+   :states '(normal visual emacs motion)
+   :prefix ","
+   :non-normal-prefix "M-SPC m"
+   :keymaps 'org-mode-map
+   "'" #'org-edit-special
+   "e" #'org-export-dispatch
+   "h" #'org-toggle-heading
+   "i" #'org-toggle-item
+   "q" #'org-set-tags-command
+   "t" #'org-todo
+   "x" #'org-toggle-checkbox
+   "a"   '(:ignore t :which-key "attachments")
+   "aa" #'org-attach
+   "ar" #'org-attach-reveal
+   "au" #'org-attach-url
+   "ac" #'org-download-screenshot
+   "l"   '(:ignore t :which-key "link")
+   "li" #'org-id-store-link
+   "ll" 'org-insert-link
+   "ls" 'org-store-link
+   "d"   '(:ignore t :which-key "date/deadline")
+   "dd" #'org-deadline
+   "ds" #'org-schedule
+   "dt" #'org-time-stamp)
   :init
   (setq org-directory "~/gdrive/deft")
   (setq org-agenda-files (list "~/gdrive/deft/journal.org" "~/gdrive/deft/gtd-inbox.org" "~/gdrive/deft/gtd-personal.org" "~/gdrive/deft/gtd-work.org" ))
@@ -2369,15 +2414,15 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
 
 #+begin_src elisp
 (use-package evil-org
-  :after org
+  :after (evil org)
   :straight (:host github :repo "hlissner/evil-org-mode")
   :config
-                                        ;(add-hook 'evil-org-mode-hook #'evil-normalize-keymaps)
-  (add-hook 'org-mode-hook #'evil-org-mode)
-  (add-hook 'evil-org-mode-hook
-            (lambda ()
-              (evil-org-set-key-theme)))
-  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading))); enable all bindings
+  ;; enable all bindings
+  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading))
+  (defun diego--org-set-key-theme ()
+    (evil-org-set-key-theme))
+  :hook ((org-mode-hook . evil-org-mode)
+         (evil-org-mode-hook . diego--org-set-key-theme)))
 #+end_src
 
 ** Make org-capture start in insert mode
@@ -2416,11 +2461,10 @@ The table of contents heading may also be set with these tags:
   #+begin_src elisp
   (use-package toc-org
     :after (org markdown-mode)
-    :commands toc-org-enable
     :config
     (setq toc-org-max-depth 2)
-    (add-hook 'org-mode-hook #'toc-org-mode)
-    (add-hook 'markdown-mode-hook #'toc-org-mode))
+    :hook ((org-mode-hook . toc-org-mode)
+           (markdown-mode-hook . toc-org-mode)))
   #+end_src
 
 ** iMenu org depth
@@ -2442,7 +2486,10 @@ Increase the maximum level for Imenu access to Org headlines.
          ([remap describe-function] . #'helpful-callable)
          ([remap describe-variable] . #'helpful-variable)
          ([remap describe-symbol]   . #'helpful-symbol)
-         ([remap describe-key]      . #'helpful-key)))
+         ([remap describe-key]      . #'helpful-key))
+  :general
+  (general-nmap :keymaps 'helpful-mode-map
+    "q" #'kill-buffer-and-window))
 #+end_src
 
 Always select the help window (t).
@@ -2466,6 +2513,9 @@ Tz zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
 
 #+begin_src elisp
 (use-package time
+  :general
+  (:keymaps 'world-clock-mode-map
+            "q" #'kill-buffer-and-window)
   :config
   (setq zoneinfo-style-world-list '(("etc/UTC" "UTC")
                                     ("US/Pacific" "PT")
@@ -2474,8 +2524,8 @@ Tz zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
                                     ("America/Toronto" "Toronto")))
   (setq world-clock-time-format "%A %d %B %R (%Z %z) %FT%T%z")
   (setq world-clock-buffer-name "*world-clock*") ; Placement handled by `display-buffer-alist'
-  (general-define-key :states 'normal :keymaps 'world-clock-mode-map "q" #'kill-buffer-and-window)
-  (add-hook 'after-init-hook #'display-time-mode))
+  :hook
+  (after-init-hook . display-time-mode))
 #+end_src
 
 ** olivetti.el
@@ -2505,6 +2555,12 @@ The best RSS reader.
 #+begin_src elisp
 (use-package elfeed
   :after olivetti
+  :general
+  (general-nmap :keymaps 'elfeed-search-mode-map
+    "c" #'elfeed-search-clear-filter
+    "s" #'elfeed-search-live-filter
+    "r" #'elfeed-search-untag-all-unread
+    "," #'diego/elfeed-filter)
   :commands elfeed
   :config
   (setq elfeed-search-date-format '("%a %b-%d" 10 :left))
@@ -2536,13 +2592,8 @@ The best RSS reader.
       ("f" "apply" diego/elfeed-filter-do)
       ("u" "update" elfeed-update)]])
 
-  (general-define-key :states 'normal :keymaps 'elfeed-search-mode-map
-                      "c" #'elfeed-search-clear-filter
-                      "s" #'elfeed-search-live-filter
-                      "r" #'elfeed-search-untag-all-unread
-                      "," #'diego/elfeed-filter)
-  (add-hook 'elfeed-search-mode-hook #'diego/olivetti-mode)
-  (add-hook 'elfeed-show-mode-hook #'diego/olivetti-mode))
+  :hook ((elfeed-search-mode-hook . diego/olivetti-mode)
+         (elfeed-show-mode-hook . diego/olivetti-mode)))
 
 (use-package elfeed-org
   :after elfeed
@@ -2577,14 +2628,7 @@ Once you’ve finished and want to insert the text into the window you triggered
 
 [[https://github.com/noctuid/general.el][general.el]] allows us to set keybindings.
 
-=general-evil-setup= to set up some basic equivalents for vim mapping functions. This creates global key definition
-functions for the evil states.
-
 =general.el= is installed in early-init.el.*
-
-#+begin_src elisp
-(general-evil-setup t) ; https://github.com/noctuid/general.el#vim-like-definers
-#+end_src
 
 ** Bindings
 
@@ -2593,10 +2637,6 @@ functions for the evil states.
 
 ;; repeat last macro with Q
 (define-key evil-normal-state-map "Q" (kbd "@@"))
-
-;; move between tabs (workspaces)
-(define-key evil-normal-state-map (kbd "gt") #'tab-next)
-(define-key evil-normal-state-map (kbd "gT") #'tab-recent)
 
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
@@ -2608,274 +2648,226 @@ functions for the evil states.
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "" nil ; to fix evil in some buffers, like *Messages*
- "SPC" #'(execute-extended-command :which-key "M-x")
- ;; "'"   #'(selectrum-repeat :which-key "Resume last search")
- "'"   #'(uchronia-repeat :which-key "Resume last search")
- "\""   #'(uchronia-select :which-key "Select last search")
- ">"   #'(er/expand-region :which-key "Expand region")
- "u"   #'(universal-argument-more :which-key "Universal argument")
- "x"  #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
+ "SPC"     #'(execute-extended-command :which-key "M-x")
+ "'"       #'(uchronia-repeat :which-key "Resume last search")
+ "\""      #'(uchronia-select :which-key "Select last search")
+ ">"       #'(er/expand-region :which-key "Expand region")
+ "u"       #'(universal-argument-more :which-key "Universal argument")
+ "x"       #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
  ;; Tabs
- "TAB"   '(:ignore t :which-key "workspaces")
- "TAB TAB"  #'(tab-switch :which-key "Switch workspace")
- "TAB d"  #'(tab-bar-close-tab-by-name :which-key "Close workspace")
- "TAB p"  #'(tab-previous :which-key "Previous workspace")
- "TAB n"  #'(tab-next :which-key "Next workspace")
- "TAB l"  #'(tab-recent :which-key "Recent workspace")
- ;; "TAB TAB"  #'(persp-switch :which-key "Switch workspace")
- ;; "TAB d"  #'(persp-kill :which-key "Close workspace")
- ;; "TAB p"  #'(persp-prev :which-key "Previous workspace")
- ;; "TAB n"  #'(persp-next :which-key "Next workspace")
+ "TAB"     '(:ignore t :which-key "workspaces")
+ "TAB TAB" #'(tab-switch :which-key "Switch workspace")
+ "TAB d"   #'(tab-bar-close-tab-by-name :which-key "Close workspace")
+ "TAB p"   #'(tab-previous :which-key "Previous workspace")
+ "TAB n"   #'(tab-next :which-key "Next workspace")
+ "TAB l"   #'(tab-recent :which-key "Recent workspace")
  ;; Apps
- "a"   '(:ignore t :which-key "apps")
- "ac"  #'(world-clock :which-key "World clock")
- "ad"  #'(dired-jump :which-key "Dired current dir")
- "ae"  #'(elfeed :which-key "Elfeed - RSS")
- "ak"  #'(kubel :which-key "Kubel")
- "ap"  #'(list-processes :which-key "List process")
- "aP"  #'(list-processes :which-key "Kill process")
- "at"  #'((lambda () (interactive) (treemacs-select-window)(treemacs-display-current-project-exclusively)) :which-key "Treemacs project")
- "aT"  #'(treemacs :which-key "Toggle Treemacs")
- "av"  #'vterm
+ "a"       '(:ignore t :which-key "apps")
+ "ac"      #'(world-clock :which-key "World clock")
+ "ad"      #'(dired-jump :which-key "Dired current dir")
+ "ae"      #'(elfeed :which-key "Elfeed - RSS")
+ "ak"      #'(kubel :which-key "Kubel")
+ "ap"      #'(list-processes :which-key "List process")
+ "aP"      #'(list-processes :which-key "Kill process")
+ "at"      #'((lambda () (interactive) (treemacs-select-window)(treemacs-display-current-project-exclusively)) :which-key "Treemacs project")
+ "aT"      #'(treemacs :which-key "Toggle Treemacs")
+ "av"      #'vterm
  ;; Buffers
- "b"   '(:ignore t :which-key "buffers")
- "bb"  #'(consult-buffer :which-key "Switch buffer")
- "bB"  #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
- "bc"  #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
- "bC"  #'((lambda () (interactive) (switch-to-buffer "*compilation*")) :which-key "Compilation buffer")
- "bd"  #'(kill-current-buffer :which-key "Kill current buffer")
- "be"  #'(diego/safe-erase-buffer :which-key "Erase buffer")
- "bE"  #'(view-echo-area-messages :which-key "Echo area buffer")
- "bf"  #'(format-all-buffer :which-key "Format buffer")
- "bi"  #'(diego/indent-buffer :which-key "Indent buffer")
- "bK"  #'(kill-buffer :which-key "Kill buffer")
- "bl"  #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
- "bm"  '(:ignore t :which-key "move buffer")
- "bmk" #'(buf-move-up :which-key "Move up")
- "bmj" #'(buf-move-down :which-key "Move down")
- "bmh" #'(buf-move-left :which-key "Move left")
- "bml" #'(buf-move-right :which-key "Move right")
- "bM"  #'view-echo-area-messages
- "bn"  #'(next-buffer :which-key "Next buffer")
- "bp"  #'(previous-buffer :which-key "Previous buffer")
- "bs"  #'(basic-save-buffer :which-key "Save buffer")
- "bS"  #'(evil-write-all :which-key "Save all buffers")
- "by"  #'(diego/copy-buffer-name :which-key "Yank buffer name")
- "bY"  #'(diego/copy-whole-buffer-to-clipboard :which-key "Copy buffer to clipboard")
+ "b"       '(:ignore t :which-key "buffers")
+ "bb"      #'(consult-buffer :which-key "Switch buffer")
+ "bB"      #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+ "bc"      #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+ "bC"      #'((lambda () (interactive) (switch-to-buffer "*compilation*")) :which-key "Compilation buffer")
+ "bd"      #'(kill-current-buffer :which-key "Kill current buffer")
+ "be"      #'(diego/safe-erase-buffer :which-key "Erase buffer")
+ "bE"      #'(view-echo-area-messages :which-key "Echo area buffer")
+ "bf"      #'(format-all-buffer :which-key "Format buffer")
+ "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
+ "bK"      #'(kill-buffer :which-key "Kill buffer")
+ "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
+ "bm"      '(:ignore t :which-key "move buffer")
+ "bmk"     #'(buf-move-up :which-key "Move up")
+ "bmj"     #'(buf-move-down :which-key "Move down")
+ "bmh"     #'(buf-move-left :which-key "Move left")
+ "bml"     #'(buf-move-right :which-key "Move right")
+ "bM"      #'view-echo-area-messages
+ "bn"      #'(next-buffer :which-key "Next buffer")
+ "bp"      #'(previous-buffer :which-key "Previous buffer")
+ "bs"      #'(basic-save-buffer :which-key "Save buffer")
+ "bS"      #'(evil-write-all :which-key "Save all buffers")
+ "by"      #'(diego/copy-buffer-name :which-key "Yank buffer name")
+ "bY"      #'(diego/copy-whole-buffer-to-clipboard :which-key "Copy buffer to clipboard")
  ;; Compile
- "c"   '(:ignore t :which-key "compile")
- "cc"  #'recompile
- "cC"  #'diego/project-compile
- "cd"   '(:ignore t :which-key "dev")
- "cdd"  #'diego/dev
- "cdr"  #'diego/dev-run
+ "c"       '(:ignore t :which-key "compile")
+ "cc"      #'recompile
+ "cC"      #'diego/project-compile
+ "cd"      '(:ignore t :which-key "dev")
+ "cdd"     #'diego/dev
+ "cdr"     #'diego/dev-run
  ;; Evaluate elisp expressions
- "e"   '(:ignore t :which-key "eval/error")
- "eb"  #'(eval-buffer :which-key "Eval elisp in buffer")
- "ed"  #'(eval-defun :which-key "Eval defun")
- "ee"  #'(eval-expression  :which-key "Eval elisp expression")
- "el"  #'(eval-last-sexp :which-key "Eval last sexression")
- "er"  #'(eval-region :which-key "Eval region")
- "en"  #'(next-error :which-key "Next error")
- "ep"  #'(previous-error :which-key "Previous error")
+ "e"       '(:ignore t :which-key "eval/error")
+ "eb"      #'(eval-buffer :which-key "Eval elisp in buffer")
+ "ed"      #'(eval-defun :which-key "Eval defun")
+ "ee"      #'(eval-expression  :which-key "Eval elisp expression")
+ "el"      #'(eval-last-sexp :which-key "Eval last sexression")
+ "er"      #'(eval-region :which-key "Eval region")
+ "en"      #'(next-error :which-key "Next error")
+ "ep"      #'(previous-error :which-key "Previous error")
  ;; Files
- "f"   '(:ignore t :which-key "files")
- "fC"  #'(copy-file :which-key "Copy file")
- "fD"  #'(delete-file :which-key "Delete file")
- "ff"  #'(find-file :which-key "Find file")
- "fJ"  #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
- "fp"  #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
- "fr"  #'(consult-recent-file :which-key "Recent files")
- "fR"  #'(rename-file :which-key "Rename file")
- "fs"  #'(save-buffer :which-key "Save file")
- "fS"  #'(write-file :which-key "Save file as...")
- "fy"  #'(diego/copy-file-name :which-key "Yank file path")
+ "f"       '(:ignore t :which-key "files")
+ "fC"      #'(copy-file :which-key "Copy file")
+ "fD"      #'(delete-file :which-key "Delete file")
+ "ff"      #'(find-file :which-key "Find file")
+ "fJ"      #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
+ "fp"      #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
+ "fr"      #'(consult-recent-file :which-key "Recent files")
+ "fR"      #'(rename-file :which-key "Rename file")
+ "fs"      #'(save-buffer :which-key "Save file")
+ "fS"      #'(write-file :which-key "Save file as...")
+ "fy"      #'(diego/copy-file-name :which-key "Yank file path")
  ;; Git
- "g"   '(:ignore t :which-key "git")
- "gb"  #'magit-branch
- "gs"  #'(magit-status :which-key "Magit status")
- "gd"  #'magit-diff-unstaged
- "gc"  #'magit-branch-or-checkout
- "gF"  #'magit-fetch-all
- "gP"  #'magit-pull-branch
- "gf"  #'magit-fetch
- "gl"  '(:ignore t :which-key "git link")
- "glm" #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link master")
- "gll" #'(git-link :which-key "git link branch")
- "gL"  #'magit-log
- "gp"  #'magit-push-current
- "gr"  #'magit-rebase
- "gR"  #'vc-revert
- "gS"  #'magit-stage-file
- "gU"  #'magit-unstage-file
- "gv"  #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
+ "g"       '(:ignore t :which-key "git")
+ "gb"      #'magit-branch
+ "gs"      #'(magit-status :which-key "Magit status")
+ "gd"      #'magit-diff-unstaged
+ "gc"      #'magit-branch-or-checkout
+ "gF"      #'magit-fetch-all
+ "gP"      #'magit-pull-branch
+ "gf"      #'magit-fetch
+ "gl"      '(:ignore t :which-key "git link")
+ "glm"     #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link master")
+ "gll"     #'(git-link :which-key "git link branch")
+ "gL"      #'magit-log
+ "gp"      #'magit-push-current
+ "gr"      #'magit-rebase
+ "gR"      #'vc-revert
+ "gS"      #'magit-stage-file
+ "gU"      #'magit-unstage-file
+ "gv"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
  ;; Help
- "h"   '(:ignore t :which-key "help")
- "hf"  #'(describe-function :which-key "Describe function/macro")
- "hF"  #'(describe-face :which-key "Describe face")
- "hk"  #'(helpful-key :which-key "Describe key")
- "hl"  #'(find-library :which-key "Describe library")
- "hm"  #'(describe-mode :which-key "Describe mode")
- "hp"  #'(helpful-at-point :which-key "Describe at point")
- "ho"  #'(describe-symbol :which-key "Describe symbol")
- "hv"  #'(describe-variable :which-key "Describe variable")
- "hw"  #'define-word-at-point
- "hr"  #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
+ "h"       '(:ignore t :which-key "help")
+ "hf"      #'(describe-function :which-key "Describe function/macro")
+ "hF"      #'(describe-face :which-key "Describe face")
+ "hk"      #'(helpful-key :which-key "Describe key")
+ "hl"      #'(find-library :which-key "Describe library")
+ "hm"      #'(describe-mode :which-key "Describe mode")
+ "hp"      #'(helpful-at-point :which-key "Describe at point")
+ "ho"      #'(describe-symbol :which-key "Describe symbol")
+ "hv"      #'(describe-variable :which-key "Describe variable")
+ "hw"      #'define-word-at-point
+ "hr"      #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
  ;; Insert
- "i"   '(:ignore t :which-key "insert")
- "iu"  #'(insert-char :which-key "Unicode char")
- "is"  #'(yas-insert-snippet :which-key "Snippet")
- "ik"  #'(diego/evil-insert-line-above :which-key "Line above")
- "ij"  #'(diego/evil-insert-line-below :which-key "Line below")
- "iy"  #'(consult-yank-pop :which-key "Insert Yank")
+ "i"       '(:ignore t :which-key "insert")
+ "iu"      #'(insert-char :which-key "Unicode char")
+ "is"      #'(yas-insert-snippet :which-key "Snippet")
+ "ik"      #'(diego/evil-insert-line-above :which-key "Line above")
+ "ij"      #'(diego/evil-insert-line-below :which-key "Line below")
+ "iy"      #'(consult-yank-pop :which-key "Insert Yank")
  ;; Jump
- "j"   '(:ignore t :which-key "jump")
- "ji"  #'imenu
- "jI"  #'imenu-list
- "jb"  #'(bookmark-jump :which-key "Jump to bookmark")
- "jB"  #'(bookmark-set :which-key "Set bookmark")
- "jj"  #'(avy-goto-char-timer :which-key "Jump to char")
- "jl"  #'(avy-goto-line :which-key "Jump to line")
- "jh"  #'(evil-show-jumps :which-key "Jump history")
- "jm"  #'(evil-show-marks :which-key "Jump to mark")
- "ju"  #'(ffap-menu :which-key "Jump to URL")
- "jr"  #'(consult-buffer :which-key "Jump to recent file/buffer")
+ "j"       '(:ignore t :which-key "jump")
+ "ji"      #'imenu
+ "jI"      #'imenu-list
+ "jb"      #'(bookmark-jump :which-key "Jump to bookmark")
+ "jB"      #'(bookmark-set :which-key "Set bookmark")
+ "jj"      #'(avy-goto-char-timer :which-key "Jump to char")
+ "jl"      #'(avy-goto-line :which-key "Jump to line")
+ "jh"      #'(evil-show-jumps :which-key "Jump history")
+ "jm"      #'(evil-show-marks :which-key "Jump to mark")
+ "ju"      #'(ffap-menu :which-key "Jump to URL")
+ "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
  ;; LSP
- "l"   '(:ignore t :which-key "lsp")
- "lc"  #'lsp-treemacs-call-hierarchy
- "ld"  #'xref-find-definitions
- "le"  #'lsp-ui-flycheck-list
- "li"  #'lsp-goto-type-implementation
- "ln" #'lsp-ui-find-next-reference
- "lp" #'lsp-ui-find-prev-reference
- "lr"  #'xref-find-references
- "lR"  #'lsp-rename
- "lt"  #'lsp-goto-type-definition
- "lX"  #'lsp-execute-code-action
- ;; "ls"  #'lsp-lens-show
- ;;    :desc "Show"                      "m" #'lsp-ui-imenu
- ;;    :desc "Hide"                      "q" #'lsp-ui-imenu--kill)
- ;; :desc "Rename"                    "r" #'lsp-rename)
- ;; :desc "show signature"            "s" #'lsp-signature-activate))
- ;; :desc "highliht symbol at point"    "h" #'highlight-symbol-at-point
- ;; local mode
- "m"   '(:ignore t :which-key "local mode")
+ "l"       '(:ignore t :which-key "lsp")
+ "lc"      #'lsp-treemacs-call-hierarchy
+ "ld"      #'xref-find-definitions
+ "le"      #'lsp-ui-flycheck-list
+ "li"      #'lsp-goto-type-implementation
+ "ln"      #'lsp-ui-find-next-reference
+ "lp"      #'lsp-ui-find-prev-reference
+ "lr"      #'xref-find-references
+ "lR"      #'lsp-rename
+ "lt"      #'lsp-goto-type-definition
+ "lX"      #'lsp-execute-code-action
+ "ls"       #'(lsp-signature-activate :which-key "show signature")
+ "lh"       #'(highlight-symbol-at-point :which-key "highliht symbol at point")
+ ;; local mode/leader
+ "m"       '(:ignore t :which-key "local mode")
  ;; Narrow
- "n"   '(:ignore t :which-key "notes/narrow")
- "nf"  #'(narrow-to-defun :which-key "Narrow function")
- "nr"  #'(narrow-to-region :which-key "Narrow region")
- "nw"  #'(widen :which-key "Narrow widen/remove")
+ "n"       '(:ignore t :which-key "notes/narrow")
+ "nf"      #'(narrow-to-defun :which-key "Narrow function")
+ "nr"      #'(narrow-to-region :which-key "Narrow region")
+ "nw"      #'(widen :which-key "Narrow widen/remove")
  ;; Org/Other
- "o"   '(:ignore t :which-key "org/other")
- "oa"  #'org-agenda
- "oc"  #'(org-capture :which-key "capture")
- "oo"  #'(org-open-at-point :which-key "open link at point")
- "ot"  #'(org-todo :which-key "todo")
- "oT"  #'org-todo-list
- "ol"  '(:ignore t :which-key "org-link")
- "oli" #'org-insert-link
- "ols" #'org-store-link
- "oO"  '(:ignore t :which-key "other")
- "oOd" #'(diego/delete-last-char-eol :which-key "Delete last char EOL")
+ "o"       '(:ignore t :which-key "org/other")
+ "oa"      #'org-agenda
+ "oc"      #'(org-capture :which-key "capture")
+ "oo"      #'(org-open-at-point :which-key "open link at point")
+ "ot"      #'(org-todo :which-key "todo")
+ "oT"      #'org-todo-list
+ "ol"      '(:ignore t :which-key "org-link")
+ "oli"     #'org-insert-link
+ "ols"     #'org-store-link
+ "oO"      '(:ignore t :which-key "other")
+ "oOd"     #'(diego/delete-last-char-eol :which-key "Delete last char EOL")
  ;; Project
- "p"   '(:ignore t :which-key "project")
- "!"   #'(projectile-run-shell-command-in-root :which-key "Run cmd in project root")
- "pa"  #'(projectile-add-known-project :which-key "Add new project")
- "pb"  #'(project-switch-to-buffer :which-key "Project buffer")
- "pf"  #'(project-find-file :which-key "Project file")
- "pd"  #'(projectile-find-dir :which-key "Project dir")
- "pd"  #'(projectile-kill-buffers :which-key "Kill project buffers")
- "pp"  #'(projectile-switch-project :which-key "Switch project")
- ;; "ps"  #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Project search")
- "pr"  #'(projectile-recentf :which-key "Project recent files")
- "pv"  #'(projectile-run-vterm :which-key "Project vterm")
+ "p"       '(:ignore t :which-key "project")
+ "!"       #'(projectile-run-shell-command-in-root :which-key "Run cmd in project root")
+ "pa"      #'(projectile-add-known-project :which-key "Add new project")
+ "pb"      #'(project-switch-to-buffer :which-key "Project buffer")
+ "pf"      #'(project-find-file :which-key "Project file")
+ "pd"      #'(projectile-find-dir :which-key "Project dir")
+ "pd"      #'(projectile-kill-buffers :which-key "Kill project buffers")
+ "pp"      #'(projectile-switch-project :which-key "Switch project")
+ ;; "ps"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Project search")
+ "pr"      #'(projectile-recentf :which-key "Project recent files")
+ "pv"      #'(projectile-run-vterm :which-key "Project vterm")
  ;; Profiler
- "P"   '(:ignore t :which-key "profiler")
- "Ps"  #'(profiler-start :which-key "Profiler start")
- "Pk"  #'(profiler-stop :which-key "Profiler stop")
- "Pr"  #'(profiler-report :which-key "Profiler report")
+ "P"       '(:ignore t :which-key "profiler")
+ "Ps"      #'(profiler-start :which-key "Profiler start")
+ "Pk"      #'(profiler-stop :which-key "Profiler stop")
+ "Pr"      #'(profiler-report :which-key "Profiler report")
  ;; Search
- "s"   '(:ignore t :which-key "search")
- "se"  #'(iedit-mode :which-key "iedit") ; next item TAB
- "ss"  #'(consult-line :which-key "Search")
- ;; "sp"  #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Search in project")
- "sp"  #'(consult-ripgrep :which-key "Search in project")
+ "s"       '(:ignore t :which-key "search")
+ "se"      #'(iedit-mode :which-key "iedit") ; next item TAB
+ "sg"      #'(consult-grep :which-key "Search")
+ "ss"      #'(consult-line :which-key "Search")
+ ;; "sp"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Search in project")
+ "sp"      #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
- "t"   '(:ignore t :which-key "toggle")
- "tf"  #'toggle-frame-fullscreen
- "th"  #'(hs-toggle-hiding :which-key "Hide/Show block")
- "tH"  #'(diego/toggle-hideshow-all :which-key "Hide/Show All")
- "tn"  #'(global-display-line-numbers-mode :which-key "Line numbers")
- "tt"  #'toggle-truncate-lines
- "tT"  #'(consult-theme :which-key "Toggle theme")
- "tv"  #'variable-pitch-mode
- "tw"  #'whitespace-mode
- "tW"  #'(visual-line-mode :which-key "Soft line wrapping")
+ "t"       '(:ignore t :which-key "toggle")
+ "tf"      #'toggle-frame-fullscreen
+ "th"      #'(hs-toggle-hiding :which-key "Hide/Show block")
+ "tH"      #'(diego/toggle-hideshow-all :which-key "Hide/Show All")
+ "tn"      #'(global-display-line-numbers-mode :which-key "Line numbers")
+ "tt"      #'toggle-truncate-lines
+ "tT"      #'(consult-theme :which-key "Toggle theme")
+ "tv"      #'variable-pitch-mode
+ "tw"      #'whitespace-mode
+ "tW"      #'(visual-line-mode :which-key "Soft line wrapping")
  ;; Quit/Restart
- "q"   '(:ignore t :which-key "quit/restart")
- "qf"  #'(delete-frame :which-key "Delete frame")
- "qq"  #'(kill-emacs :which-key "Quit Emacs")
+ "q"       '(:ignore t :which-key "quit/restart")
+ "qf"      #'(delete-frame :which-key "Delete frame")
+ "qq"      #'(kill-emacs :which-key "Quit Emacs")
  ;; Window manipulation
- "w"   '(:ignore t :which-key "windows")
- "wa"  #'ace-window
- "wb"  #'balance-windows
- "wB"  #'balance-windows-area
- "w-"  #'(evil-window-split :which-key "Horizontal split window")
- "w/"  #'(evil-window-vsplit :which-key "Vertical split window")
- "wd"  #'(evil-window-delete :which-key "Close window")
- "wD"  #'ace-delete-window
- "we"   '(:ignore t :which-key "enlarge")
- "wel" #'enlarge-window-horizontally
- "weh" #'shrink-window-horizontally
- "wf"  #'fit-window-to-buffer
- "wF"  #'diego/follow-mode-3
- "wh"  #'(evil-window-left :which-key "Window left")
- "wj"  #'(evil-window-down :which-key "Window down")
- "wk"  #'(evil-window-up :which-key "Window up")
- "wl"  #'(evil-window-right :which-key "Window right")
- "wm"  #'(delete-other-windows :which-key "Maximize window")
- "wz"  #'winner-undo
- "wr"  #'winner-redo)
-
-(general-define-key
- :states '(normal visual emacs motion)
- :prefix ","
- :non-normal-prefix "M-SPC m"
- :keymaps 'org-mode-map
- "'" #'org-edit-special
- "e" #'org-export-dispatch
- "h" #'org-toggle-heading
- "i" #'org-toggle-item
- "q" #'org-set-tags-command
- "t" #'org-todo
- "x" #'org-toggle-checkbox
- "a"   '(:ignore t :which-key "attachments")
- "aa" #'org-attach
- "ar" #'org-attach-reveal
- "au" #'org-attach-url
- "ac" #'org-download-screenshot
- "l"   '(:ignore t :which-key "link")
- "li" #'org-id-store-link
- "ll" 'org-insert-link
- "ls" 'org-store-link
- "d"   '(:ignore t :which-key "date/deadline")
- "dd" #'org-deadline
- "ds" #'org-schedule
- "dt" #'org-time-stamp)
-
-
-(general-define-key :keymaps 'company-active-map
-                    "TAB"    #'company-complete-selection
-                    "<tab>"  #'company-complete-selection)
-
-;; I prefer C-c C-c over C-c ' (more consistent)
-(define-key org-src-mode-map (kbd "C-c C-c") #'org-edit-src-exit)
-
-(general-define-key :keymaps 'org-mode-map
-                    "C-j"  #'org-move-subtree-down
-                    "C-k"  #'org-move-subtree-up)
-
-(evil-define-key* 'normal helpful-mode-map "q" #'kill-buffer-and-window)
+ "w"       '(:ignore t :which-key "windows")
+ "wa"      #'ace-window
+ "wb"      #'balance-windows
+ "wB"      #'balance-windows-area
+ "w-"      #'(evil-window-split :which-key "Horizontal split window")
+ "w/"      #'(evil-window-vsplit :which-key "Vertical split window")
+ "wd"      #'(evil-window-delete :which-key "Close window")
+ "wD"      #'ace-delete-window
+ "we"      '(:ignore t :which-key "enlarge")
+ "wel"     #'enlarge-window-horizontally
+ "weh"     #'shrink-window-horizontally
+ "wf"      #'fit-window-to-buffer
+ "wF"      #'diego/follow-mode-3
+ "wh"      #'(evil-window-left :which-key "Window left")
+ "wj"      #'(evil-window-down :which-key "Window down")
+ "wk"      #'(evil-window-up :which-key "Window up")
+ "wl"      #'(evil-window-right :which-key "Window right")
+ "wm"      #'(delete-other-windows :which-key "Maximize window")
+ "wz"      #'winner-undo
+ "wr"      #'winner-redo)
 #+end_src
 
 * Functions
