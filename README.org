@@ -1,0 +1,5 @@
+[[config.org][My Emacs config.]]
+
+[[file:screenshot.png]]
+
+[[file:screenshot2.png]]
