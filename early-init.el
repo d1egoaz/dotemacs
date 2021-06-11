@@ -59,7 +59,9 @@
 
 ;; Install use-package first and setup so that use-package will use straight.el rather than
 ;; package.el by default.
+(straight-use-package 'org)
 (straight-use-package 'use-package)
 (straight-use-package 'general)
-(straight-use-package 'org)
 (require 'org)
+(require 'use-package)
+(require 'general)
