@@ -1,9 +1,8 @@
 #+TITLE: d1egoaz "dotemacs"
 #+AUTHOR: Diego Alvarez
 #+EMAIL: diego.canada@icloud.com
-#+DESCRIPTION: d1egoaz personal Emacs config.
-
-+ Created: 2021-04-24
+#+DESCRIPTION: d1egoaz Personal Emacs Configuration
+#+CREATED: 2021-04-24
 
 * Table of Contents                                                   :TOC_2:
 - [[#getting-started][Getting Started]]
@@ -49,7 +48,7 @@
   - [[#jump-to-windows-ace-windowel][Jump to windows (ace-window.el)]]
   - [[#window-rules][Window rules]]
   - [[#window-history-winnerel][Window history (winner.el)]]
-- [[#workspaces-tab-barel][Workspaces (tab-bar.el)]]
+- [[#workspacestabs-tab-barel][Workspaces/tabs (tab-bar.el)]]
 - [[#files][Files]]
   - [[#dont-prompt-for-confirmation-when-we-create-a-new-file-or-buffer][Don't prompt for confirmation when we create a new file or buffer.]]
   - [[#create-missing-directories-when-using-find-file][Create missing directories when using find file]]
@@ -136,7 +135,7 @@
   - [[#bindings][Bindings]]
 - [[#functions][Functions]]
 - [[#inspiration][Inspiration]]
-- [[#pending-tasks-49][Pending tasks]]
+- [[#pending-tasks-610][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
   - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
   - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
@@ -146,6 +145,7 @@
   - [[#make-elfeed-entry-buffer-show-below-elfeed-search][Make elfeed entry buffer show below elfeed search]]
   - [[#enable-multiple-cursors][Enable multiple cursors]]
   - [[#use-use-package-bind][Use use-package :bind]]
+  - [[#move-functions-to-its-own-package-usage][move functions to it's own package usage]]
 
 * Getting Started
 ** Why Emacs
@@ -735,6 +735,9 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
   (print a)
   nil)
 
+(defun diego/project-name-from-root (project-root)
+  (file-name-nondirectory (directory-file-name project-root)))
+
 (defun diego--display-buffer-from-help-p (b _a)
   "Clicking a link from the *Help* buffer opens source code in the same window."
   (unless current-prefix-arg
@@ -888,7 +891,7 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
   (after-init-hook . winner-mode))
 #+end_src
 
-* Workspaces (tab-bar.el)
+* Workspaces/tabs (tab-bar.el)
 
 | Keymap      | Command                  |
 |-------------+--------------------------|
@@ -953,8 +956,7 @@ The default tab-bar name uses the buffer name."
           (tab-new)
           (tab-rename proj)))))
 
-  (defun diego/project-name-from-root (project-root)
-    (file-name-nondirectory (directory-file-name project-root))))
+  )
 
 (use-package tab-bar-echo-area
   :config
@@ -1090,17 +1092,10 @@ underscore is often a non-word character like operators, e.g. +.
 
 #+begin_src elisp
 (defun diego--treat-chars-as-word-char ()
-  ;; TODO: @d1egoaz 2021-06-09: disabled as it's conflicting with orderless
   ;; (modify-syntax-entry ?/ "w")
-  ;; (modify-syntax-entry ?_ "w")
-  ;; (modify-syntax-entry ?- "w")
-  ;; modify it in some specific modes
-  (modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
-  (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
-  (modify-syntax-entry ?/ "w" emacs-lisp-mode-syntax-table)
-  (modify-syntax-entry ?_ "w" org-mode-syntax-table)
-  (modify-syntax-entry ?- "w" org-mode-syntax-table)
-  (modify-syntax-entry ?/ "w" org-mode-syntax-table))
+  (modify-syntax-entry ?_ "w")
+  (modify-syntax-entry ?- "w"))
+
 (add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
 
@@ -1267,11 +1262,12 @@ Customizable key sequence to escape from insert state and everything else in Ema
   :straight (:type git :host github :repo "hlissner/evil-escape")
   :after evil
   :commands evil-escape
-  :hook (after-init . evil-escape-mode)
   :config
   (setq evil-escape-excluded-states '(normal visual multiedit emacs motion))
   (setq evil-escape-delay 0.2)
-  (setq-default evil-escape-key-sequence "jk"))
+  (setq-default evil-escape-key-sequence "jk")
+  :hook
+  (after-init-hook . evil-escape-mode))
 #+end_src
 
 ** evil-surround.el
@@ -1310,13 +1306,6 @@ Add/change surrounding to text objects.
 
 #+begin_src elisp
 (add-hook 'with-editor-mode-hook #'evil-insert-state)
-#+end_src
-
-*** Bind evil-jump-forward for GUI
-
-#+begin_src elisp
-(define-key evil-motion-state-map (kbd "C-o") 'better-jumper-jump-backward)
-(define-key evil-motion-state-map (kbd "<C-i>") 'better-jumper-jump-forward)
 #+end_src
 
 ** better-jump.el
@@ -3171,7 +3160,7 @@ Some parts of my configuration were copied and inspired from:
 - [[https://config.daviwil.com/emacs][Daviwil]]
 - [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [4/9]
+* Pending tasks [6/10]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
@@ -3187,8 +3176,9 @@ Some parts of my configuration were copied and inspired from:
 :LOGBOOK:
 - State "TODO"       from              [2021-05-28 Fri 16:49]
 :END:
-** TODO Make elfeed entry buffer show below elfeed search
+** DONE Make elfeed entry buffer show below elfeed search
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2021-06-10 Thu 13:37]
 - State "TODO"       from              [2021-05-28 Fri 16:50]
 :END:
 ** TODO Enable multiple cursors
@@ -3197,7 +3187,12 @@ Some parts of my configuration were copied and inspired from:
 :END:
 evil-mc, multiple-cursors
 https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Bmisc/multiple-cursors/packages.el
-** TODO Use use-package :bind
+** DONE Use use-package :bind
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2021-06-10 Thu 15:16]
 - State "TODO"       from              [2021-06-09 Wed 12:56]
+:END:
+** TODO move functions to it's own package usage
+:LOGBOOK:
+- State "TODO"       from              [2021-06-11 Fri 11:26]
 :END:
