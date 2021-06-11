@@ -320,7 +320,6 @@ A common use-package declaration looks like this:
 (setq use-package-hook-name-suffix nil)
 #+end_src
 
-
 ** Keep .emacs.d clean (no-littering.el)
 
 #+begin_src elisp
@@ -510,7 +509,7 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-scale-3 1.21)
   (setq modus-themes-scale-4 1.27)
   (setq modus-themes-scale-5 1.33)
-  (setq modus-themes-scale-headings t)
+  (setq modus-themes-scale-headings nil)
   (setq modus-themes-slanted-constructs t) ; use slanted text (italics) unless it is absolutely necessary, strings and code comments
   (setq modus-themes-subtle-line-numbers t)
   (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g (setq modus-themes-syntax 'all-syntax) ; Lots of options---continue reading the manual
@@ -1658,7 +1657,6 @@ Use the `orderless' completion style.
   (advice-add 'company-capf--candidates :around #'just-one-face))
 #+end_src
 
-
 ** Key bindings hints (which-key.el)
 
 [[https://github.com/justbur/emacs-which-key][which-key.el]] is a minor mode for Emacs that displays the key bindings following your currently
@@ -1791,7 +1789,6 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
 
 #+begin_src elisp
 (use-package magit
-  :after transient
   :general
   (general-nvmap :keymaps 'magit-mode-map
     "zt" #'evil-scroll-line-to-top
@@ -2056,7 +2053,7 @@ On the kubel screen, place your cursor on the resource:
 |----------+----------------------------------------|
 | key      | command                                |
 |----------+----------------------------------------|
-| $        | show process buffer                    |
+| \$      | show process buffer                    |
 | enter    | get resource details                   |
 | a        | jab deployment to force rolling update |
 | c        | copy popup                             |
@@ -2346,7 +2343,8 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   (setq org-download-image-html-width 500)
   (setq org-edit-src-content-indentation 0) ; not need to waste space
   (setq org-ellipsis "⌄ ")
-  (setq org-hide-leading-stars nil)
+  ;; (setq org-hide-leading-stars nil)
+  (setq org-hide-leading-stars t)
   (setq org-hide-emphasis-markers nil)
   (setq org-insert-heading-respect-content nil) ; Insert Org headings at point, not after the current subtree
   (setq org-log-into-drawer t)
