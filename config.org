@@ -1173,7 +1173,17 @@ Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
   (setq evil-collection-setup-minibuffer nil) ; don't setup Vim style bindings in the minibuffer.
   (setq evil-collection-setup-debugger-keys nil)
   :config
-  (evil-collection-init '(calendar comint company compile dired docker docview ediff elfeed elisp-mode elisp-refs eshell flycheck flymake go-mode help helpful ibuffer imenu imenu-list magit ocurr popup vterm wgrep which-key xref))
+  (evil-collection-init '(
+                          calendar comint company compile
+                          dired docker docview
+                          ediff elfeed elisp-mode elisp-refs eshell
+                          flycheck flymake
+                          go-mode
+                          help helpful
+                          ibuffer imenu imenu-list
+                          magit ocurr popup
+                          vc-annotate vc-dir vc-git
+                          vterm wgrep which-key xref))
   (evil-collection-magit-setup))
 #+end_src
 
