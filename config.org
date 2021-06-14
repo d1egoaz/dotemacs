@@ -234,6 +234,11 @@ information about the buffer shown in the window.
 
 Minibuffer is the small area at the bottom of your Emacs screen.
 
+**** Minibuffer completion uses:
+
+- completing-read :: to define what the completion UI looks like and how it behaves.
+- completing-styles :: to define how completion filter/sorts results.
+
 *** Echo area
 
 Minibuffer can be used for output as well. The echo area is used for displaying
@@ -1407,6 +1412,11 @@ Vertico, Consult, Embark, Marginalia, and Orderless.
 
 I am loving this new combination of tools. Lightweight and fast.
 
+All of the above try to use the minibuffer's existing hooks and extension
+mechanisms, and benefit from large parts of the rest of Emacs using those
+mechanisms too. Consequently, they all interop with each other and other parts
+of the Emacs ecosystem. You can pick which you want.
+
 *** vertico.el
 
 #+begin_src elisp
@@ -1447,6 +1457,8 @@ I am loving this new combination of tools. Lightweight and fast.
 #+end_src
 
 *** consult.el
+
+Consult is a set of functions to use various Emacs facilities via completing-read.
 
 https://github.com/minad/consult#use-package-example
 https://github.com/minad/consult/wiki
@@ -1512,6 +1524,8 @@ M-w copy
 #+end_src
 
 *** embark.el
+
+Embark is a minor mode to allow each minibuffer entry to have multiple actions.
 
 https://github.com/oantolin/embark
 https://github.com/oantolin/embark/wiki/Default-Actions
@@ -1597,7 +1611,7 @@ t cl-type"
 
 *** orderless.el
 
-Use the `orderless' completion style.
+Orderless is a completion-style to allow convenient filters.
 
 #+begin_src elisp
 (use-package orderless
@@ -2744,6 +2758,7 @@ Once you’ve finished and want to insert the text into the window you triggered
  "ho"      #'(describe-symbol :which-key "Describe symbol")
  "hv"      #'(describe-variable :which-key "Describe variable")
  "hw"      #'define-word-at-point
+ "hW"      #'dictionary-search
  "hr"      #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
