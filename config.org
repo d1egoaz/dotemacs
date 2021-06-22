@@ -1163,7 +1163,9 @@ https://github.com/noctuid/evil-guide
   ;; set up some basic equivalents for vim mapping functions. This creates
   ;; global key definition functions for the evil states.
   (general-evil-setup t) ; https://github.com/noctuid/general.el#vim-like-definers
+  (evil-add-command-properties #'evil-goto-definition :jump t)
   (evil-mode 1))
+
 #+end_src
 
 ** evil-collection.el
@@ -1339,27 +1341,27 @@ Add/change surrounding to text objects.
 
 ** better-jump.el
 
-#+begin_src elisp
 (use-package better-jumper
-  :init
-  (global-set-key [remap evil-jump-forward]  #'better-jumper-jump-forward)
-  (global-set-key [remap evil-jump-backward] #'better-jumper-jump-backward)
-  (global-set-key [remap xref-pop-marker-stack] #'better-jumper-jump-backward)
-  :general
-  (general-nvmap
-    "C-o" #'better-jumper-jump-backward
-    "C-i" #'better-jumper-jump-forward)
-  :config
-  (defun evil-better-jumper/set-jump-a (orig-fn &rest args)
-    "Set a jump point and ensure ORIG-FN doesn't set any new jump points."
-    (better-jumper-set-jump (if (markerp (car args)) (car args)))
-    (let ((evil--jumps-jumping t)
-          (better-jumper--jumping t))
-      (apply orig-fn args)))
+:init
+(global-set-key [remap evil-jump-forward]  #'better-jumper-jump-forward)
+(global-set-key [remap evil-jump-backward] #'better-jumper-jump-backward)
+(global-set-key [remap xref-pop-marker-stack] #'better-jumper-jump-backward)
+:general
+(general-nvmap
+"C-o" #'better-jumper-jump-backward
+"C-i" #'better-jumper-jump-forward)
+:config
+(defun evil-better-jumper/set-jump-a (orig-fn &rest args)
+"Set a jump point and ensure ORIG-FN doesn't set any new jump points."
+(better-jumper-set-jump (if (markerp (car args)) (car args)))
+(let ((evil--jumps-jumping t)
+(better-jumper--jumping t))
+(apply orig-fn args)))
 
-  ;; Create a jump point before jumping with imenu.
-  (advice-add #'imenu :around #'evil-better-jumper/set-jump-a)
-  (better-jumper-mode 1))
+;; Create a jump point before jumping with imenu.
+(advice-add #'imenu :around #'evil-better-jumper/set-jump-a)
+(better-jumper-mode 1))
+#+begin_src elisp
 #+end_src
 
 * Completion
@@ -1979,6 +1981,13 @@ https://github.com/emacs-lsp/lsp-treemacs
 
   (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
   (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
+
+
+  (evil-add-command-properties #'lsp-find-definition :jump t)
+  (evil-add-command-properties #'lsp-goto-type-definition :jump t)
+
+  (advice-add 'lsp-goto-type-definition :before #'evil-set-jump)
+  (advice-add 'lsp-find-definition :before #'evil-set-jump)
   :hook
   (go-mode-hook . lsp-deferred)
   :bind (:map lsp-mode-map
@@ -2365,6 +2374,8 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
    "dd" #'org-deadline
    "ds" #'org-schedule
    "dt" #'org-time-stamp)
+   "C-i" #'evil-jump-forward
+   "C-o" #'evil-jump-backward)
   :init
   (setq org-directory "~/gdrive/deft")
   (setq org-agenda-files (list "~/gdrive/deft/journal.org" "~/gdrive/deft/gtd-inbox.org" "~/gdrive/deft/gtd-personal.org" "~/gdrive/deft/gtd-work.org" ))
@@ -3198,7 +3209,7 @@ Some parts of my configuration were copied and inspired from:
 - [[https://config.daviwil.com/emacs][Daviwil]]
 - [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [7/11]
+* Pending tasks [7/12]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
@@ -3238,4 +3249,8 @@ https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Bmisc/multiple-curso
 :LOGBOOK:
 - State "DONE"       from "TODO"       [2021-06-22 Tue 09:15]
 - State "TODO"       from              [2021-06-17 Thu 15:20]
+:END:
+** TODO fix evil jump C-o, C-i
+:LOGBOOK:
+- State "TODO"       from              [2021-06-22 Tue 09:19]
 :END:
