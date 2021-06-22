@@ -2731,10 +2731,16 @@ Emacs Everywhere from, just press C-c C-c.
 #+begin_src elisp
 (use-package emacs-everywhere
   :config
+  (setq emacs-everywhere-markdown-apps '("Discord" "Slack"))
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
           (width . 120)
           (height . 20))))
+
+(use-package ox-gfm
+  :config
+  (eval-after-load "org"
+    '(require 'ox-gfm nil t)))
 #+end_src
 
 * Keybindings
