@@ -285,6 +285,7 @@ Update packages (pull in changes, then freeze), this creates
 #+begin_example elisp
 (straight-pull-all)
 (straight-freeze-versions)
+(straight-remove-unused-repos)
 #+end_example
 
 *** Rollback/Re-Install Packages
