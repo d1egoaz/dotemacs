@@ -2808,7 +2808,7 @@ Emacs Everywhere from, just press C-c C-c.
  "fC"      #'(copy-file :which-key "Copy file")
  "fD"      #'(delete-file :which-key "Delete file")
  "ff"      #'(find-file :which-key "Find file")
- "fJ"      #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
+ "fj"      #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
  "fp"      #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
  "fr"      #'(consult-recent-file :which-key "Recent files")
  "fR"      #'(rename-file :which-key "Rename file")
@@ -2817,25 +2817,20 @@ Emacs Everywhere from, just press C-c C-c.
  "fy"      #'(diego/copy-file-name :which-key "Yank file path")
  ;; Git
  "g"       '(:ignore t :which-key "git")
- "gb"      #'magit-branch
+ "ga"      #'(vc-annotate :which-key "Annotate, show edit history") ;; f vc-annotate-find-revision-at-line, l vc-annotate-show-log-revision-at-line, D, F, J
  "gs"      #'(magit-status :which-key "Magit status")
- "gd"      #'magit-diff-unstaged
- "gc"      #'magit-branch-or-checkout
  "gF"      #'magit-fetch-all
- "gP"      #'magit-pull-branch
- "gf"      #'magit-fetch
+
  "gl"      '(:ignore t :which-key "git link")
- "glm"     #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link master")
- "gll"     #'(git-link :which-key "git link branch")
+ "glh"      #'git-link-homepage
+ "gll"     #'(git-link :which-key "git link in current branch")
+ "glm"     #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link in master")
+
  "gL"      #'magit-log
- "gp"      #'magit-push-current
- "gr"      #'magit-rebase
- "gR"      #'vc-revert
- "gS"      #'magit-stage-file
- "gU"      #'magit-unstage-file
  "gv"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
  ;; Help
  "h"       '(:ignore t :which-key "help")
+ "ha"      #'(consult-apropos :which-key "Describe apropos")
  "hf"      #'(describe-function :which-key "Describe function/macro")
  "hF"      #'(describe-face :which-key "Describe face")
  "hk"      #'(helpful-key :which-key "Describe key")
@@ -2864,6 +2859,7 @@ Emacs Everywhere from, just press C-c C-c.
  "jl"      #'(avy-goto-line :which-key "Jump to line")
  "jh"      #'(evil-show-jumps :which-key "Jump history")
  "jm"      #'(evil-show-marks :which-key "Jump to mark")
+ "jo"      #'consult-outline
  "ju"      #'(ffap-menu :which-key "Jump to URL")
  "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
  ;; LSP
@@ -2894,9 +2890,11 @@ Emacs Everywhere from, just press C-c C-c.
  "oo"      #'(org-open-at-point :which-key "open link at point")
  "ot"      #'(org-todo :which-key "todo")
  "oT"      #'org-todo-list
+
  "ol"      '(:ignore t :which-key "org-link")
  "oli"     #'org-insert-link
  "ols"     #'org-store-link
+
  "oO"      '(:ignore t :which-key "other")
  "oOd"     #'(diego/delete-last-char-eol :which-key "Delete last char EOL")
  ;; Project
@@ -2920,6 +2918,7 @@ Emacs Everywhere from, just press C-c C-c.
  "s"       '(:ignore t :which-key "search")
  "se"      #'(iedit-mode :which-key "iedit") ; next item TAB
  "sg"      #'(consult-grep :which-key "Search")
+ "sr"      #'replace-regexp
  "ss"      #'(consult-line :which-key "Search")
  ;; "sp"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Search in project")
  "sp"      #'(consult-ripgrep :which-key "Search in project")
@@ -2947,9 +2946,11 @@ Emacs Everywhere from, just press C-c C-c.
  "w/"      #'(evil-window-vsplit :which-key "Vertical split window")
  "wd"      #'(evil-window-delete :which-key "Close window")
  "wD"      #'ace-delete-window
+
  "we"      '(:ignore t :which-key "enlarge")
  "wel"     #'enlarge-window-horizontally
  "weh"     #'shrink-window-horizontally
+
  "wf"      #'fit-window-to-buffer
  "wF"      #'diego/follow-mode-3
  "wh"      #'(evil-window-left :which-key "Window left")
@@ -3233,7 +3234,7 @@ vterm buffer."
 (defun diego/dev ()
   "Runs a dev command."
   (interactive)
-  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command:" '(up down build test)))))
+  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command:" '(up down build test style)))))
 
 (defun diego/consult-line-symbol-at-point ()
   (interactive)
