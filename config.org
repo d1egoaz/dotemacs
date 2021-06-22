@@ -1507,6 +1507,8 @@ M-w copy
   (setq xref-show-definitions-function #'consult-xref)
   :config
   (setq consult-preview-key (kbd "C-SPC"))
+  ;; (setq consult-preview-key `(,(kbd "C-SPC") :debounce 1 any))
+
   (setq consult-project-root-function #'vc-root-dir) ; vc.el
 
   (setq consult-narrow-key ">")
@@ -1524,6 +1526,21 @@ M-w copy
   (dolist (src consult-buffer-sources)
     (unless (eq src 'consult--source-buffer)
       (set src (plist-put (symbol-value src) :hidden t))))
+
+  ;; https://github.com/minad/consult/issues/6#issuecomment-848077449
+  (defvar consult--source-project-file
+    `(:name      "Project File"
+                 :narrow    (?p . "Project")
+                 :hidden    t
+                 :category  file
+                 :face      consult-file
+                 :history   file-name-history
+                 :action    ,#'consult--file-action
+                 :enabled   ,#'project-current
+                 :items     ,(lambda ()
+                               (mapcar #'file-relative-name
+                                       (project-files (project-current)))))
+    "Project file candidate source for `consult-buffer'.")
 
   (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
   :bind (
