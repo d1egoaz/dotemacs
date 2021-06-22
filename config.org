@@ -3197,6 +3197,16 @@ For some reason I'm having video issues with Firefox."
   (select-frame-by-name "alfredoc")
   (org-capture))
 
+(defun diego/project-compile-dwim (command)
+  "Run `diego/compile' in the project root."
+  (declare (interactive-only compile))
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
+    (diego/compile command)))
+
 (defun diego/project-compile ()
   "Run `diego/compile' in the project root."
   (declare (interactive-only compile))
