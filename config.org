@@ -2358,7 +2358,8 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 (which-function-mode 1)
 ;; Show the current function name in the header line
 (setq-default header-line-format
-              '((which-func-mode ("" which-func-format " "))))
+              '((which-function-mode ("" which-func-format " "))))
+
 ;; We remove Which Function Mode from the mode line, because it's mostly
 ;; invisible here anyway.
 (setq mode-line-misc-info (assq-delete-all 'which-function-mode mode-line-misc-info))
