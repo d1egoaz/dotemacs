@@ -2201,16 +2201,17 @@ display portions of a program, which are referred to as blocks.
 
 ** Compilation mode
 
-*** Ignore duplicates
+*** Basic configuration
 
 #+begin_src elisp
 (setq comint-input-ignoredups t)
-#+end_src
+(setq comint-scroll-to-bottom-on-input t) ; always insert at the bottom
+(setq comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
+'(comint-input-ignoredups t)
 
-*** Scroll compilation output to first error
-
-#+begin_src elisp
-(setq compilation-scroll-output 'first-error)
+;; (setq compilation-scroll-output 'first-error)
+(setq compilation-scroll-output t)
+(setq compilation-auto-jump-to-first-error t)
 #+end_src
 
 *** Enable ASCII Colours
