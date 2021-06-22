@@ -1673,7 +1673,6 @@ Orderless is a completion-style to allow convenient filters.
   :config
   ;; adapted from https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
   ;; Recognizes the following patterns:
-  ;; * ~flex flex~
   ;; * =literal literal=
   ;; * ,initialism initialism,
   ;; * !without-literal without-literal!
@@ -1695,12 +1694,9 @@ Orderless is a completion-style to allow convenient filters.
      ((string-suffix-p "," pattern) `(orderless-strict-initialism . ,(substring pattern 0 -1)))
      ;; Literal matching
      ((string-prefix-p "=" pattern) `(orderless-literal . ,(substring pattern 1)))
-     ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))
-     ;; Flex matching
-     ((string-prefix-p "~" pattern) `(orderless-flex . ,(substring pattern 1)))
-     ((string-suffix-p "~" pattern) `(orderless-flex . ,(substring pattern 0 -1)))))
+     ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))))
 
-  (setq orderless-matching-styles '(orderless-regexp orderless-strict-initialism))
+  (setq orderless-matching-styles '(orderless-regexp))
   (setq orderless-style-dispatchers '(diego/orderless-dispatch))
   (setq orderless-skip-highlighting nil)
 
