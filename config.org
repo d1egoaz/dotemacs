@@ -135,7 +135,7 @@
   - [[#bindings][Bindings]]
 - [[#functions][Functions]]
 - [[#inspiration][Inspiration]]
-- [[#pending-tasks-610][Pending tasks]]
+- [[#pending-tasks-611][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
   - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
   - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
@@ -146,6 +146,7 @@
   - [[#enable-multiple-cursors][Enable multiple cursors]]
   - [[#use-use-package-bind][Use use-package :bind]]
   - [[#move-functions-to-its-own-package-usage][move functions to it's own package usage]]
+  - [[#fix-file-backup-creation][fix file backup creation]]
 
 * Getting Started
 ** Why Emacs
@@ -332,8 +333,7 @@ A common use-package declaration looks like this:
 (use-package no-littering
   :config
   (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
-  (setq auto-save-file-name-transforms
-        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+  (setq auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+end_src
 
 * General Emacs Base Settings
@@ -387,7 +387,7 @@ Emacs can be prompted for the PIN of GPG private keys.
 Disables .#file.ext creation.
 
 #+begin_src elisp
-(setq  create-lockfiles nil)
+(setq create-lockfiles nil)
 #+end_src
 
 ** Enable files backup
@@ -401,10 +401,17 @@ Disables .#file.ext creation.
 
 ;; trying creating backups:
 (setq auto-save-default t)
+(setq backup-by-copying t)
 (setq delete-old-versions -1)
 (setq make-backup-files t)
 (setq vc-make-backup-files t)
 (setq version-control t)
+
+;; for the ` and , see:
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+;; The special marker ‘,’ inside of the argument to backquote indicates a value that isn’t constant.
+(setq backup-directory-alist `(("." . ,(concat no-littering-var-directory "/backup"))))
+;;(setq auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+end_src
 
 ** Kill ring not save duplicates
@@ -3186,7 +3193,7 @@ Some parts of my configuration were copied and inspired from:
 - [[https://config.daviwil.com/emacs][Daviwil]]
 - [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [6/10]
+* Pending tasks [7/11]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
@@ -3221,4 +3228,9 @@ https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Bmisc/multiple-curso
 ** TODO move functions to it's own package usage
 :LOGBOOK:
 - State "TODO"       from              [2021-06-11 Fri 11:26]
+:END:
+** DONE fix file backup creation
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2021-06-22 Tue 09:15]
+- State "TODO"       from              [2021-06-17 Thu 15:20]
 :END:
