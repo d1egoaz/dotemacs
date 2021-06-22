@@ -509,6 +509,7 @@ Command/Super plus =/- for zooming in/out.
 (use-package modus-themes
   :init
   (setq modus-themes-completions 'opinionated) ; {nil,'moderate,'opinionated}
+  (setq modus-themes-diffs nil)
   (setq modus-themes-fringes 'subtle) ; {nil,'subtle,'intense}
   (setq modus-themes-headings '((1 . section) (2 . rainbow-line) (t . no-bold))) ; Lots of options---continue reading the manual
   (setq modus-themes-hl-line 'underline-accented)
@@ -1853,18 +1854,20 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
 
 #+begin_src elisp
 (use-package magit
-  :general
+  :config
   (general-nvmap :keymaps 'magit-mode-map
     "zt" #'evil-scroll-line-to-top
     "zz" #'evil-scroll-line-to-center
     "zb" #'evil-scroll-line-to-bottom
     "gr" #'magit-refresh)
-  :config
+
   (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
   (setq magit-save-repository-buffers nil) ; Don't autosave repo buffers
   ;; Don't display parent/related refs in commit buffers; they are rarely
   ;; helpful and only add to runtime costs.
   (setq magit-revision-insert-related-refs nil)
+  (setq magit-diff-refine-ignore-whitespace nil)
+
   (setq magit-repository-directories
         '(
           ("~/src/github.com/Shopify" . 2)
@@ -2028,6 +2031,7 @@ https://github.com/emacs-lsp/lsp-treemacs
 
   (advice-add 'lsp-goto-type-definition :before #'evil-set-jump)
   (advice-add 'lsp-find-definition :before #'evil-set-jump)
+
   :hook
   (go-mode-hook . lsp-deferred)
   :bind (:map
@@ -2416,7 +2420,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
    "d"   '(:ignore t :which-key "date/deadline")
    "dd" #'org-deadline
    "ds" #'org-schedule
-   "dt" #'org-time-stamp)
+   "dt" #'org-time-stamp
    "C-i" #'evil-jump-forward
    "C-o" #'evil-jump-backward)
   :init
@@ -2690,9 +2694,12 @@ The best RSS reader.
 
 ** emacs-everywhere.el
 
-By default, emacs-everywhere-insert-selection is a hook in emacs-everywhere-init-hooks, and will insert the last text selection into your new buffer. To clear this, type DEL or C-SPC before anything else.
+By default, emacs-everywhere-insert-selection is a hook in
+emacs-everywhere-init-hooks, and will insert the last text selection into your
+new buffer. To clear this, type DEL or C-SPC before anything else.
 
-Once you’ve finished and want to insert the text into the window you triggered Emacs Everywhere from, just press C-c C-c.
+Once you’ve finished and want to insert the text into the window you triggered
+Emacs Everywhere from, just press C-c C-c.
 
 #+begin_src elisp
 (use-package emacs-everywhere
@@ -2765,11 +2772,13 @@ Once you’ve finished and want to insert the text into the window you triggered
  "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
  "bK"      #'(kill-buffer :which-key "Kill buffer")
  "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
+
  "bm"      '(:ignore t :which-key "move buffer")
  "bmk"     #'(buf-move-up :which-key "Move up")
  "bmj"     #'(buf-move-down :which-key "Move down")
  "bmh"     #'(buf-move-left :which-key "Move left")
  "bml"     #'(buf-move-right :which-key "Move right")
+
  "bM"      #'view-echo-area-messages
  "bn"      #'(next-buffer :which-key "Next buffer")
  "bp"      #'(previous-buffer :which-key "Previous buffer")
@@ -2781,6 +2790,7 @@ Once you’ve finished and want to insert the text into the window you triggered
  "c"       '(:ignore t :which-key "compile")
  "cc"      #'recompile
  "cC"      #'diego/project-compile
+
  "cd"      '(:ignore t :which-key "dev")
  "cdd"     #'diego/dev
  "cdr"     #'diego/dev-run
