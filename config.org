@@ -2791,9 +2791,7 @@ Emacs Everywhere from, just press C-c C-c.
  "cc"      #'recompile
  "cC"      #'diego/project-compile
 
- "cd"      '(:ignore t :which-key "dev")
- "cdd"     #'diego/dev
- "cdr"     #'diego/dev-run
+ "cd"     #'diego/dev
  ;; Evaluate elisp expressions
  "e"       '(:ignore t :which-key "eval/error")
  "eb"      #'(eval-buffer :which-key "Eval elisp in buffer")
@@ -3235,15 +3233,10 @@ vterm buffer."
   (setq-default compilation-directory default-directory)
   (compilation-start command t))
 
-(defun diego/dev-run (cmd)
-  "Ask for a dev command to run."
-  (interactive "sEnter dev command: ")
-  (diego/compile (concat "/opt/dev/bin/dev " cmd)))
-
 (defun diego/dev ()
   "Runs a dev command."
   (interactive)
-  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command:" '(up down build test style)))))
+  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command: " '(up down build test style)))))
 
 (defun diego/consult-line-symbol-at-point ()
   (interactive)
