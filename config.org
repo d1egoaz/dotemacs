@@ -1232,16 +1232,20 @@ function(|arg2, arg3)
   :after evil
   :config
   (setq evil-args-delimiters '("," ";" " ")); include space to use in lisp
-  :bind (:map evil-inner-text-objects-map
-              ("a" . #'evil-inner-arg)
-              :map evil-outer-text-objects-map
-              ("a" . #'evil-outer-arg)
-              :map evil-normal-state-map
-              ("L" . #'evil-forward-arg)
-              ("H" . #'evil-backward-arg)
-              :map evil-motion-state-map
-              ("H" . #'evil-backward-arg)
-              ("L" . #'evil-forward-arg)))
+  :bind (:map
+         evil-inner-text-objects-map
+         ("a" . #'evil-inner-arg)
+         :map
+         evil-outer-text-objects-map
+         ("a" . #'evil-outer-arg)
+         :map
+         evil-normal-state-map
+         ("L" . #'evil-forward-arg)
+         ("H" . #'evil-backward-arg)
+         :map
+         evil-motion-state-map
+         ("H" . #'evil-backward-arg)
+         ("L" . #'evil-forward-arg)))
 #+end_src
 
 ** evil-commentary.el
@@ -1423,9 +1427,10 @@ candidates are called backends, modules for displaying them are frontends.
   (setq company-tooltip-limit 20)
   (setq company-tooltip-minimum company-tooltip-limit)
   (global-company-mode 1)
-  :bind (:map company-active-map
-              ("TAB"   . #'company-complete-selection)
-              ("<tab>" . #'company-complete-selection)))
+  :bind (:map
+         company-active-map
+         ("TAB"   . #'company-complete-selection)
+         ("<tab>" . #'company-complete-selection)))
 #+end_src
 
 ** Selection and Narrowing
@@ -1540,7 +1545,9 @@ M-w copy
 (use-package consult-lsp
   :after (consult lsp-mode)
   :bind
-  (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
+  (:map
+   lsp-mode-map
+   ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
 (use-package consult-flycheck
   :after (consult flycheck))
@@ -1991,8 +1998,9 @@ https://github.com/emacs-lsp/lsp-treemacs
   (advice-add 'lsp-find-definition :before #'evil-set-jump)
   :hook
   (go-mode-hook . lsp-deferred)
-  :bind (:map lsp-mode-map
-              ("TAB" . #'completion-at-point)))
+  :bind (:map
+         lsp-mode-map
+         ("TAB" . #'completion-at-point)))
 
 (use-package lsp-ui
   :after lsp-mode
