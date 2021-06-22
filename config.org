@@ -1084,20 +1084,6 @@ in their place.
 (global-so-long-mode 1)
 #+end_src
 
-** Indentation, spaces, and tabs
-
-Favor spaces over tabs.
-
-#+begin_src elisp
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-#+end_src
-
-Make =tabify= and =untabify= only affect indentation. Not tabs/spaces in the middle of a line.
-#+begin_src elisp
-(setq tabify-regexp "^\t* [ \t]+")
-#+end_src
-
 ** Underscore =_= and hyphen =-= as a word characters
 
 An underscore =_= is a word character in Vim. This means that word motions like w skip over
@@ -1116,6 +1102,20 @@ underscore is often a non-word character like operators, e.g. +.
   (modify-syntax-entry ?- "w" org-mode-syntax-table))
 
 (add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
+#+end_src
+
+** Indentation, spaces, and tabs
+
+Favor spaces over tabs.
+
+#+begin_src elisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+#+end_src
+
+Make =tabify= and =untabify= only affect indentation. Not tabs/spaces in the middle of a line.
+#+begin_src elisp
+(setq tabify-regexp "^\t* [ \t]+")
 #+end_src
 
 ** Whitespace cleanup on buffer save
