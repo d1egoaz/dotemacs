@@ -1754,14 +1754,19 @@ search interfaces in web browsers and other programs (think of what happens when
 
 | Keymap | Command                                           |
 |--------+---------------------------------------------------|
-| C-s    | search forward.                                   |
-| C-r    | search backward (it should be already in Isearch) |
+| C-s    | search forward literal string                     |
+| C-r    | search backward literal string
+| C-M-s  | search forward regex                              |
+| C-M-r  | search backward regex                             |
 
 #+begin_src elisp
 (use-package ctrlf
   :straight (:host github :repo "raxod502/ctrlf")
   :init
-  (ctrlf-mode 1))
+  (ctrlf-mode 1)
+  :bind
+  (("C-s" . #'ctrlf-forward-literal)
+   ("C-r" . #'ctrlf-backward-literal)))
 #+end_src
 
 ** Jumping with (avy.el)
