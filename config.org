@@ -617,6 +617,8 @@ func main() {
                 mode-line-mule-info
                 mode-line-client
                 mode-line-modified
+                (:eval (if (eq (buffer-local-value 'major-mode (current-buffer)) 'kubel-mode)
+                           (kubel-current-state)))
                 mode-line-remote
                 mode-line-frame-identification
                 mode-line-end-spaces))
@@ -789,7 +791,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (slot . 0)
          (window-parameters . ((no-other-window . t)
                                (mode-line-format . none))))
-        ("\\*kubel [^-].*"
+        ("\\*kubel\\*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
         ("\\*kubel -.*"
@@ -2111,9 +2113,12 @@ On the kubel screen, place your cursor on the resource:
 
 #+begin_src elisp
 (use-package kubel
+  :straight (kubel :host github :repo "d1egoaz/kubel")
   :config
+  (evil-define-key 'normal 'kubel-yaml-editing-mode "q" #'kill-current-buffer)
   ;; list namespaces automatically
-  (setq kubel-use-namespace-list 'on))
+  ;; (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
+  )
 
 (use-package kubel-evil
   :after (kubel evil))
