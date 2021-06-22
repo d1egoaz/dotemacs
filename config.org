@@ -5,6 +5,7 @@
 #+CREATED: 2021-04-24
 
 * Table of Contents                                                   :TOC_2:
+
 - [[#getting-started][Getting Started]]
   - [[#why-emacs][Why Emacs]]
   - [[#how-i-install-emacs][How I Install Emacs]]
@@ -150,6 +151,7 @@
   - [[#fix-file-backup-creation][fix file backup creation]]
 
 * Getting Started
+
 ** Why Emacs
 
 - https://www.gnu.org/software/emacs/manual/emacs.html
@@ -193,7 +195,9 @@ escaping their lexical context.
 #+end_src
 
 ** Emacs Concepts
+
 *** Functions
+
 In Emacs, every user interaction is a function execution. There are two types of functions in Emacs:
 
 - Normal functions ::
@@ -260,6 +264,7 @@ Emacs can split your frame area into multiple smaller areas. Each such area is c
 - https://tuhdo.github.io/emacs-tutor.html
 
 * Package Manager
+
 ** Native Compilation
 
 #+begin_src elisp
@@ -338,6 +343,7 @@ A common use-package declaration looks like this:
 #+end_src
 
 * General Emacs Base Settings
+
 ** Garbage collection
 
 Enforce a sneaky Garbage Collection strategy to minimize GC interference with
@@ -450,6 +456,7 @@ Increase how much is read from processes in a single chunk (default is
 #+end_src
 
 * UI - Let's make Emacs look a little better.
+
 ** Disable toolbars and scrollbars
 
 #+begin_src elisp
@@ -465,6 +472,7 @@ Increase how much is read from processes in a single chunk (default is
 #+end_src
 
 ** Fonts
+
 *** Setting The Font Face
 
 #+begin_src elisp
@@ -505,6 +513,7 @@ Command/Super plus =/- for zooming in/out.
 #+end_src
 
 ** Theme (modus-themes.el)
+
 #+begin_src elisp
 (use-package modus-themes
   :init
@@ -541,6 +550,7 @@ Command/Super plus =/- for zooming in/out.
 * Buffers
 
 ** Scratch buffer
+
 *** Change initial scratch buffer message
 
 #+begin_src elisp
@@ -702,6 +712,7 @@ line, and updates them whenever another command is invoked.
 #+end_src
 
 * Windows
+
 ** Jump to windows (ace-window.el)
 
 Package for selecting a window to switch to.
@@ -980,6 +991,7 @@ The default tab-bar name uses the buffer name."
 #+end_src
 
 * Files
+
 ** Don't prompt for confirmation when we create a new file or buffer.
 
 #+begin_src elisp
@@ -1038,6 +1050,7 @@ visited the same file.
 #+end_src
 
 * Editor
+
 ** Default coding system
 
 #+begin_src elisp
@@ -1326,6 +1339,7 @@ Add/change surrounding to text objects.
 #+end_src
 
 ** evil Tuning
+
 *** Change cursor color evil-mode
 
 #+begin_src elisp
@@ -1739,6 +1753,7 @@ characters are sorted alphabetically
 #+end_src
 
 *** Emacs Client
+
 This setting ensures that emacsclient always opens on *dashboard* rather than *scratch*.
 https://github.com/emacs-dashboard/emacs-dashboard#emacs-daemon
 
@@ -1749,6 +1764,7 @@ If t, open the *scratch* buffer.
 #+end_src
 
 * Search And Replace
+
 ** Ctrlf (Isearch replacement)
 
 Package `ctrlf' provides a replacement for `isearch' that is more similar to the tried-and-true text
@@ -1838,6 +1854,7 @@ example, Python or Perl regexps.
 #+end_src
 
 * Project Management
+
 ** Git
 
 https://github.com/magit/magit
@@ -1994,6 +2011,7 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
 #+end_src
 
 * Development
+
 ** Language Server Support (LSP)
 
 https://emacs-lsp.github.io/lsp-mode/page/main-features/
@@ -2069,6 +2087,7 @@ https://github.com/emacs-lsp/lsp-treemacs
 #+end_src
 
 ** Go
+
 *** Get latest gopls
 
 #+begin_src sh
@@ -2132,6 +2151,7 @@ https://github.com/pope/ob-go
 #+end_src
 
 ** Kubernetes
+
 *** kubel.el
 
 To set said namespace and context, respectively call
@@ -2259,7 +2279,9 @@ use vterm and won't have any issues.
              "E"  #'restclient-http-send-current-raw
              "c"  #'restclient-copy-curl-command))
 #+end_src
+
 * Productivity
+
 ** Syntax checking (flycheck.el)
 
 #+begin_src elisp
@@ -2269,6 +2291,7 @@ use vterm and won't have any issues.
 #+end_src
 
 ** Snippets (yasnippet.el)
+
 *** yasnippet.el
 
 https://github.com/joaotavora/yasnippet
@@ -2385,6 +2408,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 #+end_src
 
 * Org Mode
+
 ** org.el
 
 #+begin_src elisp
@@ -2561,6 +2585,7 @@ Increase the maximum level for Imenu access to Org headlines.
 #+end_src
 
 * Misc
+
 ** helpful.el
 
 [[https://github.com/Wilfred/helpful][helpful.el]] is an alternative to the built-in Emacs help that provides much more contextual information.
@@ -2614,6 +2639,7 @@ Tz zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
 #+end_src
 
 ** olivetti.el
+
 #+begin_src elisp
 (use-package olivetti
   :config
@@ -2712,6 +2738,7 @@ Emacs Everywhere from, just press C-c C-c.
 #+end_src
 
 * Keybindings
+
 ** Simplify Leader Bindings (general.el)
 
 [[https://github.com/noctuid/general.el][general.el]] allows us to set keybindings.
