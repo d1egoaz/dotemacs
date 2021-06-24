@@ -2826,6 +2826,7 @@ Emacs Everywhere from, just press C-c C-c.
  "cC"      #'diego/project-compile
 
  "cd"     #'diego/dev
+ "cD"     #'diego/dev-project
  ;; Evaluate elisp expressions
  "e"       '(:ignore t :which-key "eval/error")
  "eb"      #'(eval-buffer :which-key "Eval elisp in buffer")
@@ -3271,6 +3272,24 @@ vterm buffer."
   "Runs a dev command."
   (interactive)
   (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command: " '(up down build test style)))))
+
+(defun diego/dev ()
+  "Runs a common dev command. Or run the passed command if no command was selected"
+  (interactive)
+  (diego/compile
+   (concat
+    "/opt/dev/bin/dev "
+    (completing-read "Dev command: " '(up down build test style)))))
+
+(defun diego/dev-project ()
+  "Runs a dev command from the project defined commands."
+  (interactive)
+  (compilation-start
+   (concat "/opt/dev/bin/dev "
+           (completing-read "Project Dev Command: "
+                            (split-string
+                             (shell-command-to-string "/opt/dev/bin/dev help --project | grep dev | tail -n +2 | cut -d' ' -f4 | sort")
+                             "\n")))))
 
 (defun diego/consult-line-symbol-at-point ()
   (interactive)
