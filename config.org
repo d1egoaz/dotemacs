@@ -2164,7 +2164,7 @@ https://github.com/pope/ob-go
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . #'gfm-mode)
-         ("\\.md\\'" . #'gfm-mode)
+         ("\\.md\\'"       . #'gfm-mode)
          ("\\.markdown\\'" . #'gfm-mode)))
 #+end_src
 
@@ -2175,7 +2175,10 @@ https://github.com/pope/ob-go
 (use-package json-mode)
 (use-package nix-mode)
 (use-package terraform-mode)
-(use-package yaml-mode)
+(use-package yaml-mode
+  :mode (("\\.yml\\'"       . #'yaml-mode)
+         ("\\.yaml\\'"      . #'yaml-mode)
+         ("\\.yaml.lock\\'" . #'yaml-mode)))
 (use-package protobuf-mode)
 #+end_src
 
