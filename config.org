@@ -63,8 +63,8 @@
   - [[#display-line-numbers-and-truncated-lines][Display line numbers and truncated lines]]
   - [[#highlight-current-line][Highlight current line]]
   - [[#avoid-performance-issues-with-long-lines][Avoid performance issues with long lines]]
-  - [[#indentation-spaces-and-tabs][Indentation, spaces, and tabs]]
   - [[#underscore-_-and-hyphen---as-a-word-characters][Underscore =_= and hyphen =-= as a word characters]]
+  - [[#indentation-spaces-and-tabs][Indentation, spaces, and tabs]]
   - [[#whitespace-cleanup-on-buffer-save][Whitespace cleanup on buffer save]]
   - [[#enable-narrowing-functions][Enable narrowing functions]]
 - [[#lets-be-evil-evil-el][Let's Be Evil (evil-*.el)]]
@@ -137,7 +137,7 @@
   - [[#bindings][Bindings]]
 - [[#functions][Functions]]
 - [[#inspiration][Inspiration]]
-- [[#pending-tasks-611][Pending tasks]]
+- [[#pending-tasks-712][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
   - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
   - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
@@ -149,6 +149,7 @@
   - [[#use-use-package-bind][Use use-package :bind]]
   - [[#move-functions-to-its-own-package-usage][move functions to it's own package usage]]
   - [[#fix-file-backup-creation][fix file backup creation]]
+  - [[#fix-evil-jump-c-o-c-i][fix evil jump C-o, C-i]]
 
 * Getting Started
 
