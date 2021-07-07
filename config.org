@@ -1116,14 +1116,23 @@ underscore is often a non-word character like operators, e.g. +.
 
 #+begin_src elisp
 (defun diego--treat-chars-as-word-char ()
-  ;; (modify-syntax-entry ?/ "w")
-  (modify-syntax-entry ?/ "w" emacs-lisp-mode-syntax-table)
-  (modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
-  (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
+  (modify-syntax-entry ?/ "w" prog-mode-syntax-table)
+  (modify-syntax-entry ?_ "w" prog-mode-syntax-table)
+  (modify-syntax-entry ?- "w" prog-mode-syntax-table)
 
   (modify-syntax-entry ?/ "w" org-mode-syntax-table)
   (modify-syntax-entry ?_ "w" org-mode-syntax-table)
-  (modify-syntax-entry ?- "w" org-mode-syntax-table))
+  (modify-syntax-entry ?- "w" org-mode-syntax-table)
+
+  (with-eval-after-load 'ruby
+    (modify-syntax-entry ?/ "w" ruby-mode-syntax-table)
+    (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
+    (modify-syntax-entry ?- "w" ruby-mode-syntax-table))
+
+  (with-eval-after-load 'html
+    (modify-syntax-entry ?/ "w" html-mode-syntax-table)
+    (modify-syntax-entry ?_ "w" html-mode-syntax-table)
+    (modify-syntax-entry ?- "w" html-mode-syntax-table)))
 
 (add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
