@@ -2433,7 +2433,18 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 ** iedit.el
 
 #+begin_src elisp
-(use-package iedit)
+(use-package iedit
+  :config
+
+;;;###autoload
+  (defun diego/iedit-scoped (orig-fn)
+    "Call `iedit-mode' with function-local scope, or global scope if called with a universal prefix."
+    (interactive)
+    (pcase-exhaustive current-prefix-arg
+      ('nil (funcall orig-fn '(0)))
+      ('(4) (funcall orig-fn))))
+
+  (advice-add #'iedit-mode :around #'diego/iedit-scoped))
 #+end_src
 
 ** which-function-mode.el
