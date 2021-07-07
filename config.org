@@ -3339,7 +3339,7 @@ vterm buffer."
 (defun diego/dev-project ()
   "Runs a dev command from the project defined commands."
   (interactive)
-  (compilation-start
+  (diego/compile
    (concat "/opt/dev/bin/dev "
            (completing-read "Project Dev Command: "
                             (split-string
