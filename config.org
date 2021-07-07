@@ -2827,7 +2827,8 @@ Emacs Everywhere from, just press C-c C-c.
  "'"       #'(uchronia-repeat :which-key "Resume last search")
  "\""      #'(uchronia-select :which-key "Select last search")
  ">"       #'(er/expand-region :which-key "Expand region")
- "u"       #'(universal-argument-more :which-key "Universal argument")
+ "u"       #'(universal-argument :which-key "Universal argument")
+ "U"       #'(universal-argument-more :which-key "Universal argument more")
  "x"       #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
  ;; Tabs
  "TAB"     '(:ignore t :which-key "workspaces")
