@@ -1480,6 +1480,7 @@ of the Emacs ecosystem. You can pick which you want.
   :init
   (vertico-mode)
   :config
+  (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
   (setq vertico-cycle t))
 
 ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
@@ -1570,7 +1571,6 @@ M-w copy
                                        (project-files (project-current)))))
     "Project file candidate source for `consult-buffer'.")
 
-  (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
   :bind (
          ([remap apropos]                       . #'consult-apropos)
          ([remap bookmark-jump]                 . #'consult-bookmark)
