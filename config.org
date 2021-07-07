@@ -2790,10 +2790,11 @@ Emacs Everywhere from, just press C-c C-c.
           (width . 120)
           (height . 20))))
 
+;; to signal emacs-everywhere to use org-gfm-export-to-markdown
 (use-package ox-gfm
+  :after org
   :config
-  (eval-after-load "org"
-    '(require 'ox-gfm nil t)))
+  (require 'ox-gfm nil t))
 #+end_src
 
 * Keybindings
