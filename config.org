@@ -5,7 +5,6 @@
 #+CREATED: 2021-04-24
 
 * Table of Contents                                                   :TOC_2:
-
 - [[#getting-started][Getting Started]]
   - [[#why-emacs][Why Emacs]]
   - [[#how-i-install-emacs][How I Install Emacs]]
@@ -34,6 +33,7 @@
   - [[#increase-fill-column-width][Increase fill column width]]
   - [[#fonts][Fonts]]
   - [[#theme-modus-themesel][Theme (modus-themes.el)]]
+  - [[#maximize-the-emacs-frame-on-startup][Maximize the Emacs Frame on Startup]]
 - [[#buffers][Buffers]]
   - [[#scratch-buffer][Scratch buffer]]
 - [[#mode-line][Mode line]]
@@ -545,6 +545,11 @@ Command/Super plus =/- for zooming in/out.
   ;;(modus-themes-load-operandi)
   (modus-themes-load-vivendi)
   :bind ("<f5>" . #'modus-themes-toggle))
+#+end_src
+** Maximize the Emacs Frame on Startup
+
+#+begin_src elisp
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 
 * Buffers
