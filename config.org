@@ -2468,17 +2468,19 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 (use-package org
   :general
   ;; I prefer C-c C-c over C-c ' (more consistent)
-  (:keymaps 'org-src-mode-map
-            "C-c C-c" #'org-edit-src-exit)
-  (:keymaps 'org-mode-map
-            "C-j"  #'org-move-subtree-down
-            "C-k"  #'org-move-subtree-up)
+  (:keymaps
+   'org-src-mode-map
+   "C-c C-c" #'org-edit-src-exit)
+  (:keymaps
+   'org-mode-map
+   "C-j"  #'org-move-subtree-down
+   "C-k"  #'org-move-subtree-up)
   ;; local leader
   (general-define-key
+   :keymaps 'org-mode-map
    :states '(normal visual emacs motion)
    :prefix ","
    :non-normal-prefix "M-SPC m"
-   :keymaps 'org-mode-map
    "'" #'org-edit-special
    "e" #'org-export-dispatch
    "h" #'org-toggle-heading
@@ -2498,9 +2500,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
    "d"   '(:ignore t :which-key "date/deadline")
    "dd" #'org-deadline
    "ds" #'org-schedule
-   "dt" #'org-time-stamp
-   "C-i" #'evil-jump-forward
-   "C-o" #'evil-jump-backward)
+   "dt" #'org-time-stamp)
   :init
   (setq org-directory "~/gdrive/deft")
   (setq org-agenda-files (list "~/gdrive/deft/journal.org" "~/gdrive/deft/gtd-inbox.org" "~/gdrive/deft/gtd-personal.org" "~/gdrive/deft/gtd-work.org" ))
