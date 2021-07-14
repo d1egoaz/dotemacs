@@ -3326,7 +3326,7 @@ vterm buffer."
 (defun diego/dev ()
   "Runs a dev command."
   (interactive)
-  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command: " '(up down build test style)))))
+  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command: " '(up down build test server style)))))
 
 (defun diego/dev ()
   "Runs a common dev command. Or run the passed command if no command was selected"
