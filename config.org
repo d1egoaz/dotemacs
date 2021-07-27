@@ -2344,7 +2344,7 @@ YASnippet is a template system for Emacs. It allows you to type an abbreviation 
 (use-package yasnippet
   :config
   (setq yas-verbosity 2)
-  (setq yas-snippet-dirs '("~/.config/doom/snippets/"))
+  (setq yas-snippet-dirs `(,(expand-file-name "snippets/" user-emacs-directory)))
   (yas-global-mode 1))
 #+end_src
 
