@@ -132,6 +132,7 @@
   - [[#rss-elfeedel][RSS (elfeed.el)]]
   - [[#rainbow-modeel][rainbow-mode.el]]
   - [[#emacs-everywhereel][emacs-everywhere.el]]
+  - [[#erc][erc]]
 - [[#keybindings][Keybindings]]
   - [[#simplify-leader-bindings-generalel][Simplify Leader Bindings (general.el)]]
   - [[#bindings][Bindings]]
@@ -779,6 +780,12 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
        (eq major-mode 'help-mode)
        (eq major-mode 'helpful-mode)))))
 
+(defun diego--display-buffer-from-erc-p (b _a)
+  "Clicking a link from the *Help* buffer opens source code in the same window."
+  (unless current-prefix-arg
+    (with-current-buffer (window-buffer)
+       (eq major-mode 'erc-mode))))
+
 (setq display-buffer-alist
       `(
         ;; top side window
@@ -818,6 +825,9 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (window-height . 0.8)
          (side . bottom)
          (slot . 0))
+        (diego--display-buffer-from-erc-p
+         (display-buffer-in-tab)
+         (tab-name . "*erc*"))
         ;; left side window
         ("\\*Help.*"
          (display-buffer-in-side-window)
@@ -2795,6 +2805,22 @@ Emacs Everywhere from, just press C-c C-c.
   :after org
   :config
   (require 'ox-gfm nil t))
+#+end_src
+** erc
+
+#+begin_src elisp
+(use-package erc
+  :straight (:type built-in)
+  :config
+  (setq erc-auto-query 'bury)
+  (setq erc-autojoin-channels-alist '(("irc.libera.chat" "#emacs")))
+  (setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
+  (setq erc-kill-buffer-on-part nil)
+  (setq erc-kill-server-buffer-on-quit t)
+  (setq erc-nick "d1egoaz")
+  (setq erc-prompt-for-password nil)
+  (setq erc-rename-buffers t) ; Rename server buffers to reflect the current network name instead of SERVER:PORT (e.g., "freenode" instead of "irc.freenode.net:6667").
+  (setq erc-server "irc.libera.chat"))
 #+end_src
 
 * Keybindings
