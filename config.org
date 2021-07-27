@@ -2871,7 +2871,7 @@ Emacs Everywhere from, just press C-c C-c.
  "ak"      #'(kubel :which-key "Kubel")
  "ap"      #'(list-processes :which-key "List process")
  "aP"      #'(list-processes :which-key "Kill process")
- "at"      #'((lambda () (interactive) (treemacs-select-window)(treemacs-display-current-project-exclusively)) :which-key "Treemacs project")
+ "at"      #'(treemacs-display-current-project-exclusively :which-key "Treemacs project")
  "aT"      #'(treemacs :which-key "Toggle Treemacs")
  "av"      #'vterm
  ;; Buffers
