@@ -817,7 +817,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (slot . 0)
          (window-parameters . ((no-other-window . t)
                                (mode-line-format . none))))
-        ("\\*kubel\\*"
+        ("\\*kubel.*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
         ("\\*kubel -.*"
