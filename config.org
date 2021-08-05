@@ -234,7 +234,7 @@ to move on Emacs when evil is not available.
 |--------+-------------------------------------|
 | M-a    | Move to the beginning of a sentence |
 
-*** Modeline
+*** Mode line
 
 The mode line is the empty area below the buffer. It has useful summary
 information about the buffer shown in the window.
@@ -629,6 +629,8 @@ func main() {
                 mode-line-front-space
                 "[" (:eval (diego/current-tab-name)) "]"
                 " "
+                (:eval (if (eq (buffer-local-value 'major-mode (current-buffer)) 'kubel-mode)
+                           (kubel-current-state)))
                 mode-line-buffer-identification  " "
                 mode-line-position
                 minions-mode-line-modes
@@ -637,8 +639,6 @@ func main() {
                 mode-line-mule-info
                 mode-line-client
                 mode-line-modified
-                (:eval (if (eq (buffer-local-value 'major-mode (current-buffer)) 'kubel-mode)
-                           (kubel-current-state)))
                 mode-line-remote
                 mode-line-frame-identification
                 mode-line-end-spaces))
