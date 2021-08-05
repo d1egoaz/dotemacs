@@ -1498,17 +1498,19 @@ of the Emacs ecosystem. You can pick which you want.
 
 #+begin_src elisp
 (use-package vertico
+  :straight (vertico :includes vertico-directory
+                     ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
+                     :files (:defaults "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
   :init
   (vertico-mode)
   :config
   (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
-  (setq vertico-cycle t))
-
-;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
-(use-package uchronia
-  :straight (:type git :host github :repo "minad/uchronia")
-  :hook
-  (after-init-hook . uchronia-mode))
+  (setq vertico-resize 'grow-only)
+  (setq vertico-cycle t)
+  :bind (:map
+         vertico-map
+         ("\C-<tab>" . #'vertico-quick-insert)
+         ("\C-q"     . #'vertico-quick-exit)))
 #+end_src
 
 #+begin_src elisp
@@ -2851,8 +2853,7 @@ Emacs Everywhere from, just press C-c C-c.
  :non-normal-prefix "M-SPC"
  "" nil ; to fix evil in some buffers, like *Messages*
  "SPC"     #'(execute-extended-command :which-key "M-x")
- "'"       #'(uchronia-repeat :which-key "Resume last search")
- "\""      #'(uchronia-select :which-key "Select last search")
+ "'"       #'(vertico-repeat :which-key "Resume last search")
  ">"       #'(er/expand-region :which-key "Expand region")
  "u"       #'(universal-argument :which-key "Universal argument")
  "U"       #'(universal-argument-more :which-key "Universal argument more")
