@@ -2861,7 +2861,8 @@ Emacs Everywhere from, just press C-c C-c.
  ;; Tabs
  "TAB"     '(:ignore t :which-key "workspaces")
  "TAB TAB" #'(tab-switch :which-key "Switch workspace")
- "TAB d"   #'(tab-bar-close-tab-by-name :which-key "Close workspace")
+ "TAB d"   #'(tab-bar-close-tab :which-key "Close workspace")
+ "TAB D"   #'(tab-bar-close-tab-by-name :which-key "Close workspace by name")
  "TAB p"   #'(tab-previous :which-key "Previous workspace")
  "TAB n"   #'(tab-next :which-key "Next workspace")
  "TAB l"   #'(tab-recent :which-key "Recent workspace")
