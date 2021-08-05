@@ -137,6 +137,7 @@
   - [[#simplify-leader-bindings-generalel][Simplify Leader Bindings (general.el)]]
   - [[#bindings][Bindings]]
 - [[#functions][Functions]]
+- [[#company-specific-functions][Company Specific Functions]]
 - [[#inspiration][Inspiration]]
 - [[#pending-tasks-712][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
@@ -3240,11 +3241,6 @@ Emacs Everywhere from, just press C-c C-c.
   (interactive "p")
   (dotimes (_ count) (save-excursion (evil-insert-newline-below))))
 
-(defun diego/request-lease-oncall ()
-  (interactive)
-  (browse-url "https://clouddo.shopifycloud.com/permits?renew=oncall-for-prodeng")
-  (browse-url "https://clouddo.shopifycloud.com/permits?renew=access-canada"))
-
 (defun diego/autocapitalize-org-headings ()
   "Find org headings and capitalize first word"
   (interactive)
@@ -3349,29 +3345,6 @@ vterm buffer."
   (setq-default compilation-directory default-directory)
   (compilation-start command t))
 
-(defun diego/dev ()
-  "Runs a dev command."
-  (interactive)
-  (diego/compile (concat "/opt/dev/bin/dev " (completing-read "Dev command: " '(up down build test server style)))))
-
-(defun diego/dev ()
-  "Runs a common dev command. Or run the passed command if no command was selected"
-  (interactive)
-  (diego/compile
-   (concat
-    "/opt/dev/bin/dev "
-    (completing-read "Dev command: " '(up down build test style)))))
-
-(defun diego/dev-project ()
-  "Runs a dev command from the project defined commands."
-  (interactive)
-  (diego/compile
-   (concat "/opt/dev/bin/dev "
-           (completing-read "Project Dev Command: "
-                            (split-string
-                             (shell-command-to-string "/opt/dev/bin/dev help --project | grep dev | tail -n +2 | cut -d' ' -f4 | sort")
-                             "\n")))))
-
 (defun diego/consult-line-symbol-at-point ()
   (interactive)
   (consult-line (thing-at-point 'symbol)))
@@ -3419,6 +3392,12 @@ exist after each headings's drawers."
                          nil
                        'tree)))
 
+#+end_src
+
+* Company Specific Functions
+
+#+begin_src elisp
+(load-file (substitute-in-file-name "$EMACS_ADDITIONAL_DIR/emacs.el"))
 #+end_src
 
 * Inspiration
