@@ -1553,8 +1553,13 @@ M-w copy
   (setq consult-find-command "fd --color=never --full-path ARG OPTS")
   (setq consult-async-refresh-delay 0.3)
   (setq consult-fontify-preserve t)
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
   ;; Use Consult to select xref locations with preview
-  (setq completion-in-region-function #'consult-completion-in-region)
   (setq xref-show-xrefs-function #'consult-xref)
   (setq xref-show-definitions-function #'consult-xref)
   :config
