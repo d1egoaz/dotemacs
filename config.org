@@ -3399,7 +3399,27 @@ exist after each headings's drawers."
                          nil
                        'tree)))
 
+(defvar diego--lookup-provider-alist
+  (append
+   diego--shopify-lookup-provider-alist
+   '(("Github Search" "https://github.com/search?q=%s")
+     ("Github Shopify Repository" "https://github.com/Shopify/%s")
+     ("Github Shopify Search" "https://github.com/search?q=org%%3AShopify+%s")
+     ("Google" "https://google.com/search?q=%s"))))
+
+(defun diego/open-url ()
+  "Open an URL given a provider and a query."
+  (interactive)
+  (let ((site (cadr (assoc
+                     (completing-read "Search on: " diego--lookup-provider-alist)
+                     diego--lookup-provider-alist))))
+    (browse-url
+     (url-encode-url
+      (format site (read-from-minibuffer "Query: "))))))
 #+end_src
+
+#+RESULTS:
+: diego/org-fix-blank-lines
 
 * Company Specific Functions
 
