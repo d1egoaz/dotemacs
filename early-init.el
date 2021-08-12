@@ -1,3 +1,30 @@
+;;; early-init.el --- Early Init File                     -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021  Diego Alvarez
+
+;; Author: Diego Alvarez <diego.canada@icloud.com>
+;; Version: 0.0.1
+;; Package-Requires: ((emacs "28.1"))
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;
+
+;;; Code:
+
 ;;; Startup optimizations
 
 ;; A big contributor to startup times is garbage collection. We up the gc
@@ -15,6 +42,8 @@
 
 ;; Disable `package' in favor of `straight'.
 (setq package-enable-at-startup nil)
+
+(setq native-comp-async-report-warnings-errors 'silent)
 
 ;; The rest of this file sets up straight.el so that packages are installed by
 ;; it rather than built-in package.el.
@@ -62,6 +91,9 @@
 (straight-use-package 'org)
 (straight-use-package 'use-package)
 (straight-use-package 'general)
+
 (require 'org)
 (require 'use-package)
 (require 'general)
+
+;;; early-init.el ends here
