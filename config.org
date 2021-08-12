@@ -1606,7 +1606,7 @@ M-w copy
   (setq xref-show-xrefs-function #'consult-xref)
   (setq xref-show-definitions-function #'consult-xref)
   :config
-  (setq consult-preview-key (kbd "C-SPC"))
+  ;; (setq consult-preview-key (kbd "C-SPC"))
   ;; (setq consult-preview-key `(,(kbd "C-SPC") :debounce 1 any))
 
   (setq consult-project-root-function #'vc-root-dir) ; vc.el
