@@ -1498,18 +1498,59 @@ of the Emacs ecosystem. You can pick which you want.
 
 #+begin_src elisp
 (use-package vertico
-  :straight (vertico :includes vertico-directory
+  :straight (vertico :type git :host github :repo "minad/vertico"
+                     :includes vertico-directory
                      ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
                      :files (:defaults "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
   :init
   (vertico-mode)
   :config
   (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
-  (setq vertico-resize 'grow-only)
+  ;; (setq vertico-resize 'grow-only)
+  (setq vertico-resize nil)
   (setq vertico-cycle t)
+  (setq vertico-count 20)
+
+  ;; Prefix current candidate with arrow
+  ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
+  ;; (advice-add #'vertico--format-candidate :around
+  ;;             (lambda (orig cand prefix suffix index _start)
+  ;;               (setq cand (funcall orig cand prefix suffix index _start))
+  ;;               (concat
+  ;;                (if (= vertico--index index)
+  ;;                    (propertize "» " 'face 'vertico-current)
+  ;;                  "  ")
+  ;;                cand)))
+
+  ;; Customize highlighting based on completion-category
+  ;; https://github.com/minad/vertico/wiki#customize-highlighting-based-on-completion-category
+  (defun +completion-category-highlight-files (cand)
+    (let ((len (length cand)))
+      (when (and (> len 0)
+                 (eq (aref cand (1- len)) ?/))
+        (add-face-text-property 0 len 'font-lock-function-name-face 'append cand)))
+    cand)
+
+  (defvar +completion-category-hl-func-overrides
+    `((file . ,#'+completion-category-highlight-files))
+    "Alist mapping category to highlight functions.")
+
+  (advice-add #'vertico--arrange-candidates :around
+              (defun vertico-format-candidates+ (func metadata)
+                (let ((hl-func (or (alist-get (completion-metadata-get metadata 'category)
+                                              +completion-category-hl-func-overrides)
+                                   #'identity)))
+                  (cl-letf* (((symbol-function 'actual-vertico-format-candidate)
+                              (symbol-function #'vertico--format-candidate))
+                             ((symbol-function #'vertico--format-candidate)
+                              (lambda (cand &rest args)
+                                (apply #'actual-vertico-format-candidate
+                                       (funcall hl-func cand) args))))
+                    (funcall func metadata)))))
+
   :bind (:map
          vertico-map
-         ("\C-<tab>" . #'vertico-quick-insert)
+         ("\C-tab" . #'vertico-quick-insert)
          ("\C-q"     . #'vertico-quick-exit)))
 #+end_src
 
@@ -1549,6 +1590,8 @@ M-w copy
 
 #+begin_src elisp
 (use-package consult
+  :after vertico
+  :straight (consult :type git :host github :repo "minad/consult")
   :init
   (setq consult-find-command "fd --color=never --full-path ARG OPTS")
   (setq consult-async-refresh-delay 0.3)
@@ -1635,6 +1678,7 @@ https://github.com/oantolin/embark/wiki/Default-Actions
 
 #+begin_src elisp
 (use-package embark
+  :straight (embark :type git :host github :repo "oantolin/embark")
   :init
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
@@ -1654,6 +1698,7 @@ https://github.com/oantolin/embark/wiki/Default-Actions
                  (window-parameters (mode-line-format . none))))
   :bind
   (("M-a"                     . #'embark-act)
+   ("M-."                     . #'embark-dwim)
    ("C-h B"                   . #'embark-bindings)
    ;; alternative for `describe-bindings'
    ([remap describe-bindings] . #'embark-bindings)))
@@ -1871,7 +1916,7 @@ consult-grep -> embark-export to grep-mode buffer -> wgrep for editing of all ma
 
 #+begin_src elisp
 (use-package wgrep
-  :after embark
+  :commands wgrep-change-to-wgrep-mode
   :config
   (setq wgrep-auto-save-buffer t)
   :hook
