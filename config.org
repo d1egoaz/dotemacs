@@ -1618,6 +1618,8 @@ M-w copy
   (setq consult-async-refresh-delay 0.4)
   (setq consult-async-min-input 1)
 
+  (advice-add 'recent-mode :before #'consult-recent-file)
+
   ;; Makes only the open buffers list visible when calling consult-buffer command
   ;; by hiding the other sources, but still allowing the narrowing to recent
   ;; files (by typing f SPC), bookmarks (m SPC) and project buffer and/or files
