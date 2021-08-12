@@ -1,0 +1,374 @@
+;;; diego-common.el --- Common functions for my dotemacs -*- lexical-binding: t -*-
+
+;; Author: Diego Alvarez <diego.canada@icloud.com>
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or (at
+;; your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Common functions for my Emacs.
+;;
+
+;;; Code:
+
+(defgroup diego-common ()
+  "Auxiliary functions for my dotemacs."
+  :group 'editing)
+
+;;;###autoload
+(defun diego/indent-buffer ()
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)))
+
+;;;###autoload
+(defun diego/delete-last-char-eol ()
+  "Delete last character in line"
+  (interactive)
+  (save-excursion
+    (move-end-of-line 1)
+    (delete-char -1)))
+
+(defvar diego--emojis '(
+                        "ಠ_ಠ"
+                        "¯\\_(ツ)_/¯"
+                        "(╯°□°）╯︵ ┻━┻"
+                        "(⌐■_■)"
+                        "¯\(°_°)/¯"))
+;;;###autoload
+(defun diego/emoji-insert ()
+  (interactive)
+  (insert (completing-read "Emoji to insert: " diego--emojis)))
+
+;;;###autoload
+(defun diego/copy-buffer-name ()
+  "copy buffer name"
+  (interactive)
+  (let ((path (file-name-nondirectory (buffer-file-name))))
+    (message path)
+    (kill-new path)))
+
+;;;###autoload
+(defun diego/copy-file-name ()
+  "copy buffer name"
+  (interactive)
+  (let ((path (buffer-file-name)))
+    (message path)
+    (kill-new path)))
+
+;;;###autoload
+(defun diego/copy-buffer-dir-path ()
+  "copy buffer path to clipboard"
+  (interactive)
+  (message default-directory)
+  (kill-new default-directory))
+
+;;;###autoload
+(defun diego/url-to-markdown-image ()
+  "copy url from clipboard and creates an url src image to paste in a markdown document"
+  (interactive)
+  (kill-new
+   (format "<img src=\"%s\" width=\"50%%\" />" (current-kill 0))))
+
+;;;###autoload
+(defun diego/today-UTC-date ()
+  "copy the full UTC time to clipboard"
+  (interactive)
+  "Inserts the current date in the buffer"
+  ;; nil to use current date, t to use UTC
+  (insert (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t)))
+
+;;;###autoload
+(defun diego/now ()
+  "Inserts the current time in the buffer"
+  (interactive)
+  (insert (format-time-string "%H:%M:%S PT")))
+
+(defun diego--exec-command-replace-region (command)
+  (unless mark-active
+    (progn
+      ;; (mark-whole-buffer) replacement
+      (push-mark)
+      (push-mark (point-max) nil t)
+      (goto-char (point-min))))
+  (shell-command-on-region
+   (region-beginning) (region-end)
+   command
+   (current-buffer) t "*diego/error-buffer*" t))
+
+;;;###autoload
+(defun diego/prettify-json ()
+  "prettify json current region"
+  (interactive)
+  (diego--exec-command-replace-region "jq -SM ."))
+
+;;;###autoload
+(defun diego/resize-image ()
+  (interactive)
+  (let ((str (concat "convert \"" buffer-file-name "\" -geometry x300 \"" buffer-file-name "\"")))
+    (message str)
+    (shell-command-to-string str)))
+
+;;;###autoload
+(defun diego/fetch-and-rebase-onto-origin-master ()
+  (interactive)
+  (magit-fetch-branch "origin" "master" nil)
+  (magit-git-rebase "origin/master" nil))
+
+;;;###autoload
+(defun diego/fetch-origin-master ()
+  (interactive)
+  (magit-fetch-branch "origin" "master" nil))
+
+;;;###autoload
+(defun diego/git-create-branch-from-origin-master ()
+  "Creates a new branch starting from origin/master."
+  (interactive)
+  (diego/fetch-origin-master)
+  (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/master): " "diego_")))
+    (magit-git-command-topdir
+     (concat "git checkout -b " new_branch_name " origin/master"))))
+
+;;;###autoload
+(defun diego/prettify-jsonv2 ()
+  "prettify json current region"
+  (interactive)
+  (diego--exec-command-replace-region "prettier --parser json"))
+
+;;;###autoload
+(defun diego/prettify-markdown ()
+  "prettify markdown current region"
+  (interactive)
+  (diego--exec-command-replace-region "prettier --parser markdown"))
+
+;;;###autoload
+(defun diego/prettify-yaml ()
+  "prettify yaml current region"
+  (interactive)
+  (diego--exec-command-replace-region "prettier --parser yaml"))
+
+;;;###autoload
+(defun diego/visit-pull-request-url ()
+  "Visit the current branch's PR on Github."
+  (interactive)
+  (browse-url
+   (format "https://github.com/%s/pull/new/%s"
+           (replace-regexp-in-string
+            "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1"
+            (magit-get "remote"
+                       (magit-get-push-remote)
+                       "url"))
+           (magit-get-current-branch))))
+
+;;;###autoload
+(defun diego/kill-close-all-buffers ()
+  (interactive)
+  (let ((keep '("*scratch* *Messages*")))
+    (switch-to-buffer "*scratch*")
+    (delete-other-windows)
+    (mapc
+     (lambda (b)
+       (unless (member (buffer-name b) keep)
+         (kill-buffer b)))
+     (buffer-list))))
+
+;;;###autoload
+(defun diego/safe-erase-buffer ()
+  "Prompt before erasing the content of the file."
+  (interactive)
+  (if (y-or-n-p (format "Erase content of buffer %s ? " (current-buffer)))
+      (erase-buffer)))
+
+;;;###autoload
+(defun diego/copy-whole-buffer-to-clipboard ()
+  "Copy entire buffer to clipboard"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
+
+;;;###autoload
+(defun diego/evil-insert-line-above (count)
+  "Insert one or several lines above the current point's line without changing
+    the current state and point position."
+  (interactive "p")
+  (dotimes (_ count) (save-excursion (evil-insert-newline-above))))
+
+;;;###autoload
+(defun diego/evil-insert-line-below (count)
+  "Insert one or several lines below the current point's line without changing
+    the current state and point position."
+  (interactive "p")
+  (dotimes (_ count) (save-excursion (evil-insert-newline-below))))
+
+;;;###autoload
+(defun diego/autocapitalize-org-headings ()
+  "Find org headings and capitalize first word"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (org-next-visible-heading 1)
+      (forward-to-word 1)
+      (while (member (word-at-point) '("TODO" "DONE" "CANCELLED"))
+        (forward-to-word 1))
+      (upcase-char 1))))
+
+;;;###autoload
+(defun diego/insert-uuid ()
+  (interactive)
+  (insert (shell-command-to-string "uuidgen")))
+
+
+;;;###autoload
+(defun diego/vterm ()
+  "Switch to (or create) a general vterm called diego/vterm."
+  (interactive)
+  (delete-other-windows)
+  (if (get-buffer "diego/vterm")
+      (progn
+        (set-buffer "diego/vterm")
+        (switch-to-buffer "diego/vterm"))
+    (vterm "diego/vterm")))
+
+;;;###autoload
+(defun diego/insert-filename ()
+  "Insert a filename at point."
+  (interactive)
+  (insert (read-file-name "File:")))
+
+;;;###autoload
+(defun diego/insert-relative-filename ()
+  "Insert a relative filename at point."
+  (interactive)
+  (insert (file-relative-name (read-file-name "File: "))))
+
+;;;###autoload
+(defun diego/browse-current-file ()
+  "Open the current file as a URL using `browse-url'."
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (browse-url (concat "file://" file-name))))
+
+;;;###autoload
+(defun diego/what-the-commit ()
+  (interactive)
+  (insert
+   (with-current-buffer
+       (url-retrieve-synchronously "http://whatthecommit.com")
+     (re-search-backward "<p>\\([^<]+\\)\n<\/p>")
+     (match-string 1))))
+
+;;;###autoload
+(defun diego/make-orgcapture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "alfredoc") (width . 80) (height . 16)
+                (top . 400) (left . 300)))
+  (select-frame-by-name "alfredoc")
+  (org-capture))
+
+;;;###autoload
+(defun diego/project-compile-dwim (command)
+  "Run `compile' in the project root."
+  (declare (interactive-only compile))
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
+    (compile command t)))
+
+;;;###autoload
+(defun diego/project-compile ()
+  "Run `compile' in the project root."
+  (declare (interactive-only compile))
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
+    (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
+
+;;;###autoload
+(defun diego/consult-line-symbol-at-point ()
+  (interactive)
+  (consult-line (thing-at-point 'symbol)))
+
+;;;###autoload
+(defun diego/go-run-test-current-function ()
+  (interactive)
+  (if (string-match "_test\\.go" buffer-file-name)
+      (save-excursion
+        (move-end-of-line nil)
+        (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?\\([[:alnum:]]+\\))[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
+        (compile (concat "go test -v -run=" (match-string-no-properties 3)) t))
+    (message "Must be in a _test.go file to run go-run-test-current-function")))
+
+;; from https://github.com/alphapapa/unpackaged.el
+;;;###autoload
+(defun diego/org-fix-blank-lines (&optional prefix)
+  "Ensure that blank lines exist between headings and between headings and their contents.
+With prefix, operate on whole buffer. Ensures that blank lines
+exist after each headings's drawers."
+  (interactive "P")
+  (org-map-entries (lambda ()
+                     (org-with-wide-buffer
+                      ;; `org-map-entries' narrows the buffer, which prevents us from seeing
+                      ;; newlines before the current heading, so we do this part widened.
+                      (while (not (looking-back "\n\n" nil))
+                        ;; Insert blank lines before heading.
+                        (insert "\n")))
+                     (let ((end (org-entry-end-position)))
+                       ;; Insert blank lines before entry content
+                       (forward-line)
+                       (while (and (org-at-planning-p)
+                                   (< (point) (point-max)))
+                         ;; Skip planning lines
+                         (forward-line))
+                       (while (re-search-forward org-drawer-regexp end t)
+                         ;; Skip drawers. You might think that `org-at-drawer-p' would suffice, but
+                         ;; for some reason it doesn't work correctly when operating on hidden text.
+                         ;; This works, taken from `org-agenda-get-some-entry-text'.
+                         (re-search-forward "^[ \t]*:END:.*\n?" end t)
+                         (goto-char (match-end 0)))
+                       (unless (or (= (point) (point-max))
+                                   (org-at-heading-p)
+                                   (looking-at-p "\n"))
+                         (insert "\n"))))
+                   t (if prefix
+                         nil
+                       'tree)))
+
+(defvar diego--lookup-provider-alist
+  (append
+   diego--shopify-lookup-provider-alist
+   '(("Github Search" "https://github.com/search?q=%s")
+     ("Github Shopify Repository" "https://github.com/Shopify/%s")
+     ("Github Shopify Search" "https://github.com/search?q=org%%3AShopify+%s")
+     ("Google" "https://google.com/search?q=%s"))))
+
+;;;###autoload
+(defun diego/open-url ()
+  "Open an URL given a provider and a query."
+  (interactive)
+  (let ((site (cadr (assoc
+                     (completing-read "Search on: " diego--lookup-provider-alist)
+                     diego--lookup-provider-alist))))
+    (browse-url
+     (url-encode-url
+      (format site (read-from-minibuffer "Query: "))))))
+
+(provide 'diego-common)
+;;; diego-common.el ends here
