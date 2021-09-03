@@ -1608,32 +1608,23 @@ M-w copy
   :after vertico
   :straight (consult :type git :host github :repo "minad/consult")
   :init
-  (setq consult-find-command "fd --color=never --full-path ARG OPTS")
-  (setq consult-async-refresh-delay 0.3)
-  (setq consult-fontify-preserve t)
-  (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args)))
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Optionally replace `completing-read-multiple' with an enhanced version.
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
   ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref)
-  (setq xref-show-definitions-function #'consult-xref)
-  :config
-  ;; (setq consult-preview-key (kbd "C-SPC"))
-  ;; (setq consult-preview-key `(,(kbd "C-SPC") :debounce 1 any))
-
-  (setq consult-project-root-function #'vc-root-dir) ; vc.el
-
-  (setq consult-narrow-key ">")
-  (setq consult-widen-key "<")
-  (setq consult-async-input-debounce 0.5)
-  (setq consult-async-input-throttle 0.8)
-  (setq consult-async-refresh-delay 0.4)
-  (setq consult-async-min-input 1)
-
-  (advice-add 'recent-mode :before #'consult-recent-file)
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
 
   ;; Makes only the open buffers list visible when calling consult-buffer command
   ;; by hiding the other sources, but still allowing the narrowing to recent
@@ -1644,20 +1635,50 @@ M-w copy
     (unless (eq src 'consult--source-buffer)
       (set src (plist-put (symbol-value src) :hidden t))))
 
-  ;; https://github.com/minad/consult/issues/6#issuecomment-848077449
-  (defvar consult--source-project-file
-    `(:name      "Project File"
-                 :narrow    (?p . "Project")
-                 :hidden    t
-                 :category  file
-                 :face      consult-file
-                 :history   file-name-history
-                 :action    ,#'consult--file-action
-                 :enabled   ,#'project-current
-                 :items     ,(lambda ()
-                               (mapcar #'file-relative-name
-                                       (project-files (project-current)))))
-    "Project file candidate source for `consult-buffer'.")
+
+  :config
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-file consult--source-project-file consult--source-bookmark
+   :preview-key (kbd "C-SPC"))
+
+  (setq consult-narrow-key ">")
+  (setq consult-widen-key "<")
+
+  (setq consult-find-command "fd --color=never --full-path ARG OPTS")
+  (setq consult-ripgrep-args "rg --hidden --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
+  (setq consult-fontify-preserve t)
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+  (setq consult-preview-key nil)
+  ;; (setq consult-project-root-function #'vc-root-dir)
+  (setq consult-project-root-function
+        (lambda ()
+          (when-let (project (project-current))
+            (car (project-roots project)))))
+
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+
+  (defun diego/search-symbol-at-point ()
+    (interactive)
+    (consult-line (thing-at-point 'symbol)))
+
+  (defun diego--recentf-mode-consult ()
+    (recentf-mode 1))
+  (advice-add 'diego--recentf-mode-consult :before #'consult-recent-file)
 
   :bind (
          ([remap apropos]                       . #'consult-apropos)
