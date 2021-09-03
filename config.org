@@ -851,6 +851,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (window-width . 0.50)
          (side . right)
          (slot . 0))
+        ("\\*Async Shell Command\\*.*" display-buffer-no-window)
         ("\\*Ilist\\*"
          (display-buffer-in-side-window)
          (window-width . 0.20)
