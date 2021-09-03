@@ -2572,6 +2572,8 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 (use-package iedit
   :config
 
+  (add-to-list 'warning-suppress-types '(iedit)) ; to avoid warn edit default key %S is occupied by %s
+
 ;;;###autoload
   (defun diego/iedit-scoped (orig-fn)
     "Call `iedit-mode' with function-local scope, or global scope if called with a universal prefix."
