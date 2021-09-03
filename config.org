@@ -1436,9 +1436,10 @@ from previous history files.
 (use-package savehist
   :straight (:type built-in)
   :init
-  (savehist-mode)
+  (savehist-mode 1)
   :config
-  (setq history-length 100)
+  (setq history-length 1000)
+  (setq auto-save-interval 100)
   (setq history-delete-duplicates t))
 #+end_src
 
