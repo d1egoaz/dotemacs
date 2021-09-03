@@ -2515,7 +2515,17 @@ electric-pair-skip-whitespace, when non-nil, causes the minor mode to skip white
 ** vterm.el
 
 #+begin_src elisp
-(use-package vterm)
+(use-package vterm
+  :config
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000)
+
+  (defun diego--vterm-hook ()
+    ;; Don't prompt about dying processes when killing vterm
+    (setq confirm-kill-processes nil)
+    ;; Prevent premature horizontal scrolling
+    (setq hscroll-margin 0))
+  :hook ((vterm-mode-hook . diego--vterm-hook)))
 #+end_src
 
 ** flyspell.el
