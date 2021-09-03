@@ -766,8 +766,8 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
 
 (defun diego--debug-buffer-alist (b a)
   "Clicking a link from the *Help* buffer opens source code in the same window."
-  (message "b:%s" b)
-  (print a)
+  ;; (message "b:%s" b)
+  ;; (print a)
   nil)
 
 (defun diego/project-name-from-root (project-root)
@@ -890,7 +890,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
                          (vc-git-root
                           (buffer-file-name b))))
 
-                     (message "root %s"root)
+                     ;; (message "root %s"root)
                      (if root
                          (diego/project-name-from-root root)
                        "*special*"))))
