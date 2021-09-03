@@ -3002,6 +3002,7 @@ Emacs Everywhere from, just press C-c C-c.
  "at"      #'(treemacs-display-current-project-exclusively :which-key "Treemacs project")
  "aT"      #'(treemacs :which-key "Toggle Treemacs")
  "av"      #'vterm
+ "aV"      #'diego/vterm
  ;; Buffers
  "b"       '(:ignore t :which-key "buffers")
  "bb"      #'(consult-buffer :which-key "Switch buffer")
@@ -3162,6 +3163,7 @@ Emacs Everywhere from, just press C-c C-c.
  "sg"      #'(consult-grep :which-key "Search")
  "sr"      #'replace-regexp
  "ss"      #'(consult-line :which-key "Search")
+ "sS"      #'(diego/search-symbol-at-point :which-key "Search at point")
  ;; "sp"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Search in project")
  "sp"      #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
