@@ -1141,24 +1141,20 @@ underlines in a sequence of letters as if it was a letter itself. In contrast, i
 underscore is often a non-word character like operators, e.g. +.
 
 #+begin_src elisp
+(defun diego--chars-as-word-char-for-syntax-table (st)
+  (modify-syntax-entry ?/ "w" st)
+  (modify-syntax-entry ?_ "w" st)
+  (modify-syntax-entry ?- "w" st))
+
 (defun diego--treat-chars-as-word-char ()
-  (modify-syntax-entry ?/ "w" prog-mode-syntax-table)
-  (modify-syntax-entry ?_ "w" prog-mode-syntax-table)
-  (modify-syntax-entry ?- "w" prog-mode-syntax-table)
+  (mapc 'diego--chars-as-word-char-for-syntax-table
+   (list  emacs-lisp-mode-syntax-table help-mode-syntax-table helpful-mode-syntax-table Info-mode-syntax-table org-mode-syntax-table prog-mode-syntax-table ))
 
-  (modify-syntax-entry ?/ "w" org-mode-syntax-table)
-  (modify-syntax-entry ?_ "w" org-mode-syntax-table)
-  (modify-syntax-entry ?- "w" org-mode-syntax-table)
+  (with-eval-after-load 'ruby-mode
+    (diego--chars-as-word-char-for-syntax-table ruby-mode-syntax-table))
 
-  (with-eval-after-load 'ruby
-    (modify-syntax-entry ?/ "w" ruby-mode-syntax-table)
-    (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
-    (modify-syntax-entry ?- "w" ruby-mode-syntax-table))
-
-  (with-eval-after-load 'html
-    (modify-syntax-entry ?/ "w" html-mode-syntax-table)
-    (modify-syntax-entry ?_ "w" html-mode-syntax-table)
-    (modify-syntax-entry ?- "w" html-mode-syntax-table)))
+  (with-eval-after-load 'html-mode
+    (diego--chars-as-word-char-for-syntax-table html-mode-syntax-table)))
 
 (add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
 #+end_src
