@@ -1792,6 +1792,8 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
 
 *** marginalia.el
 
+Provides annotations to completion candidates.
+
 #+begin_example
  "Return symbol class characters for symbol S.
 Function:
