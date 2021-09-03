@@ -1505,12 +1505,14 @@ of the Emacs ecosystem. You can pick which you want.
 
 *** vertico.el
 
+Provides the vertical completion user interface.
+
 #+begin_src elisp
 (use-package vertico
   :straight (vertico :type git :host github :repo "minad/vertico"
                      :includes vertico-directory
                      ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
-                     :files (:defaults "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
+                     :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
   :init
   (vertico-mode)
   :config
@@ -1522,14 +1524,14 @@ of the Emacs ecosystem. You can pick which you want.
 
   ;; Prefix current candidate with arrow
   ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
-  ;; (advice-add #'vertico--format-candidate :around
-  ;;             (lambda (orig cand prefix suffix index _start)
-  ;;               (setq cand (funcall orig cand prefix suffix index _start))
-  ;;               (concat
-  ;;                (if (= vertico--index index)
-  ;;                    (propertize "» " 'face 'vertico-current)
-  ;;                  "  ")
-  ;;                cand)))
+  (advice-add #'vertico--format-candidate :around
+              (lambda (orig cand prefix suffix index _start)
+                (setq cand (funcall orig cand prefix suffix index _start))
+                (concat
+                 (if (= vertico--index index)
+                     (propertize "» " 'face 'vertico-current)
+                   "  ")
+                 cand)))
 
   ;; Customize highlighting based on completion-category
   ;; https://github.com/minad/vertico/wiki#customize-highlighting-based-on-completion-category
@@ -1560,7 +1562,10 @@ of the Emacs ecosystem. You can pick which you want.
   :bind (:map
          vertico-map
          ("\C-tab" . #'vertico-quick-insert)
-         ("\C-q"     . #'vertico-quick-exit)))
+         ("\C-q"     . #'vertico-quick-exit))
+  :hook
+  (rfn-eshadow-update-overlay-hook . vertico-directory-tidy))
+
 #+end_src
 
 #+begin_src elisp
