@@ -849,7 +849,7 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ("\\*compilation\\*"
          (display-buffer-in-side-window)
          (window-width . 0.50)
-         (side . bottom)
+         (side . right)
          (slot . 0))
         ("\\*Ilist\\*"
          (display-buffer-in-side-window)
