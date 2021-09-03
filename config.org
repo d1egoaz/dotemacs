@@ -818,6 +818,9 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (slot . 0)
          (window-parameters . ((no-other-window . t)
                                (mode-line-format . none))))
+        ("\\*diego/vterm\\*"
+         (display-buffer-in-tab)
+         (tab-name . "*vterm*"))
         ("\\*kubel.*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
