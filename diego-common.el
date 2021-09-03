@@ -104,6 +104,7 @@
       (push-mark)
       (push-mark (point-max) nil t)
       (goto-char (point-min))))
+  (message "running %s" command)
   (shell-command-on-region
    (region-beginning) (region-end)
    command
@@ -143,7 +144,7 @@
      (concat "git checkout -b " new_branch_name " origin/master"))))
 
 ;;;###autoload
-(defun diego/prettify-jsonv2 ()
+(defun diego/prettify-jsonv-with-prettier ()
   "prettify json current region"
   (interactive)
   (diego--exec-command-replace-region "prettier --parser json"))
