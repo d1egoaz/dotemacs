@@ -57,6 +57,7 @@
   - [[#disable-the-warning-x-and-y-are-the-same-file][Disable the warning X and Y are the same file]]
   - [[#disable-file-changed-on-disk-messages][Disable file changed on disk messages]]
   - [[#restore-cursor-to-last-visited-place-in-a-file][Restore cursor to last visited place in a file]]
+  - [[#save-some-buffers-default-to-root-project][Save Some Buffers default to root project]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
   - [[#new-line-at-eof][New line at EOF]]
@@ -1075,6 +1076,12 @@ visited the same file.
   :config
   (setq-default save-place t)
   (save-place-mode 1))
+#+end_src
+
+** Save Some Buffers default to root project
+
+#+begin_src elisp
+(setq save-some-buffers-default-predicate 'save-some-buffers-root)
 #+end_src
 
 * Editor
