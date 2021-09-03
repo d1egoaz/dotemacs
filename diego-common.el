@@ -163,16 +163,18 @@
 
 ;;;###autoload
 (defun diego/visit-pull-request-url ()
-  "Visit the current branch's PR on Github."
+  "Visit the current branch's PR on Github.
+Uses gh and magit"
   (interactive)
-  (browse-url
-   (format "https://github.com/%s/pull/new/%s"
-           (replace-regexp-in-string
-            "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1"
-            (magit-get "remote"
-                       (magit-get-push-remote)
-                       "url"))
-           (magit-get-current-branch))))
+  (call-process
+   "gh"
+   nil
+   0 ; <- Discard and don't wait
+   nil
+   "pr"
+   "view"
+   (magit-get-current-branch)
+   "-w"))
 
 ;;;###autoload
 (defun diego/kill-close-all-buffers ()
