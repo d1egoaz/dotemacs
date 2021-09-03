@@ -1594,7 +1594,7 @@ Provides the vertical completion user interface.
 
 *** consult.el
 
-Consult is a set of functions to use various Emacs facilities via completing-read.
+Provides a suite of useful commands using completing-read.
 
 https://github.com/minad/consult#use-package-example
 https://github.com/minad/consult/wiki
