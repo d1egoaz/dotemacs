@@ -2542,6 +2542,11 @@ electric-pair-skip-whitespace, when non-nil, causes the minor mode to skip white
 
 ** Define word
 
+Use directly this server instead of trying localhost.
+#+begin_src elisp
+(setq dictionary-server "dict.org")
+#+end_src
+
 #+begin_src elisp
 (use-package define-word)
 #+end_src
