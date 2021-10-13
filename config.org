@@ -2201,17 +2201,14 @@ TODO remove use package as it's now part of Emacs
   :straight (:type built-in)
   :config
   (load (expand-file-name "diego-project.el" user-emacs-directory))
-  (setq project-switch-commands '((project-find-file "Find file")
-                                  (diego/open-project-readme "README.md")
-                                  (consult-ripgrep "Ripgrep")
-                                  (magit-status "Git status")
-                                  (projectile-recentf "Recent file")))
-  :bind (:map
-         project-prefix-map
-         ("." . #'diego/open-project-readme)
-         ("r" . #'consult-ripgrep)
-         ("R" . #'projectile-recentf)
-         ("m" . #'magit-status)))
+  (setq project-switch-commands '((project-find-file "Find file" ?f)
+                                  (diego/open-project-readme "README.md" ?.)
+                                  (consult-ripgrep "Ripgrep" ?r)
+                                  (project-dired "Dired" ?d)
+                                  (magit-status "Git status" ?m)
+                                  (projectile-recentf "Recent file" ?R)
+                                  (project-shell-command "Shell command" ?!)
+                                  (diego/vterm-project "Vterm project" ?v))))
 #+end_src
 
 ** Projectile
