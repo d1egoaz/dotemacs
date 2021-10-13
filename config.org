@@ -807,49 +807,102 @@ nil)
     (with-current-buffer (window-buffer)
       (or
        (eq major-mode 'help-mode)
+       (eq major-mode 'apropos-mode)
        (eq major-mode 'helpful-mode)))))
-
-(defun diego--display-buffer-from-erc-p (b _a)
-  "Clicking a link from the *Help* buffer opens source code in the same window."
-  (unless current-prefix-arg
-    (with-current-buffer (window-buffer)
-       (eq major-mode 'erc-mode))))
 
 (setq display-buffer-alist
       `(
+        ;; no window
+        ("\\*Async Shell Command\\*.*"
+         (display-buffer-no-window))
+
         ;; top side window
         ("\\*world-clock\\*"
          (display-buffer-in-side-window)
-         (window-height . 0.16)
          (side . top)
+         (window-height . 0.16)
          (slot . -1))
-        ("\\*\\(Flymake\\|vc-git :\\).*"
-         (display-buffer-in-side-window)
-         (window-height . 0.16)
-         (side . top)
-         (slot . 0))
         ("\\*Messages\\*"
          (display-buffer-in-side-window)
-         (window-height . 0.16)
          (side . top)
+         (window-height . 0.16)
          (slot . 1))
-        ("\\*\\(Backtrace\\|Warnings\\)\\*"
+        ("\\*Warnings\\*"
          (display-buffer-in-side-window)
-         (window-height . 0.16)
          (side . top)
-         (slot . 2)
-         (window-parameters . ((no-other-window . t))))
+         (window-height . 0.16)
+         (slot . 2))
+
         ;; bottom side window
-        ("\\*\\(Embark\\)?.*Completions.*"
+        ("\\*Embark Actions.*"
          (display-buffer-in-side-window)
          (side . bottom)
-         (slot . 0)
+         (slot . -1)
+         (window-height . fit-window-to-buffer)
          (window-parameters . ((no-other-window . t)
                                (mode-line-format . none))))
+
+        ;; left side window
+        ("\\*Help.*"
+         ;; (display-buffer-reuse-window display-buffer-in-side-window)
+         (display-buffer-in-side-window)
+         (side . left)
+         (window-width . 0.40)
+         (slot . -1))
+        ("\\*Apropos\\*"
+         ;; (display-buffer-reuse-window display-buffer-in-side-window)
+         (display-buffer-in-side-window)
+         (side . left)
+         (window-width . 0.40)
+         (slot . -1))
+        ;; if buffer is opened from a help* mode, open it in that window
+        (diego--display-buffer-from-help-p
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . left)
+         (window-width . 0.40)
+         (slot . -1))
+
+        ;; right side window
+        ("\\*compilation\\*"
+         (display-buffer-in-side-window)
+         (side . right)
+         (window-width . 0.50)
+         (slot . 0))
+        ("\\*vterm\\*"
+         (display-buffer-reuse-mode-window display-buffer-in-side-window)
+         (side . right)
+         (window-width . 0.50)
+         (slot . -1))
+        ("\\*\\(vterm\\|vterm-project\\).*"
+         (display-buffer-in-side-window)
+         (side . right)
+         (window-width . 0.50)
+         (slot . 0))
+        ("\\*Ilist\\*"
+         (display-buffer-in-side-window)
+         (side . right)
+         (window-width . 0.20)
+         (slot . 0))
+
+        ;; below current window
+        ("\\*Calendar.*"
+         (display-buffer-reuse-mode-window display-buffer-below-selected)
+         (window-height . fit-window-to-buffer))
+        ("\\*Org todo\\*"
+         (display-buffer-reuse-mode-window display-buffer-below-selected)
+         (window-height . fit-window-to-buffer))
+
+        ;; dedicated tabs
+        ;;; tabs for apps
+
+        ;;;; Kubel
         ("\\*diego/vterm\\*"
          (display-buffer-in-tab)
          (tab-name . "*vterm*"))
         ("\\*kubel.*"
+         (display-buffer-in-tab)
+         (tab-name . "*kubel*"))
+        ("\\*kubectl RTF logs.*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
         ("\\*kubel -.*"
@@ -857,46 +910,12 @@ nil)
          (window-height . 0.8)
          (side . bottom)
          (slot . 0))
-        (diego--display-buffer-from-erc-p
-         (display-buffer-in-tab)
-         (tab-name . "*erc*"))
-        ;; left side window
-        ("\\*Help.*"
+        ("\\*kubel resource.*"
          (display-buffer-in-side-window)
-         (window-width . 0.30)
-         (side . left)
-         (slot . 0))
-        ;; if buffer is opened from a help* mode, open it in that window
-        (diego--display-buffer-from-help-p
-         (display-buffer-in-side-window)
-         ;; display-buffer-in-side-window
-         (window-width . 0.30)
-         (side . left)
-         (slot . 0))
-        ;; right side window
-        ("\\*compilation\\*"
-         (display-buffer-in-side-window)
-         (window-width . 0.50)
+         (window-height . 0.4)
          (side . right)
          (slot . 0))
-        ("\\*Async Shell Command\\*.*" display-buffer-no-window)
-        ("\\*Ilist\\*"
-         (display-buffer-in-side-window)
-         (window-width . 0.20)
-         (side . right)
-         (slot . 0))
-        ;; bottom buffer (NOT side window)
-        ("\\*\\vc-\\(incoming\\|outgoing\\).*"
-         (display-buffer-at-bottom))
-        ("\\*\\(Output\\|Register Preview\\).*"
-         (display-buffer-at-bottom))
-        ("\\*.*\\(e?shell\\|v?term\\).*"
-         (display-buffer-reuse-mode-window display-buffer-at-bottom)
-         (window-height . 0.2))
-        ;; below current window
-        ("\\*Calendar.*"
-         (display-buffer-reuse-mode-window display-buffer-below-selected)
-         (window-height . shrink-window-if-larger-than-buffer))
+        ;;;; Elfeed
         ("\\*elfeed-search\\*"
          (display-buffer-in-tab)
          (tab-name . "*elfeed*"))
@@ -904,29 +923,32 @@ nil)
          (display-buffer-in-side-window)
          (side . bottom)
          (window-height . 0.7))
-        ;; custom rules
-        ;; tabs
+
+        ;;;; Scratch buffers
         ("\\*scratch.*"
          (display-buffer-in-tab)
          (tab-name . "*scratch*"))
-        ;; open buffers in its respective tab, if tab doesn't exist, create it
+
+        ;;; Automatic tab management
+        ;; every new buffer/file goes to a tab, even when visiting an existing
+        ;; buffer, if tab doesn't exist, create it.
         ;; idea from https://emacs.stackexchange.com/a/64486
         ((lambda (b _a)
-           (buffer-local-value 'buffer-file-name
-                               (get-buffer b)))
-         display-buffer-in-tab
-         (tab-name lambda
-                   (b _a)
-                   (let
-                       ((root
-                         (vc-git-root
-                          (buffer-file-name b))))
-
-                     ;; (message "root %s"root)
-                     (if root
+           (buffer-local-value 'buffer-file-name (get-buffer b)))
+         (display-buffer-in-tab)
+         (tab-name . (lambda (b _a)
+                       (if-let* ((bfn (buffer-file-name b))
+                                   (root (vc-git-root bfn)))
                          (diego/project-name-from-root root)
-                       "*special*"))))
-        ))
+                         "*special*"))))
+      ))
+;; (setq consult-project-root-function
+;;       (lambda ()
+;;         (when-let (project (project-current))
+;;           (car (project-roots project)))))
+
+#+end_src
+#+begin_src elisp
 (setq window-combination-resize t)
 (setq even-window-sizes 'height-only)
 (setq window-sides-vertical nil)
