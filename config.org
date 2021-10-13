@@ -3181,14 +3181,16 @@ Emacs Everywhere from, just press C-c C-c.
  "x"       #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
  ;; Tabs
  "TAB"     '(:ignore t :which-key "workspaces")
- "TAB TAB" #'(tab-switch :which-key "Switch workspace")
+ "TAB l" #'(tab-switch :which-key "Switch workspace")
  "TAB d"   #'(tab-bar-close-tab :which-key "Close workspace")
  "TAB D"   #'(tab-bar-close-tab-by-name :which-key "Close workspace by name")
  "TAB p"   #'(tab-previous :which-key "Previous workspace")
  "TAB n"   #'(tab-next :which-key "Next workspace")
- "TAB l"   #'(tab-recent :which-key "Recent workspace")
+ "TAB TAB"   #'(tab-recent :which-key "Recent workspace")
  ;; Apps
  "a"       '(:ignore t :which-key "apps")
+ "aa"   #'((lambda () (interactive) (org-agenda-list)) :which-key "Org Agenda Week")
+ "aA"      #'org-agenda
  "ac"      #'(world-clock :which-key "World clock")
  "ad"      #'(dired-jump :which-key "Dired current dir")
  "ae"      #'(elfeed :which-key "Elfeed - RSS")
@@ -3197,8 +3199,8 @@ Emacs Everywhere from, just press C-c C-c.
  "aP"      #'(list-processes :which-key "Kill process")
  "at"      #'(treemacs-display-current-project-exclusively :which-key "Treemacs project")
  "aT"      #'(treemacs :which-key "Toggle Treemacs")
- "av"      #'vterm
- "aV"      #'diego/vterm
+ "av"       #'((lambda () (interactive) (diego/vterm "*vterm*")) :which-key "Vterm in side window")
+ "aV"      #'(diego/vterm :which-key "Vterm in full window")
  ;; Buffers
  "b"       '(:ignore t :which-key "buffers")
  "bb"      #'(consult-buffer :which-key "Switch buffer")
@@ -3206,11 +3208,12 @@ Emacs Everywhere from, just press C-c C-c.
  "bc"      #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
  "bC"      #'((lambda () (interactive) (switch-to-buffer "*compilation*")) :which-key "Compilation buffer")
  "bd"      #'(kill-current-buffer :which-key "Kill current buffer")
+ "bw"      #'(kill-buffer-and-window :which-key "Kill current buffer and window")
  "be"      #'(diego/safe-erase-buffer :which-key "Erase buffer")
  "bE"      #'(view-echo-area-messages :which-key "Echo area buffer")
  "bf"      #'(format-all-buffer :which-key "Format buffer")
  "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
- "bK"      #'(kill-buffer :which-key "Kill buffer")
+ "bK"      #'(kill-buffer :which-key "Kill selected buffer")
  "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
 
  "bm"      '(:ignore t :which-key "move buffer")
@@ -3270,6 +3273,7 @@ Emacs Everywhere from, just press C-c C-c.
  ;; Help
  "h"       '(:ignore t :which-key "help")
  "ha"      #'(consult-apropos :which-key "Describe apropos")
+ "hc"      #'(describe-command :which-key "Describe command")
  "hf"      #'(describe-function :which-key "Describe function/macro")
  "hF"      #'(describe-face :which-key "Describe face")
  "hk"      #'(helpful-key :which-key "Describe key")
@@ -3301,6 +3305,7 @@ Emacs Everywhere from, just press C-c C-c.
  "jo"      #'consult-outline
  "ju"      #'(ffap-menu :which-key "Jump to URL")
  "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
+ "jp"      #'(diego/open-url :which-key "Jump to URL by search provider")
  ;; LSP
  "l"       '(:ignore t :which-key "lsp")
  "lc"      #'lsp-treemacs-call-hierarchy
@@ -3323,12 +3328,10 @@ Emacs Everywhere from, just press C-c C-c.
  "nr"      #'(narrow-to-region :which-key "Narrow region")
  "nw"      #'(widen :which-key "Narrow widen/remove")
  ;; Org/Other
- "o"       '(:ignore t :which-key "org/other")
- "oa"      #'org-agenda
- "oc"      #'(org-capture :which-key "capture")
+ "o"       '(:ignore t :which-key "other")
+ "oc"      #'(org-capture :which-key "org capture")
  "oo"      #'(org-open-at-point :which-key "open link at point")
- "ot"      #'(org-todo :which-key "todo")
- "oT"      #'org-todo-list
+ "ot"      #'org-todo-list
 
  "ol"      '(:ignore t :which-key "org-link")
  "oli"     #'org-insert-link
@@ -3347,7 +3350,7 @@ Emacs Everywhere from, just press C-c C-c.
  "pp"      #'(project-switch-project :which-key "Switch project")
  ;; "ps"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Project search")
  "pr"      #'(projectile-recentf :which-key "Project recent files")
- "pv"      #'(projectile-run-vterm :which-key "Project vterm")
+ "pv"      #'(diego/vterm-project :which-key "Project vterm")
  ;; Profiler
  "P"       '(:ignore t :which-key "profiler")
  "Ps"      #'(profiler-start :which-key "Profiler start")
@@ -3356,11 +3359,11 @@ Emacs Everywhere from, just press C-c C-c.
  ;; Search
  "s"       '(:ignore t :which-key "search")
  "se"      #'(iedit-mode :which-key "iedit") ; next item TAB
+ "sd"      #'(consult-find :which-key "Search")
  "sg"      #'(consult-grep :which-key "Search")
  "sr"      #'replace-regexp
  "ss"      #'(consult-line :which-key "Search")
  "sS"      #'(diego/search-symbol-at-point :which-key "Search at point")
- ;; "sp"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Search in project")
  "sp"      #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
  "t"       '(:ignore t :which-key "toggle")
@@ -3382,9 +3385,9 @@ Emacs Everywhere from, just press C-c C-c.
  "wa"      #'ace-window
  "wb"      #'balance-windows
  "wB"      #'balance-windows-area
- "w-"      #'(evil-window-split :which-key "Horizontal split window")
- "w/"      #'(evil-window-vsplit :which-key "Vertical split window")
  "wd"      #'diego/dedicated-mode
+ "w-"      #'(+evil/window-split-and-follow :which-key "Horizontal split window")
+ "w/"      #'(+evil/window-vsplit-and-follow :which-key "Vertical split window")
  "wd"      #'(evil-window-delete :which-key "Close window")
  "wD"      #'ace-delete-window
 
