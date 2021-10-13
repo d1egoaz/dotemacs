@@ -1817,6 +1817,14 @@ M-w copy
 
 (use-package consult-flycheck
   :after (consult flycheck))
+
+(use-package consult-dir
+  :after (vertico consult bookmark marginalia)
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
 #+end_src
 
 *** embark.el
