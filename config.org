@@ -3164,7 +3164,7 @@ Emacs Everywhere from, just press C-c C-c.
 
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
-(global-set-key (kbd "M-o") #'ace-window)
+(global-set-key (kbd "M-o") #'other-window)
 
 (general-define-key
  :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
