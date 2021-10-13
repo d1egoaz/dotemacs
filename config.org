@@ -2405,9 +2405,15 @@ https://github.com/pope/ob-go
 #+begin_src elisp
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . #'gfm-mode)
-         ("\\.md\\'"       . #'gfm-mode)
-         ("\\.markdown\\'" . #'gfm-mode)))
+  :mode (("\\.md\\'"       . #'gfm-mode)
+         ("\\.markdown\\'" . #'gfm-mode))
+  :config
+  ;; Display remote images
+  (setq markdown-display-remote-images t)
+  ;; Enable fontification for code blocks
+  (setq markdown-fontify-code-blocks-natively t)
+  ;; use pandoc with source code syntax highlighting to preview markdown (C-c C-c p)
+  (setq markdown-command "pandoc -s --highlight-style pygments -f gfm --toc -t html5"))
 #+end_src
 
 ** Misc
