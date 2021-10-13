@@ -1193,10 +1193,16 @@ underscore is often a non-word character like operators, e.g. +.
 
 (defun diego--treat-chars-as-word-char ()
   (mapc 'diego--chars-as-word-char-for-syntax-table
-   (list  emacs-lisp-mode-syntax-table help-mode-syntax-table helpful-mode-syntax-table Info-mode-syntax-table org-mode-syntax-table prog-mode-syntax-table ))
+        (list  emacs-lisp-mode-syntax-table help-mode-syntax-table Info-mode-syntax-table org-mode-syntax-table prog-mode-syntax-table ))
 
   (with-eval-after-load 'ruby-mode
     (diego--chars-as-word-char-for-syntax-table ruby-mode-syntax-table))
+
+  (with-eval-after-load 'helpful-mode
+    (diego--chars-as-word-char-for-syntax-table helpful-mode-syntax-table))
+
+  (with-eval-after-load 'yaml-mode
+    (diego--chars-as-word-char-for-syntax-table yaml-mode-syntax-table))
 
   (with-eval-after-load 'html-mode
     (diego--chars-as-word-char-for-syntax-table html-mode-syntax-table)))
