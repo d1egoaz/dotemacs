@@ -1055,10 +1055,6 @@ The default tab-bar name uses the buffer name."
           (tab-rename proj)))))
 
   )
-
-(use-package tab-bar-echo-area
-  :config
-  (tab-bar-echo-area-mode 1))
 #+end_src
 
 * Files
