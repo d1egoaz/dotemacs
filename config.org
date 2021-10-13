@@ -786,15 +786,17 @@ You can also start by calling ace-window and then decide to switch the action to
 
 The =display-buffer-alist= is a rule-set for controlling the placement of windows.
 
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-Display-Action-Alists.html
+
+(defun diego--debug-buffer-alist (b a)
+"Clicking a link from the *Help* buffer opens source code in the same window."
+;; (message "b:%s" b)
+;; (print a)
+nil)
+
 #+begin_src elisp
 ;; make pop-to-buffer obey display-buffer-alist
 (setq switch-to-buffer-obey-display-actions t)
-
-(defun diego--debug-buffer-alist (b a)
-  "Clicking a link from the *Help* buffer opens source code in the same window."
-  ;; (message "b:%s" b)
-  ;; (print a)
-  nil)
 
 (defun diego/project-name-from-root (project-root)
   (file-name-nondirectory (directory-file-name project-root)))
