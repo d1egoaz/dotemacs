@@ -2803,6 +2803,13 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   :init
   (setq org-directory "~/gdrive/deft")
   (setq org-agenda-files (list "~/gdrive/deft/journal.org" "~/gdrive/deft/gtd-inbox.org" "~/gdrive/deft/gtd-personal.org" "~/gdrive/deft/gtd-work.org" ))
+  (setq org-agenda-window-setup 'reorganize-frame)
+  (setq org-agenda-deadline-faces
+         '((1.001 . error)
+           (1.0 . org-warning)
+           (0.5 . org-upcoming-deadline)
+           (0.0 . org-upcoming-distant-deadline)))
+  (setq org-agenda-span 'month); or 'week
   (setq org-attach-id-dir (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
   (setq org-attach-directory org-attach-id-dir)
   (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
@@ -2816,6 +2823,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   (setq org-download-image-html-width 500)
   (setq org-edit-src-content-indentation 0) ; not need to waste space
   (setq org-ellipsis "⌄ ")
+  (setq org-fontify-quote-and-verse-blocks t)
   ;; (setq org-hide-leading-stars nil)
   (setq org-hide-leading-stars t)
   (setq org-hide-emphasis-markers nil)
@@ -2879,11 +2887,34 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
   :straight (:host github :repo "hlissner/evil-org-mode")
   :config
   ;; enable all bindings
-  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading))
+  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading calendar))
+
   (defun diego--org-set-key-theme ()
     (evil-org-set-key-theme))
   :hook ((org-mode-hook . evil-org-mode)
          (evil-org-mode-hook . diego--org-set-key-theme)))
+#+end_src
+
+
+** evil-org-agenda.el
+#+begin_src elisp
+(use-package evil-org-agenda
+  :after (evil org evil-org)
+  :straight (:host github :repo "hlissner/evil-org-mode" :files ("evil-org-agenda.el"))
+  :commands evil-org-agenda-set-keys
+  :general
+  (general-define-key
+   :keymaps 'org-agenda-mode-map
+   :states '(normal visual emacs motion)
+   :prefix ","
+   :non-normal-prefix "M-SPC m"
+   "d" #'org-agenda-deadline
+   "s" #'org-agenda-schedule
+   "t" #'org-agenda-todo
+   "q" #'org-agenda-set-tags)
+  :config
+  (evil-org-agenda-set-keys)
+  :hook (org-agenda-mode-hook . evil-org-agenda-mode))
 #+end_src
 
 ** Make org-capture start in insert mode
