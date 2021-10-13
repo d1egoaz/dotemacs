@@ -1512,9 +1512,10 @@ from previous history files.
   :init
   (savehist-mode 1)
   :config
-  (setq history-length 1000)
   (setq auto-save-interval 100)
-  (setq history-delete-duplicates t))
+  (setq history-delete-duplicates t)
+  (setq history-length 1000)
+  (setq savehist-additional-variables '(compile-command kill-ring regexp-search-ring)))
 #+end_src
 
 ** Completion framework (company.el)
