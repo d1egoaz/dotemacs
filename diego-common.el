@@ -1,4 +1,4 @@
-;;; diego-common.el --- Common Functions             -*- lexical-binding: t; -*-
+;;; diego-common.el --- Common Functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Diego Alvarez
 
@@ -57,9 +57,9 @@
 (defun diego/copy-buffer-name ()
   "copy buffer name"
   (interactive)
-  (let ((path (file-name-nondirectory (buffer-file-name))))
-    (message path)
-    (kill-new path)))
+  (let ((b (buffer-name)))
+    (message b)
+    (kill-new b)))
 
 ;;;###autoload
 (defun diego/copy-file-name ()
@@ -78,7 +78,7 @@
 
 ;;;###autoload
 (defun diego/url-to-markdown-image ()
-  "copy url from clipboard and creates an url src image to paste in a markdown document"
+  "Copy URL from clipboard and creates and image tag to use in markdown"
   (interactive)
   (kill-new
    (format "<img src=\"%s\" width=\"50%%\" />" (current-kill 0))))
@@ -124,26 +124,6 @@
     (shell-command-to-string str)))
 
 ;;;###autoload
-(defun diego/fetch-and-rebase-onto-origin-master ()
-  (interactive)
-  (magit-fetch-branch "origin" "master" nil)
-  (magit-git-rebase "origin/master" nil))
-
-;;;###autoload
-(defun diego/fetch-origin-master ()
-  (interactive)
-  (magit-fetch-branch "origin" "master" nil))
-
-;;;###autoload
-(defun diego/git-create-branch-from-origin-master ()
-  "Creates a new branch starting from origin/master."
-  (interactive)
-  (diego/fetch-origin-master)
-  (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/master): " "diego_")))
-    (magit-git-command-topdir
-     (concat "git checkout -b " new_branch_name " origin/master"))))
-
-;;;###autoload
 (defun diego/prettify-jsonv-with-prettier ()
   "prettify json current region"
   (interactive)
@@ -160,21 +140,6 @@
   "prettify yaml current region"
   (interactive)
   (diego--exec-command-replace-region "prettier --parser yaml"))
-
-;;;###autoload
-(defun diego/visit-pull-request-url ()
-  "Visit the current branch's PR on Github.
-Uses gh and magit"
-  (interactive)
-  (call-process
-   "gh"
-   nil
-   0 ; <- Discard and don't wait
-   nil
-   "pr"
-   "view"
-   (magit-get-current-branch)
-   "-w"))
 
 ;;;###autoload
 (defun diego/kill-close-all-buffers ()
@@ -233,18 +198,6 @@ Uses gh and magit"
   (interactive)
   (insert (shell-command-to-string "uuidgen")))
 
-
-;;;###autoload
-(defun diego/vterm ()
-  "Switch to (or create) a general vterm called diego/vterm."
-  (interactive)
-  (delete-other-windows)
-  (if (get-buffer "diego/vterm")
-      (progn
-        (set-buffer "diego/vterm")
-        (switch-to-buffer "diego/vterm"))
-    (vterm "*diego/vterm*")))
-
 ;;;###autoload
 (defun diego/insert-filename ()
   "Insert a filename at point."
@@ -281,28 +234,6 @@ Uses gh and magit"
                 (top . 400) (left . 300)))
   (select-frame-by-name "alfredoc")
   (org-capture))
-
-;;;###autoload
-(defun diego/project-compile-dwim (command)
-  "Run `compile' in the project root."
-  (declare (interactive-only compile))
-  (interactive)
-  (let ((default-directory (project-root (project-current t)))
-        (compilation-buffer-name-function
-         (or project-compilation-buffer-name-function
-             compilation-buffer-name-function)))
-    (compile command t)))
-
-;;;###autoload
-(defun diego/project-compile ()
-  "Run `compile' in the project root."
-  (declare (interactive-only compile))
-  (interactive)
-  (let ((default-directory (project-root (project-current t)))
-        (compilation-buffer-name-function
-         (or project-compilation-buffer-name-function
-             compilation-buffer-name-function)))
-    (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
 
 ;;;###autoload
 (defun diego/consult-line-symbol-at-point ()

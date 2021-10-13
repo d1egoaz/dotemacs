@@ -71,5 +71,28 @@
   (interactive)
   (find-file (expand-file-name "README.md" (project-root (project-current t)))))
 
+
+;;;###autoload
+(defun diego/project-compile-dwim (command)
+  "Run `compile' in the project root."
+  (declare (interactive-only compile))
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
+    (compile command t)))
+
+;;;###autoload
+(defun diego/project-compile ()
+  "Run `compile' in the project root."
+  (declare (interactive-only compile))
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compilation-buffer-name-function
+         (or project-compilation-buffer-name-function
+             compilation-buffer-name-function)))
+    (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
+
 (provide 'diego-project)
 ;;; diego-project.el ends here
