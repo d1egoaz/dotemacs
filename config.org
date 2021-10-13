@@ -1723,52 +1723,34 @@ M-w copy
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-
-  ;; Makes only the open buffers list visible when calling consult-buffer command
-  ;; by hiding the other sources, but still allowing the narrowing to recent
-  ;; files (by typing f SPC), bookmarks (m SPC) and project buffer and/or files
-  ;; (p SPC).  Hide all sources, except normal buffers in consult-buffer by
-  ;; default
-  (dolist (src consult-buffer-sources)
-    (unless (eq src 'consult--source-buffer)
-      (set src (plist-put (symbol-value src) :hidden t))))
-
-
   :config
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
-   consult-ripgrep consult-git-grep consult-grep
+   consult-line consult-ripgrep consult-git-grep consult-grep
+   :preview-key '(:debounce 0.5 any)
    consult-bookmark consult-recent-file consult-xref
    consult--source-file consult--source-project-file consult--source-bookmark
-   :preview-key (kbd "C-SPC"))
+   :preview-key (list (kbd "C-SPC") (kbd "C-M-j") (kbd "C-M-k")))
+
 
   (setq consult-narrow-key ">")
   (setq consult-widen-key "<")
 
-  (setq consult-find-command "fd --color=never --full-path ARG OPTS")
-  (setq consult-ripgrep-args "rg --hidden --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
+  ;; TODO 2021-09-14T22:38:11Z
+  ;; consult-line-start-from-top
+
+  ;; disable fd for now until https://github.com/minad/consult/wiki#find-files-using-fd
+  ;; (setq consult-find-args "fd --color=never --full-path ARG OPTS")
+  ;; add --hidden
+  (setq consult-ripgrep-args "rg --hidden --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
+
   (setq consult-fontify-preserve t)
-  (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args)))
   (setq consult-preview-key nil)
   ;; (setq consult-project-root-function #'vc-root-dir)
   (setq consult-project-root-function
         (lambda ()
           (when-let (project (project-current))
             (car (project-roots project)))))
-
-  ;; Use `consult-completion-in-region' if Vertico is enabled.
-  ;; Otherwise use the default `completion--in-region' function.
-  (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args)))
 
   (defun diego/search-symbol-at-point ()
     (interactive)
