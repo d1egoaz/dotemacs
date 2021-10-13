@@ -2122,19 +2122,33 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
 
 #+begin_src elisp
 (use-package magit
-  :config
-  (general-nvmap :keymaps 'magit-mode-map
+  :general
+  (general-nvmap :keymaps 'magit-status-mode-map
     "zt" #'evil-scroll-line-to-top
     "zz" #'evil-scroll-line-to-center
     "zb" #'evil-scroll-line-to-bottom
     "gr" #'magit-refresh)
+  (general-define-key
+   :keymaps 'magit-status-mode-map
+   :states '(normal visual emacs motion)
+   :prefix ","
+   :non-normal-prefix "M-SPC m"
+   "b"       '(:ignore t :which-key "branch")
+   "bc" #'diego/git-create-branch-from-origin-master
+   "bC" #'diego/git-create-branch-from-origin-main
+   "p"       '(:ignore t :which-key "pr")
+   "pc" #'diego/checkout-gh-pr
+   "o" #'diego/fetch-and-rebase-onto-origin-master
+   "v" #'diego/visit-pull-request-url)
 
+  :config
   (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
   (setq magit-save-repository-buffers nil) ; Don't autosave repo buffers
   ;; Don't display parent/related refs in commit buffers; they are rarely
   ;; helpful and only add to runtime costs.
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
 
   (setq magit-repository-directories
         '(
@@ -2143,7 +2157,9 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
           ("~/dotfiles/" . 1)))
 
   (transient-append-suffix 'magit-fetch "-p"
-    '("-t" "Fetch all tags" ("-t" "--tags"))))
+    '("-t" "Fetch all tags" ("-t" "--tags")))
+
+  (load (expand-file-name "diego-magit.el" user-emacs-directory)))
 #+end_src
 
 *** transient.el
