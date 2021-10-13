@@ -3422,6 +3422,7 @@ Emacs Everywhere from, just press C-c C-c.
 
 #+begin_src elisp
 (load-file (substitute-in-file-name "$EMACS_ADDITIONAL_DIR/emacs.el"))
+(load (expand-file-name "diego-dev.el" user-emacs-directory))
 #+end_src
 
 * Inspiration
