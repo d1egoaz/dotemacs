@@ -45,7 +45,6 @@
   - [[#show-current-command-in-the-mode-line-keycastel][Show current command in the mode line (keycast.el)]]
   - [[#show-column-number][Show column number]]
   - [[#show-date-and-time][Show date and time]]
-  - [[#project-name][Project name]]
 - [[#windows][Windows]]
   - [[#jump-to-windows-ace-windowel][Jump to windows (ace-window.el)]]
   - [[#window-rules][Window rules]]
@@ -80,6 +79,11 @@
   - [[#evil-surroundel][evil-surround.el]]
   - [[#evil-tuning][evil Tuning]]
   - [[#better-jumpel][better-jump.el]]
+- [[#project-management][Project Management]]
+  - [[#git][Git]]
+  - [[#projectel][project.el]]
+  - [[#projectile][Projectile]]
+  - [[#treemacsel][treemacs.el]]
 - [[#completion][Completion]]
   - [[#preserve-history-with-savehist-mode][Preserve history with savehist-mode]]
   - [[#completion-framework-companyel][Completion framework (company.el)]]
@@ -91,11 +95,6 @@
   - [[#imenu-listel][imenu-list.el]]
   - [[#writable-grep-wgrepel][Writable grep (wgrep.el)]]
   - [[#visual-regex][Visual regex]]
-- [[#project-management][Project Management]]
-  - [[#git][Git]]
-  - [[#projectel][project.el]]
-  - [[#projectile][Projectile]]
-  - [[#treemacsel][treemacs.el]]
 - [[#development][Development]]
   - [[#language-server-support-lsp][Language Server Support (LSP)]]
   - [[#go][Go]]
@@ -1963,6 +1962,11 @@ M-w copy
                 :items  ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'vterm-mode)))))
   (add-to-list 'consult-buffer-sources 'vterm-buffer-source 'append)
 
+  (defun diego/consult-buffer-for-project ()
+    (interactive)
+    (setq unread-command-events (append unread-command-events (list ?p 32)))
+    (consult-buffer))
+
   :bind (
          ([remap apropos]                       . #'consult-apropos)
          ([remap bookmark-jump]                 . #'consult-bookmark)
@@ -3177,7 +3181,7 @@ Emacs Everywhere from, just press C-c C-c.
  :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
  :keymaps 'override
  :prefix "SPC"
- :non-normal-prefix "M-SPC"
+ :non-normal-prefix "C-M-x"
  "" nil ; to fix evil in some buffers, like *Messages*
  "SPC"     #'(execute-extended-command :which-key "M-x")
  "'"       #'(vertico-repeat :which-key "Resume last search")
@@ -3300,14 +3304,18 @@ Emacs Everywhere from, just press C-c C-c.
  "iy"      #'(consult-yank-pop :which-key "Insert Yank")
  ;; Jump
  "j"       '(:ignore t :which-key "jump")
- "ji"      #'imenu
- "jI"      #'imenu-list
+ "je"      #'consult-compile-error
+ "ji"      #'imenu ; consult-imenu
+ "jI"      #'consult-imenu-multi
+ "jL"      #'imenu-list
  "jb"      #'(bookmark-jump :which-key "Jump to bookmark")
  "jB"      #'(bookmark-set :which-key "Set bookmark")
+ "jh"      #'consult-history
  "jj"      #'(avy-goto-char-timer :which-key "Jump to char")
  "jl"      #'(avy-goto-line :which-key "Jump to line")
  "jh"      #'(evil-show-jumps :which-key "Jump history")
  "jm"      #'(evil-show-marks :which-key "Jump to mark")
+ "jM"      #'consult-kmacro
  "jo"      #'consult-outline
  "ju"      #'(ffap-menu :which-key "Jump to URL")
  "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
@@ -3347,15 +3355,12 @@ Emacs Everywhere from, just press C-c C-c.
  "oOd"     #'(diego/delete-last-char-eol :which-key "Delete last char EOL")
  ;; Project
  "p"       '(:ignore t :which-key "project")
- "!"       #'(projectile-run-shell-command-in-root :which-key "Run cmd in project root")
- "pa"      #'(projectile-add-known-project :which-key "Add new project")
+ "!"       #'(project-shell-command :which-key "Run cmd in project root")
  "pb"      #'(project-switch-to-buffer :which-key "Project buffer")
  "pf"      #'(project-find-file :which-key "Project file")
- "pd"      #'(projectile-find-dir :which-key "Project dir")
- "pk"      #'(projectile-kill-buffers :which-key "Kill project buffers")
  "pp"      #'(project-switch-project :which-key "Switch project")
- ;; "ps"   #'((lambda () (interactive) (consult-ripgrep (projectile-acquire-root))) :which-key "Project search")
- "pr"      #'(projectile-recentf :which-key "Project recent files")
+ "pr"     #'(diego/consult-buffer-for-project :which-key "Project recent")
+ "pR"      #'(projectile-recentf :which-key "Project recent files")
  "pv"      #'(diego/vterm-project :which-key "Project vterm")
  ;; Profiler
  "P"       '(:ignore t :which-key "profiler")
@@ -3440,7 +3445,7 @@ Some parts of my configuration were copied and inspired from:
 - [[https://config.daviwil.com/emacs][Daviwil]]
 - [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [7/12]
+* Pending tasks [7/13]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
