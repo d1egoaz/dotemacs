@@ -1263,18 +1263,34 @@ https://github.com/noctuid/evil-guide
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil) ; so we can use evil-collection
   (setq evil-want-minibuffer nil)
+  (setq evil-want-C-u-delete nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-d-scroll t)
   (setq evil-want-C-i-jump t)
   (setq evil-want-C-u-delete t) ; when insert mode
+  (setq evil-want-Y-yank-to-eol t) ; behave like y$
   (setq evil-undo-system 'undo-redo) ; default to natively Emacs 28
+  (setq evil-want-fine-undo t)
   :config
   ;; set up some basic equivalents for vim mapping functions. This creates
   ;; global key definition functions for the evil states.
   (general-evil-setup t) ; https://github.com/noctuid/general.el#vim-like-definers
-  (evil-add-command-properties #'evil-goto-definition :jump t)
-  (evil-mode 1))
+  (evil-put-command-property #'evil-goto-definition :jump t)
 
+  ;; n=nzz
+  (defun diego--my-center-line (&rest _)
+    (evil-scroll-line-to-center nil))
+  (advice-add #'evil-search-next :after #'diego--my-center-line)
+  ;; N=Nzz
+  (advice-add #'evil-search-previous :after #'diego--my-center-line)
+
+  ;; keep J centered
+  (evil-put-command-property #'evil-join :move-point nil)
+  (defun diego--my-save-position-line (fn &rest args)
+    (save-excursion (apply fn args)))
+  (advice-add #'evil-join :around #'diego--my-save-position-line)
+
+  (evil-mode 1))
 #+end_src
 
 ** evil-collection.el
@@ -1286,13 +1302,15 @@ Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
 
 #+begin_src elisp
 (use-package evil-collection
-  :after (evil general magit)
+  :after evil
+  :commands (evil-collection-dired-setup evil-collection-magit-setup)
   :init
   (setq evil-collection-company-use-tng nil) ; I don't want that completion experience
   (setq evil-collection-mode-list nil) ; I don't want surprises, I'll enable it manually by mode
   (setq evil-collection-key-blacklist '("SPC" "SPC m" "C-SPC" "M-SPC" "gd" "gf" "K" "gr" "gR" "[" "]" "gz" "<escape>"))
   (setq evil-collection-setup-minibuffer nil) ; don't setup Vim style bindings in the minibuffer.
   (setq evil-collection-setup-debugger-keys nil)
+  (setq evil-collection-calendar-want-org-bindings t)
   :config
   ;; https://github.com/emacs-evil/evil-collection/blob/master/modes/
   (evil-collection-init '(
@@ -1302,11 +1320,13 @@ Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
                           flycheck flymake
                           go-mode
                           help helpful
-                          ibuffer imenu imenu-list
+                          ibuffer info imenu imenu-list
                           magit ocurr popup
                           vc-annotate vc-dir vc-git
-                          vterm wgrep which-key xref))
-  (evil-collection-magit-setup))
+                          vterm wgrep which-key xref)))
+
+(with-eval-after-load 'dired (evil-collection-dired-setup))
+(with-eval-after-load 'magit (evil-collection-magit-setup))
 #+end_src
 
 ** goto-chg.el
