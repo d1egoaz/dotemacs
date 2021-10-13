@@ -473,7 +473,7 @@ Increase how much is read from processes in a single chunk (default is
 ** Increase fill column width
 
 #+begin_src elisp
-(setq-default fill-column 80)
+(setq-default fill-column 100)
 #+end_src
 
 ** Fonts
