@@ -1566,6 +1566,27 @@ candidates are called backends, modules for displaying them are frontends.
          ("<tab>" . #'company-complete-selection)))
 #+end_src
 
+;; Dabbrev
+#+begin_src elisp
+(use-package dabbrev
+  :config
+  (setq dabbrev-backward-only nil)
+  (setq dabbrev-case-distinction 'case-replace)
+  (setq dabbrev-case-fold-search nil)
+  (setq dabbrev-case-replace 'case-replace)
+  (setq dabbrev-check-other-buffers t)
+  (setq dabbrev-eliminate-newlines t)
+  (setq dabbrev-upcase-means-case-search t)
+
+  (defun diego/dabbrev-full-completion ()
+    (interactive)
+     (let ((current-prefix-arg 16)) ; 16 C-u C-u = all buffers
+      (call-interactively #'dabbrev-completion)))
+
+  :bind (("M-/" . diego/dabbrev-full-completion)
+         ("C-M-/" . dabbrev-completion)))
+#+end_src
+
 ** Selection and Narrowing
 
 Individual packages that work well together.
