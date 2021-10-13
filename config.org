@@ -1760,6 +1760,36 @@ M-w copy
     (recentf-mode 1))
   (advice-add 'diego--recentf-mode-consult :before #'consult-recent-file)
 
+  ;; Makes only the open buffers list visible when calling consult-buffer command
+  ;; by hiding the other sources, but still allowing the narrowing to recent
+  ;; files (by typing f SPC), bookmarks (m SPC) and project buffer and/or files
+  ;; (p SPC).  Hide all sources, except normal buffers in consult-buffer by
+  ;; default
+  (dolist (src consult-buffer-sources)
+    (unless (eq src 'consult--source-buffer)
+      (set src (plist-put (symbol-value src) :hidden t))))
+
+  (defun buffer-list-for-mode (mode)
+    (seq-filter (lambda (buffer)
+                  (eq mode (buffer-local-value 'major-mode buffer)))
+                (buffer-list)))
+
+  (defvar kubel-buffer-source
+    `(:name     "Kubel"
+                :narrow   ?k
+                :category buffer
+                :state    ,#'consult--buffer-state
+                :items  ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'kubel-mode)))))
+  (add-to-list 'consult-buffer-sources 'kubel-buffer-source 'append)
+
+  (defvar vterm-buffer-source
+    `(:name     "Vterm"
+                :narrow   ?v
+                :category buffer
+                :state    ,#'consult--buffer-state
+                :items  ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'vterm-mode)))))
+  (add-to-list 'consult-buffer-sources 'vterm-buffer-source 'append)
+
   :bind (
          ([remap apropos]                       . #'consult-apropos)
          ([remap bookmark-jump]                 . #'consult-bookmark)
