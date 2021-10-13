@@ -3414,7 +3414,7 @@ Emacs Everywhere from, just press C-c C-c.
 (load (expand-file-name "diego-windows.el" user-emacs-directory))
 #+end_src
 
-* Company Specific Functions
+* Work Specific Functions
 
 #+begin_src elisp
 (load-file (substitute-in-file-name "$EMACS_ADDITIONAL_DIR/emacs.el"))
