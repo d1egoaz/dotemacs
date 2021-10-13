@@ -34,8 +34,6 @@
                         (concat prefix str))
                       '("up" "down" "build" "test" "style" "runtime refresh")))
         (cmd (completing-read "dev command: " list  nil nil prefix 'compile-history)))
-    (unless (string-prefix-p prefix cmd)
-      (setq cmd (concat prefix cmd)))
     (compile cmd t)))
 
 ;;;###autoload
