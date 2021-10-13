@@ -682,7 +682,7 @@ func main() {
 (use-package minions
   :config
   (setq minions-mode-line-lighter "+")
-  (setq minions-direct '(flymake-mode lsp-mode compilation-shell-minor-mode))
+  (setq minions-direct '(flymake-mode lsp-mode compilation-shell-minor-mode diego/dedicated-mode))
   (minions-mode 1))
 #+end_src
 
@@ -3218,6 +3218,7 @@ Emacs Everywhere from, just press C-c C-c.
  "wB"      #'balance-windows-area
  "w-"      #'(evil-window-split :which-key "Horizontal split window")
  "w/"      #'(evil-window-vsplit :which-key "Vertical split window")
+ "wd"      #'diego/dedicated-mode
  "wd"      #'(evil-window-delete :which-key "Close window")
  "wD"      #'ace-delete-window
 
