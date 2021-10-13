@@ -2523,14 +2523,32 @@ display portions of a program, which are referred to as blocks.
 *** Basic configuration
 
 #+begin_src elisp
-(setq comint-input-ignoredups t)
-(setq comint-scroll-to-bottom-on-input t) ; always insert at the bottom
-(setq comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
-'(comint-input-ignoredups t)
+(use-package compile
+  :straight (:type built-in)
+  :config
+  (setq comint-buffer-maximum-size 8192); Increase comint buffer size.
+  (setq comint-input-ignoredups t)
+  (setq comint-scroll-to-bottom-on-input t) ; always insert at the bottom
+  (setq comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
 
-;; (setq compilation-scroll-output 'first-error)
-(setq compilation-scroll-output t)
-(setq compilation-auto-jump-to-first-error t)
+  ;; (setq compilation-scroll-output 'first-error)
+  (setq compilation-scroll-output t)
+  (setq compilation-auto-jump-to-first-error t)
+  (setq compilation-always-kill t) ;; kill old compile processes before starting the new one
+
+  (defun compilation-add-separator ()
+    "Insert separator in read-only buffer."
+    (interactive)
+    (let ((inhibit-read-only t))
+      (insert "\n---------------------------------\n\n")
+      (point-max)
+      (comint-set-process-mark)))
+
+  :bind (:map compilation-mode-map
+              ("C-c -" . compilation-add-separator)
+              ("-" . compilation-add-separator)
+              :map comint-mode-map
+              ("C-c -" . compilation-add-separator)))
 #+end_src
 
 *** Enable ASCII Colours
