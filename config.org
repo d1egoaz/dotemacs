@@ -3007,11 +3007,11 @@ Tz zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.
 #+begin_src elisp
 (use-package time
   :general
-  (:keymaps 'world-clock-mode-map
-            "q" #'kill-buffer-and-window)
+  (general-nmap :keymaps 'world-clock-mode-map
+    "q" #'kill-buffer-and-window)
   :config
   (setq zoneinfo-style-world-list '(("etc/UTC" "UTC")
-                                    ("US/Pacific" "PT")
+                                    ("America/Vancouver" "PT")
                                     ("America/New_York" "ET")
                                     ("America/Bogota" "Bogota")
                                     ("America/Toronto" "Toronto")))
@@ -3055,6 +3055,9 @@ The best RSS reader.
     "s" #'elfeed-search-live-filter
     "r" #'elfeed-search-untag-all-unread
     "," #'diego/elfeed-filter)
+  (general-nmap :keymaps 'elfeed-show-mode-map
+    "C-n" #'elfeed-show-next
+    "C-p" #'elfeed-show-prev)
   :commands elfeed
   :config
   (setq elfeed-search-date-format '("%a %b-%d" 10 :left))
