@@ -590,6 +590,27 @@ Command/Super plus =/- for zooming in/out.
   :init
   (setq persistent-scratch-scratch-buffer-p-function #'(lambda ()(string-match "^*scratch" (buffer-name))))
 
+  ;; some parts of the code copied from https://github.com/ieure/scratch-el/blob/master/scratch.el
+  (setq diego--scratch-mode-list '(("org-mode" . org-mode)
+                                   ("fundamental-mode" . fundamental-mode)
+                                   ("emacs-lisp" . emacs-lisp-mode)
+                                   ("markdown" . gfm-mode)))
+
+  (defun diego--scratch-buffer-querymode ()
+    (alist-get
+     (completing-read "Mode: " diego--scratch-mode-list)
+     diego--scratch-mode-list nil nil 'equal))
+
+;;;###autoload
+  (defun diego/make-scratch (mode)
+    "Get a scratch buffer for the MODE.
+When called interactively with a prefix arg, prompt for the mode."
+    (interactive (list (diego--scratch-buffer-querymode)))
+    (let* ((name (concat (make-temp-name (format "*scratch-%s-" mode)) "*")))
+      (switch-to-buffer name)
+      (with-current-buffer (get-buffer-create name)
+        (funcall mode))))
+
   (defun diego/make-new-scratch-buffer ()
     "New temporary scratch buffer with a random name."
     (interactive)
