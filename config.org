@@ -2652,13 +2652,15 @@ electric-pair-skip-whitespace, when non-nil, causes the minor mode to skip white
 (use-package vterm
   :config
   (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 5000)
+  (setq vterm-max-scrollback 500000)
 
   (defun diego--vterm-hook ()
     ;; Don't prompt about dying processes when killing vterm
     (setq confirm-kill-processes nil)
     ;; Prevent premature horizontal scrolling
     (setq hscroll-margin 0))
+
+  (load (expand-file-name "diego-vterm.el" user-emacs-directory))
   :hook ((vterm-mode-hook . diego--vterm-hook)))
 #+end_src
 
@@ -2705,7 +2707,6 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 #+begin_src elisp
 (use-package iedit
   :config
-
   (add-to-list 'warning-suppress-types '(iedit)) ; to avoid warn edit default key %S is occupied by %s
 
 ;;;###autoload
