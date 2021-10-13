@@ -782,8 +782,53 @@ You can also start by calling ace-window and then decide to switch the action to
 
 #+begin_src elisp
 (use-package ace-window
+  :after embark
   :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
+  ;; copied from https://karthinks.com/software/fifteen-ways-to-use-embark/
+  (eval-when-compile
+    (defmacro my/embark-ace-action (fn)
+      `(defun ,(intern (concat "my/embark-ace-" (symbol-name fn))) ()
+         (interactive)
+         (with-demoted-errors "%s"
+           (require 'ace-window)
+           (aw-switch-to-window (aw-select nil))
+           (call-interactively (symbol-function ',fn)))))
+
+    (defmacro my/embark-split-action (fn split-type)
+      `(defun ,(intern (concat "my/embark-"
+                               (symbol-name fn)
+                               "-"
+                               (car (last  (split-string
+                                            (symbol-name split-type) "-"))))) ()
+         (interactive)
+         (funcall #',split-type)
+         (call-interactively #',fn))))
+
+(defun my/split-window-right (&optional size)
+  "Split the selected window into two windows, one above the other.
+The selected window is below.  The newly split-off window is
+below and displays the same buffer.  Return the new window."
+  (interactive "P")
+  (split-window-right size)
+  (other-window 1))
+
+(defun my/split-window-below (&optional size)
+  "Split the selected window into two side-by-side windows.
+The selected window is on the left.  The newly split-off window
+is on the right and displays the same buffer.  Return the new
+window."
+  (interactive "P")
+  (split-window-below size)
+  (other-window 1))
+
+  (define-key embark-file-map (kbd "o") (my/embark-ace-action find-file))
+  (define-key embark-file-map (kbd "-") (my/embark-split-action find-file my/split-window-below))
+  (define-key embark-file-map (kbd "/") (my/embark-split-action find-file my/split-window-right))
+  (define-key embark-buffer-map (kbd "o") (my/embark-ace-action switch-to-buffer))
+  (define-key embark-buffer-map (kbd "-") (my/embark-split-action switch-to-buffer my/split-window-below))
+  (define-key embark-buffer-map (kbd "/") (my/embark-split-action switch-to-buffer my/split-window-right)))
 #+end_src
 
 ** Window rules
