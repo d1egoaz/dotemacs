@@ -3411,6 +3411,7 @@ Emacs Everywhere from, just press C-c C-c.
 #+begin_src elisp
 (load-file (substitute-in-file-name "$EMACS_ADDITIONAL_DIR/shopify-vars.el"))
 (load (expand-file-name "diego-common.el" user-emacs-directory))
+(load (expand-file-name "diego-windows.el" user-emacs-directory))
 #+end_src
 
 * Company Specific Functions
