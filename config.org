@@ -2564,12 +2564,13 @@ display portions of a program, which are referred to as blocks.
 #+begin_src elisp
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
-  :general (general-nvmap
-             :keymaps 'restclient-mode-map
-             :prefix ","
-             "e"  #'restclient-http-send-current
-             "E"  #'restclient-http-send-current-raw
-             "c"  #'restclient-copy-curl-command))
+  :general
+  (general-nvmap
+    :keymaps 'restclient-mode-map
+    :prefix ","
+    "e"  #'restclient-http-send-current
+    "E"  #'restclient-http-send-current-raw
+    "c"  #'restclient-copy-curl-command))
 #+end_src
 
 * Productivity
