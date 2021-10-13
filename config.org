@@ -1891,23 +1891,6 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
-
-(with-eval-after-load 'embark
-  (with-eval-after-load 'marginalia
-    (embark-define-keymap embark-straight-map
-      ("u" straight-visit-package-website)
-      ("r" straight-get-recipe)
-      ("i" straight-use-package)
-      ("c" straight-check-package)
-      ("F" straight-pull-package)
-      ("f" straight-fetch-package)
-      ("p" straight-push-package)
-      ("n" straight-normalize-package)
-      ("m" straight-merge-package))
-
-    (add-to-list 'embark-keymap-alist '(straight . embark-straight-map))
-
-    (add-to-list 'marginalia-prompt-categories '("recipe\\|package" . straight))))
 #+end_src
 
 *** marginalia.el
