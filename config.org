@@ -1503,6 +1503,182 @@ Add/change surrounding to text objects.
 #+begin_src elisp
 #+end_src
 
+* Project Management
+
+** Git
+
+https://github.com/magit/magit
+
+A git client for Emacs.
+C-t to turn any magit buffer into text-mode.
+
+Keybindings: https://github.com/emacs-evil/evil-collection/tree/master/modes/magit
+
+*** magit.el
+
+Keys:
+https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-collection-magit.el#L280-L309
+
+#+begin_src elisp
+(use-package magit
+  :general
+  (general-nvmap :keymaps 'magit-status-mode-map
+    "zt" #'evil-scroll-line-to-top
+    "zz" #'evil-scroll-line-to-center
+    "zb" #'evil-scroll-line-to-bottom
+    "gr" #'magit-refresh)
+  (general-define-key
+   :keymaps 'magit-status-mode-map
+   :states '(normal visual emacs motion)
+   :prefix ","
+   :non-normal-prefix "M-SPC m"
+   "b"       '(:ignore t :which-key "branch")
+   "bc" #'diego/git-create-branch-from-origin-master
+   "bC" #'diego/git-create-branch-from-origin-main
+   "p"       '(:ignore t :which-key "pr")
+   "pc" #'diego/checkout-gh-pr
+   "o" #'diego/fetch-and-rebase-onto-origin-master
+   "v" #'diego/visit-pull-request-url)
+
+  :config
+  (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
+  (setq magit-save-repository-buffers nil) ; Don't autosave repo buffers
+  ;; Don't display parent/related refs in commit buffers; they are rarely
+  ;; helpful and only add to runtime costs.
+  (setq magit-revision-insert-related-refs nil)
+  (setq magit-diff-refine-ignore-whitespace nil)
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+
+  (setq magit-repository-directories
+        '(
+          ("~/src/github.com/Shopify" . 2)
+          ("~/code/" . 2)
+          ("~/dotfiles/" . 1)))
+
+  (transient-append-suffix 'magit-fetch "-p"
+    '("-t" "Fetch all tags" ("-t" "--tags")))
+
+  (load (expand-file-name "diego-magit.el" user-emacs-directory)))
+#+end_src
+
+*** transient.el
+
+Package `transient' is the interface used by Magit to display popups.
+TODO remove use package as it's now part of Emacs
+
+#+begin_src elisp
+(use-package transient
+  :config
+  ;; Allow using `q' to quit out of popups, in addition to `C-g'. See
+  ;; <https://magit.vc/manual/transient.html#Why-does-q-not-quit-popups-anymore_003f>
+  ;; for discussion.
+  (transient-bind-q-to-quit)
+  ;; Close transient with ESC
+  (define-key transient-map [escape] #'transient-quit-one))
+#+end_src
+
+*** git-link.el
+
+#+begin_src elisp
+(use-package git-link
+  :commands git-link
+  :config
+  (setq git-link-open-in-browser t))
+#+end_src
+
+*** forge.el
+
+#+begin_src elisp
+(use-package forge
+  :commands forge-create-pullreq)
+#+end_src
+
+** project.el
+
+#+begin_src elisp
+(use-package project
+  :straight (:type built-in)
+  :config
+  (load (expand-file-name "diego-project.el" user-emacs-directory))
+  (setq project-switch-commands '((project-find-file "Find file" ?f)
+                                  (diego/open-project-readme "README.md" ?.)
+                                  (consult-ripgrep "Ripgrep" ?r)
+                                  (project-dired "Dired" ?d)
+                                  (magit-status "Git status" ?m)
+                                  (projectile-recentf "Recent file" ?R)
+                                  (project-shell-command "Shell command" ?!)
+                                  (diego/vterm-project "Vterm project" ?v))))
+#+end_src
+
+** Projectile
+
+https://github.com/bbatsov/projectile
+
+Projectile is a project interaction library for Emacs. Its goal is to provide a nice set of features
+operating on a project level without introducing external dependencies.
+
+This library provides easy project management and navigation. The concept of a project is pretty
+basic just a folder containing some special file (.git or a file called .projectile).
+
+#+begin_src elisp
+(use-package projectile
+  :after magit
+  :config
+  (setq projectile-completion-system 'default) ; to use vertico which relies on default
+  (setq projectile-enable-caching t)
+  (setq projectile-require-project-root nil) ; run projectile commands on current not project dir
+  (mapc #'projectile-add-known-project
+        (mapcar #'file-name-as-directory (magit-list-repos)))
+  ;; write to persistent `projectile-known-projects-file'
+  (projectile-save-known-projects)
+  (projectile-global-mode 1))
+
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 300)
+  (setq recentf-max-saved-items 100)
+  (recentf-mode 1))
+
+;; projectile ignored directories
+(with-eval-after-load 'projectile
+  (add-to-list 'projectile-globally-ignored-directories "vendor"))
+#+end_src
+
+** treemacs.el
+
+Treemacs - a tree layout file explorer for Emacs.
+https://github.com/Alexander-Miller/treemacs
+
+=oaa= open window with ace
+For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to parent.
+
+#+begin_src elisp
+(use-package treemacs
+  :config
+  (setq treemacs-git-mode 'simple)
+  (setq treemacs-tag-follow-mode nil)
+  (treemacs-resize-icons 12))
+
+(define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
+
+(use-package treemacs-evil
+  :after (treemacs evil))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
+
+(use-package lsp-treemacs
+  :commands lsp-treemacs-errors-list
+  :after lsp-mode
+  :config
+  (setq lsp-treemacs-detailed-outline nil))
+
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :config (treemacs-set-scope-type 'Perspectives))
+
+#+end_src
+
 * Completion
 
 ** Preserve history with savehist-mode
@@ -2106,182 +2282,6 @@ example, Python or Perl regexps.
 (use-package visual-regexp-steroids
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'vr/query-replace)))
-#+end_src
-
-* Project Management
-
-** Git
-
-https://github.com/magit/magit
-
-A git client for Emacs.
-C-t to turn any magit buffer into text-mode.
-
-Keybindings: https://github.com/emacs-evil/evil-collection/tree/master/modes/magit
-
-*** magit.el
-
-Keys:
-https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-collection-magit.el#L280-L309
-
-#+begin_src elisp
-(use-package magit
-  :general
-  (general-nvmap :keymaps 'magit-status-mode-map
-    "zt" #'evil-scroll-line-to-top
-    "zz" #'evil-scroll-line-to-center
-    "zb" #'evil-scroll-line-to-bottom
-    "gr" #'magit-refresh)
-  (general-define-key
-   :keymaps 'magit-status-mode-map
-   :states '(normal visual emacs motion)
-   :prefix ","
-   :non-normal-prefix "M-SPC m"
-   "b"       '(:ignore t :which-key "branch")
-   "bc" #'diego/git-create-branch-from-origin-master
-   "bC" #'diego/git-create-branch-from-origin-main
-   "p"       '(:ignore t :which-key "pr")
-   "pc" #'diego/checkout-gh-pr
-   "o" #'diego/fetch-and-rebase-onto-origin-master
-   "v" #'diego/visit-pull-request-url)
-
-  :config
-  (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
-  (setq magit-save-repository-buffers nil) ; Don't autosave repo buffers
-  ;; Don't display parent/related refs in commit buffers; they are rarely
-  ;; helpful and only add to runtime costs.
-  (setq magit-revision-insert-related-refs nil)
-  (setq magit-diff-refine-ignore-whitespace nil)
-  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
-
-  (setq magit-repository-directories
-        '(
-          ("~/src/github.com/Shopify" . 2)
-          ("~/code/" . 2)
-          ("~/dotfiles/" . 1)))
-
-  (transient-append-suffix 'magit-fetch "-p"
-    '("-t" "Fetch all tags" ("-t" "--tags")))
-
-  (load (expand-file-name "diego-magit.el" user-emacs-directory)))
-#+end_src
-
-*** transient.el
-
-Package `transient' is the interface used by Magit to display popups.
-TODO remove use package as it's now part of Emacs
-
-#+begin_src elisp
-(use-package transient
-  :config
-  ;; Allow using `q' to quit out of popups, in addition to `C-g'. See
-  ;; <https://magit.vc/manual/transient.html#Why-does-q-not-quit-popups-anymore_003f>
-  ;; for discussion.
-  (transient-bind-q-to-quit)
-  ;; Close transient with ESC
-  (define-key transient-map [escape] #'transient-quit-one))
-#+end_src
-
-*** git-link.el
-
-#+begin_src elisp
-(use-package git-link
-  :commands git-link
-  :config
-  (setq git-link-open-in-browser t))
-#+end_src
-
-*** forge.el
-
-#+begin_src elisp
-(use-package forge
-  :commands forge-create-pullreq)
-#+end_src
-
-** project.el
-
-#+begin_src elisp
-(use-package project
-  :straight (:type built-in)
-  :config
-  (load (expand-file-name "diego-project.el" user-emacs-directory))
-  (setq project-switch-commands '((project-find-file "Find file" ?f)
-                                  (diego/open-project-readme "README.md" ?.)
-                                  (consult-ripgrep "Ripgrep" ?r)
-                                  (project-dired "Dired" ?d)
-                                  (magit-status "Git status" ?m)
-                                  (projectile-recentf "Recent file" ?R)
-                                  (project-shell-command "Shell command" ?!)
-                                  (diego/vterm-project "Vterm project" ?v))))
-#+end_src
-
-** Projectile
-
-https://github.com/bbatsov/projectile
-
-Projectile is a project interaction library for Emacs. Its goal is to provide a nice set of features
-operating on a project level without introducing external dependencies.
-
-This library provides easy project management and navigation. The concept of a project is pretty
-basic just a folder containing some special file (.git or a file called .projectile).
-
-#+begin_src elisp
-(use-package projectile
-  :after magit
-  :config
-  (setq projectile-completion-system 'default) ; to use vertico which relies on default
-  (setq projectile-enable-caching t)
-  (setq projectile-require-project-root nil) ; run projectile commands on current not project dir
-  (mapc #'projectile-add-known-project
-        (mapcar #'file-name-as-directory (magit-list-repos)))
-  ;; write to persistent `projectile-known-projects-file'
-  (projectile-save-known-projects)
-  (projectile-global-mode 1))
-
-(use-package recentf
-  :config
-  (setq recentf-max-menu-items 300)
-  (setq recentf-max-saved-items 100)
-  (recentf-mode 1))
-
-;; projectile ignored directories
-(with-eval-after-load 'projectile
-  (add-to-list 'projectile-globally-ignored-directories "vendor"))
-#+end_src
-
-** treemacs.el
-
-Treemacs - a tree layout file explorer for Emacs.
-https://github.com/Alexander-Miller/treemacs
-
-=oaa= open window with ace
-For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to parent.
-
-#+begin_src elisp
-(use-package treemacs
-  :config
-  (setq treemacs-git-mode 'simple)
-  (setq treemacs-tag-follow-mode nil)
-  (treemacs-resize-icons 12))
-
-(define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
-
-(use-package treemacs-evil
-  :after (treemacs evil))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile))
-
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :after lsp-mode
-  :config
-  (setq lsp-treemacs-detailed-outline nil))
-
-(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-  :config (treemacs-set-scope-type 'Perspectives))
-
 #+end_src
 
 * Development
