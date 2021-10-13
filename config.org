@@ -1605,15 +1605,20 @@ Provides the vertical completion user interface.
 
 #+begin_src elisp
 (use-package vertico
+  :after orderless ; https://github.com/oantolin/orderless/issues/64#issuecomment-868989378
   :straight (vertico :type git :host github :repo "minad/vertico"
                      :includes vertico-directory
                      ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
                      :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
   :init
+  (add-hook 'vertico-mode-hook (lambda ()
+                                 (setq completion-in-region-function
+                                       (if vertico-mode
+                                           #'consult-completion-in-region
+                                         #'completion--in-region))))
   (vertico-mode)
   :config
   (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
-  ;; (setq vertico-resize 'grow-only)
   (setq vertico-resize nil)
   (setq vertico-cycle t)
   (setq vertico-count 20)
@@ -1658,10 +1663,7 @@ Provides the vertical completion user interface.
   :bind (:map
          vertico-map
          ("\C-tab" . #'vertico-quick-insert)
-         ("\C-q"     . #'vertico-quick-exit))
-  :hook
-  (rfn-eshadow-update-overlay-hook . vertico-directory-tidy))
-
+         ("\C-q"     . #'vertico-quick-exit)))
 #+end_src
 
 #+begin_src elisp
