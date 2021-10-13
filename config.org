@@ -743,11 +743,6 @@ line, and updates them whenever another command is invoked.
   (setq display-time-default-load-average nil))
 #+end_src
 
-** Project name
-
-#+begin_src elisp
-(setq projectile-mode-line-function #'(lambda () (format " Proj[%s]" (projectile-project-name))))
-#+end_src
 
 * Windows
 
@@ -1056,54 +1051,7 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
     "gt"  #'tab-next
     "gT"  #'tab-recent)
   :config
-  (defun diego/name-tab-by-project-or-default ()
-    "Return project name if in a project, or default tab-bar name if not.
-The default tab-bar name uses the buffer name."
-    (interactive)
-    (let ((project-name (projectile-project-name)))
-      (if (string= "-" project-name)
-          (tab-bar-tab-name-current)
-        (projectile-project-name))))
-
-  (setq tab-bar-mode t)
-
-  ;; Get the current tab name for use in some other display
-  (defun diego/current-tab-name ()
-    (interactive)
-    (alist-get 'name (tab-bar--current-tab)))
-
-  (defun diego/tab--tab-bar-tabs ()
-    (mapcar (lambda (tab)
-              (alist-get 'name tab))
-            (tab-bar-tabs)))
-
-  (defun diego/get-buffer-tab ()
-    (interactive)
-    (let* (
-           (tabs (diego/tab--tab-bar-tabs))
-           (proj (projectile-project-name))
-           )
-      (if (member proj tabs)
-          (progn
-            (tab-switch proj))
-        (progn
-          (tab-new)
-          (tab-rename proj)))))
-
-  (defun diego/create-or-select-tab ()
-    (interactive)
-    (let* (
-           (tabs (diego/tab--tab-bar-tabs))
-           (proj (projectile-project-name))
-           )
-      (if (member proj tabs)
-          (progn
-            (tab-switch proj))
-        (progn
-          (tab-new)
-          (tab-rename proj)))))
-
-  )
+  (setq tab-bar-mode t))
 #+end_src
 
 * Files
