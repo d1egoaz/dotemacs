@@ -29,25 +29,29 @@
   "Runs a common dev command. Or run the passed command if no command was selected"
   (declare (interactive-only compile))
   (interactive)
-  (let ((list (mapcar (lambda (str)
-                        (concat "/opt/dev/bin/dev " str))
-                      '("up" "down" "build" "test" "style" "runtime refresh"))))
-    (compile
-     (completing-read "Dev command: " list  nil nil nil 'compile-history) t)))
+  (let* ((prefix "/opt/dev/bin/dev ")
+         (list (mapcar (lambda (str)
+                        (concat prefix str))
+                      '("up" "down" "build" "test" "style" "runtime refresh")))
+        (cmd (completing-read "dev command: " list  nil nil prefix 'compile-history)))
+    (unless (string-prefix-p prefix cmd)
+      (setq cmd (concat prefix cmd)))
+    (compile cmd t)))
 
 ;;;###autoload
 (defun diego/dev-project ()
   "Runs a dev command from the project defined commands."
   (declare (interactive-only compile))
   (interactive)
-  (let* ((devopts (split-string
-                   (shell-command-to-string "/opt/dev/bin/dev help --project | grep dev | tail -n +2 | cut -d' ' -f4 | sort")
+  (let* ((prefix "/opt/dev/bin/dev ")
+         (devopts (split-string
+                   (shell-command-to-string (concat prefix "help --project | grep dev | tail -n +2 | cut -d' ' -f4 | sort"))
                    "\n"))
          (list (mapcar (lambda (str)
-                         (concat "/opt/dev/bin/dev " str))
+                         (concat prefix str))
                        devopts)))
     (compile
-     (completing-read "Project Dev Command: " list nil nil nil 'compile-history) t)))
+     (completing-read "Project Dev Command: " list nil nil prefix 'compile-history) t)))
 
 (provide 'diego-dev)
 ;;; diego-dev.el ends here
