@@ -1803,7 +1803,9 @@ M-w copy
          ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame]  . #'consult-buffer-other-frame)
          ([remap yank-pop]                      . #'consult-yank-pop)
-         ([remap recentf-open-files]            . #'consult-recent-file)))
+         ([remap recentf-open-files]            . #'consult-recent-file)
+         :map minibuffer-local-map
+         ("C-r" . consult-history)))
 
 ;; https://github.com/gagbo/consult-lsp
 (use-package consult-lsp
