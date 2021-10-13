@@ -2551,18 +2551,7 @@ display portions of a program, which are referred to as blocks.
               ("C-c -" . compilation-add-separator)))
 #+end_src
 
-*** Enable ASCII Colours
-
-However, most of the time I open a compilation buffer in comint mode, which will
-use vterm and won't have any issues.
-
 #+begin_src elisp
-(use-package xterm-color
-  :config
-  (setq compilation-environment '("TERM=xterm-256color"))
-  (defun diego--advice-compilation-filter (f proc string)
-    (funcall f proc (xterm-color-filter string)))
-  (advice-add 'compilation-filter :around #'diego--advice-compilation-filter))
 #+end_src
 
 ** restclient.el
