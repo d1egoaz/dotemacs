@@ -2733,6 +2733,32 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 (setq mode-line-misc-info (assq-delete-all 'which-function-mode mode-line-misc-info))
 #+end_src
 
+** bookmarks.el
+
+#+begin_src elisp
+(use-package bookmark
+  :after org
+  :straight (:type built-in)
+  :config
+  (setq bookmark-use-annotations nil)
+  (setq bookmark-automatically-show-annotations t)
+  (setq bookmark-set-fringe-mark t) ; Emacs28
+  (setq bookmark-save-flag 1)
+
+  (setq bookmark-default-file "~/gdrive/deft/bookmarks.el")
+  (setq bookmark-watch-bookmark-file 'silent)
+
+  (defun diego--bookmark-url-handler (bookmark)
+    (browse-url (bookmark-prop-get bookmark 'url)))
+
+  (defun diego/bookmark-set-url (url name)
+    (interactive "sBookmark URL: \nsBookmark name: ")
+    (if (assoc name bookmark-alist)
+        (user-error "%s is already bookmarked" name)
+      (push `(,name . ((handler . ,#'diego--bookmark-url-handler)(url . ,url)(filename . ,url)))
+            bookmark-alist))))
+#+end_src
+
 * Org Mode
 
 ** org.el
