@@ -2032,6 +2032,9 @@ search interfaces in web browsers and other programs (think of what happens when
   :straight (:host github :repo "raxod502/ctrlf")
   :init
   (ctrlf-mode 1)
+  :config
+  (setq ctrlf-auto-recenter t)
+  (setq ctrlf-go-to-end-of-match nil)
   :bind
   (("C-s" . #'ctrlf-forward-literal)
    ("C-r" . #'ctrlf-backward-literal)))
