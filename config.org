@@ -733,7 +733,7 @@ line, and updates them whenever another command is invoked.
 
 #+begin_src elisp
 (column-number-mode 1) ; Show column number next to line number in mode line
-(setq mode-line-position-column-line-format '(" (%l,%c)"))
+(setq mode-line-position-column-line-format '(" (Ln:%l, Col:%c)"))
 #+end_src
 
 ** Show date and time
@@ -741,8 +741,8 @@ line, and updates them whenever another command is invoked.
 #+begin_src elisp
 (use-package time
   :init
-  (setq display-time-format "%l:%M%p %Y-%m-%d")
-  (setq display-time-interval 60)
+  (setq display-time-format "%Y-%m(%b)-%d(%a) %l:%M%p %Z")
+  (setq display-time-interval 30)
   (setq display-time-default-load-average nil))
 #+end_src
 
