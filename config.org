@@ -701,15 +701,19 @@ line, and updates them whenever another command is invoked.
   :after moody
   :config
   (setq keycast-window-predicate 'moody-window-active-p)
-  (setq keycast-separator-width 1)
-  (setq keycast-remove-tail-elements nil)
+  (setq keycast-remove-tail-elements nil) ; leave mode line alone
+
+  ;; copied from Prot
   (dolist (input '(self-insert-command
                    org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
 
   (dolist (event '(mouse-event-p
                    mouse-movement-p
-                   mwheel-scroll))
+                   mwheel-scroll
+                   ;; added these additional events
+                   lsp-ui-doc--handle-mouse-movement
+                   ignore))
     (add-to-list 'keycast-substitute-alist `(,event nil)))
 
   (define-minor-mode keycast-mode
