@@ -29,6 +29,7 @@
   - [[#use-short-answers-yn][Use short answers y/n]]
   - [[#server-mode][Server mode]]
   - [[#increase-read-output-from-processes][Increase read output from processes]]
+  - [[#recentel][Recent.el]]
 - [[#ui---lets-make-emacs-look-a-little-better][UI - Let's make Emacs look a little better.]]
   - [[#disable-toolbars-and-scrollbars][Disable toolbars and scrollbars]]
   - [[#increase-fill-column-width][Increase fill column width]]
@@ -461,6 +462,16 @@ Increase how much is read from processes in a single chunk (default is
 
 #+begin_src elisp
 (setq read-process-output-max (* 1024 1024)) ; 1mb
+#+end_src
+
+** Recent.el
+
+#+begin_src elisp
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 1000)
+  (setq recentf-max-saved-items 1000)
+  (recentf-mode 1))
 #+end_src
 
 * UI - Let's make Emacs look a little better.
