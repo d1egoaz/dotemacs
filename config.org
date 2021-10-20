@@ -855,10 +855,16 @@ nil)
 
 #+begin_src elisp
 ;; make pop-to-buffer obey display-buffer-alist
+
+(defvar diego-tabs-as-workspaces-enabled t)
+
 (setq switch-to-buffer-obey-display-actions t)
 
-(defun diego/project-name-from-root (project-root)
-  (file-name-nondirectory (directory-file-name project-root)))
+(defun diego/project-name-from-root-dir (project-root-dir)
+  (if (or (string-prefix-p "~/src/github.com/Shopify" project-root-dir)
+          (string-prefix-p "/Volumes/GoogleDrive/My Drive" project-root-dir))
+      (file-name-nondirectory (directory-file-name project-root-dir))
+    project-root-dir))
 
 (defun diego--display-buffer-from-help-p (b _a)
   "Clicking a link from the *Help* buffer opens source code in the same window."
@@ -958,20 +964,20 @@ nil)
         ("\\*diego/vterm\\*"
          (display-buffer-in-tab)
          (tab-name . "*vterm*"))
-        ("\\*kubel.*"
+        ("\\*kubel manager.*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
         ("\\*kubectl RTF logs.*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
-        ("\\*kubel -.*"
+        ("\\*kubel-process\\*"
          (display-buffer-in-side-window)
-         (window-height . 0.8)
+         (window-height . 0.2)
          (side . bottom)
          (slot . 0))
         ("\\*kubel resource.*"
          (display-buffer-in-side-window)
-         (window-height . 0.4)
+         (window-width . 0.5)
          (side . right)
          (slot . 0))
         ;;;; Elfeed
@@ -993,20 +999,17 @@ nil)
         ;; buffer, if tab doesn't exist, create it.
         ;; idea from https://emacs.stackexchange.com/a/64486
         ((lambda (b _a)
-           (buffer-local-value 'buffer-file-name (get-buffer b)))
+           (when diego-tabs-as-workspaces-enabled
+             (buffer-local-value 'buffer-file-name (get-buffer b))))
          (display-buffer-in-tab)
          (tab-name . (lambda (b _a)
                        (if-let* ((bfn (buffer-file-name b))
-                                   (root (vc-git-root bfn)))
-                         (diego/project-name-from-root root)
+                                 (root (vc-git-root bfn)))
+                           (diego/project-name-from-root-dir root)
                          "*special*"))))
-      ))
-;; (setq consult-project-root-function
-;;       (lambda ()
-;;         (when-let (project (project-current))
-;;           (car (project-roots project)))))
-
+        ))
 #+end_src
+
 #+begin_src elisp
 (setq window-combination-resize t)
 (setq even-window-sizes 'height-only)
