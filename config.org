@@ -2947,7 +2947,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   (setq org-insert-heading-respect-content nil) ; Insert Org headings at point, not after the current subtree
   (setq org-log-into-drawer t)
   (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)     ; we do this ourselves
+  (setq org-src-tab-acts-natively t)
   (setq org-src-window-setup 'current-window)
   (setq org-startup-with-inline-images t)
   (setq org-todo-keywords '((sequence "TODO(t!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)" "IN-PROGRESS(i!)")))
