@@ -289,7 +289,8 @@ exist after each headings's drawers."
   (append
    diego--shopify-lookup-provider-alist
    '(("Github Search" "https://github.com/search?q=%s")
-     ("Github Shopify Repository" "https://github.com/Shopify/%s")
+     ;; ("Github Shopify Repository" "https://github.com/Shopify/%s")
+     ("Github Shopify Repository" "https://github.dev/Shopify/%s")
      ("Github Shopify Search" "https://github.com/search?q=org%%3AShopify+%s")
      ("Google" "https://google.com/search?q=%s"))))
 
