@@ -2377,11 +2377,8 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
 
 #+begin_src elisp
 (use-package go-mode
-  :after lsp
-  :hook
-  (go-mode-hook . lsp-deferred)
   :config
-  (setq lsp-go-goimports-local "github.com/Shopify/")
+  (setq-default lsp-go-goimports-local "github.com/Shopify/")
   (setq godef-command "go doc") ; original godef
   (setq gofmt-command "goimports") ; original gofmt
 
@@ -2389,7 +2386,8 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
-  :hook ((go-mode-hook . lsp-go-install-save-hooks)))
+  :hook ((go-mode-hook . lsp-deferred)
+         (go-mode-hook . lsp-go-install-save-hooks)))
 #+end_src
 
 *** ob-go.el
