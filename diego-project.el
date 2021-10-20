@@ -69,15 +69,14 @@
 (defun diego/open-project-readme ()
   "Open the README.md file in a project."
   (interactive)
-  (find-file (expand-file-name "README.md" (project-root (project-current t)))))
-
+  (find-file (expand-file-name "README.md" (diego/current-project-name))))
 
 ;;;###autoload
 (defun diego/project-compile-dwim (command)
   "Run `compile' in the project root."
   (declare (interactive-only compile))
   (interactive)
-  (let ((default-directory (project-root (project-current t)))
+  (let ((default-directory (diego/current-project-name))
         (compilation-buffer-name-function
          (or project-compilation-buffer-name-function
              compilation-buffer-name-function)))
@@ -88,11 +87,14 @@
   "Run `compile' in the project root."
   (declare (interactive-only compile))
   (interactive)
-  (let ((default-directory (project-root (project-current t)))
+  (let ((default-directory (diego/current-project-name))
         (compilation-buffer-name-function
          (or project-compilation-buffer-name-function
              compilation-buffer-name-function)))
     (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
+
+(defun diego/current-project-name ()
+  (project-root (project-current)))
 
 (provide 'diego-project)
 ;;; diego-project.el ends here
