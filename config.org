@@ -2487,8 +2487,10 @@ https://github.com/pope/ob-go
          ("\\.yaml\\'"      . #'yaml-mode)
          ("\\.yaml.lock\\'" . #'yaml-mode)))
 (use-package protobuf-mode)
-#+end_src
+(use-package graphql-mode
+  :mode "\\.g\\(?:raph\\)?ql$")
 
+#+end_src
 ** Kubernetes
 
 *** kubel.el
