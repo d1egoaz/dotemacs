@@ -1564,6 +1564,9 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
           ("~/code/" . 2)
           ("~/dotfiles/" . 1)))
 
+
+(setq magit-bury-buffer-function 'magit-restore-window-configuration)
+
   (transient-append-suffix 'magit-fetch "-p"
     '("-t" "Fetch all tags" ("-t" "--tags")))
 
