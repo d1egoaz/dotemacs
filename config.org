@@ -83,7 +83,6 @@
 - [[#project-management][Project Management]]
   - [[#git][Git]]
   - [[#projectel][project.el]]
-  - [[#projectile][Projectile]]
   - [[#treemacsel][treemacs.el]]
 - [[#completion][Completion]]
   - [[#preserve-history-with-savehist-mode][Preserve history with savehist-mode]]
@@ -1061,7 +1060,6 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 
 #+begin_src elisp
 (use-package tab-bar
-  :after projectile
   :general
   (general-nmap
     "gt"  #'tab-next
@@ -1617,43 +1615,9 @@ TODO remove use package as it's now part of Emacs
                                   (consult-ripgrep "Ripgrep" ?r)
                                   (project-dired "Dired" ?d)
                                   (magit-status "Git status" ?m)
-                                  (projectile-recentf "Recent file" ?R)
+                                  (diego/consult-buffer-for-project "Recent project buffer" ?R)
                                   (project-shell-command "Shell command" ?!)
                                   (diego/vterm-project "Vterm project" ?v))))
-#+end_src
-
-** Projectile
-
-https://github.com/bbatsov/projectile
-
-Projectile is a project interaction library for Emacs. Its goal is to provide a nice set of features
-operating on a project level without introducing external dependencies.
-
-This library provides easy project management and navigation. The concept of a project is pretty
-basic just a folder containing some special file (.git or a file called .projectile).
-
-#+begin_src elisp
-(use-package projectile
-  :after magit
-  :config
-  (setq projectile-completion-system 'default) ; to use vertico which relies on default
-  (setq projectile-enable-caching t)
-  (setq projectile-require-project-root nil) ; run projectile commands on current not project dir
-  (mapc #'projectile-add-known-project
-        (mapcar #'file-name-as-directory (magit-list-repos)))
-  ;; write to persistent `projectile-known-projects-file'
-  (projectile-save-known-projects)
-  (projectile-global-mode 1))
-
-(use-package recentf
-  :config
-  (setq recentf-max-menu-items 300)
-  (setq recentf-max-saved-items 100)
-  (recentf-mode 1))
-
-;; projectile ignored directories
-(with-eval-after-load 'projectile
-  (add-to-list 'projectile-globally-ignored-directories "vendor"))
 #+end_src
 
 ** treemacs.el
@@ -1675,9 +1639,6 @@ For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to pare
 
 (use-package treemacs-evil
   :after (treemacs evil))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile))
 
 (use-package lsp-treemacs
   :commands lsp-treemacs-errors-list
@@ -3428,7 +3389,6 @@ Emacs Everywhere from, just press C-c C-c.
  "pf"      #'(project-find-file :which-key "Project file")
  "pp"      #'(project-switch-project :which-key "Switch project")
  "pr"     #'(diego/consult-buffer-for-project :which-key "Project recent")
- "pR"      #'(projectile-recentf :which-key "Project recent files")
  "pv"      #'(diego/vterm-project :which-key "Project vterm")
  ;; Profiler
  "P"       '(:ignore t :which-key "profiler")
@@ -3513,12 +3473,14 @@ Some parts of my configuration were copied and inspired from:
 - [[https://config.daviwil.com/emacs][Daviwil]]
 - [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [7/13]
+* Pending tasks [8/13]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
-** TODO Replace projectile by project.el
+** DONE Replace projectile by project.el
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2021-10-13 Wed 17:24]
+- State "TODO"       from "TODO"       [2021-10-13 Wed 17:24]
 - State "TODO"       from              [2021-05-28 Fri 16:47]
 :END:
 ** DONE Replace selectrum by vertico
