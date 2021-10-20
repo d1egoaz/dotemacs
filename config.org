@@ -119,6 +119,8 @@
   - [[#ieditel][iedit.el]]
   - [[#which-function-modeel][which-function-mode.el]]
   - [[#bookmarksel][bookmarks.el]]
+  - [[#highlight-parenthesesel][highlight-parentheses.el]]
+  - [[#highlight-indent-guidesel][highlight-indent-guides.el]]
 - [[#org-mode][Org Mode]]
   - [[#orgel][org.el]]
   - [[#org-downloadel][org-download.el]]
@@ -2779,6 +2781,59 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
         (user-error "%s is already bookmarked" name)
       (push `(,name . ((handler . ,#'diego--bookmark-url-handler)(url . ,url)(filename . ,url)))
             bookmark-alist))))
+#+end_src
+** highlight-parentheses.el
+#+begin_src elisp
+(use-package highlight-parentheses
+  :after modus-themes
+  :config
+  (defvar my-highlight-parentheses-use-background t
+    "Prefer `highlight-parentheses-background-colors'.")
+
+  (setq my-highlight-parentheses-use-background nil) ; Set to nil to disable backgrounds
+
+  (defun my-modus-themes-highlight-parentheses ()
+    (modus-themes-with-colors
+      ;; Our preference for setting either background or foreground
+      ;; styles, depending on `my-highlight-parentheses-use-background'.
+      (if my-highlight-parentheses-use-background
+
+          ;; Here we set color combinations that involve both a background
+          ;; and a foreground value.
+          (setq highlight-parentheses-background-colors (list cyan-refine-bg
+                                                              magenta-refine-bg
+                                                              green-refine-bg
+                                                              yellow-refine-bg)
+                highlight-parentheses-colors (list cyan-refine-fg
+                                                   magenta-refine-fg
+                                                   green-refine-fg
+                                                   yellow-refine-fg))
+
+        ;; And here we pass only foreground colors while disabling any
+        ;; backgrounds.
+        (setq highlight-parentheses-colors (list green-intense
+                                                 magenta-intense
+                                                 blue-intense
+                                                 red-intense)
+              highlight-parentheses-background-colors nil)))
+
+    ;; Our changes must be evaluated before enabling the relevant mode, so
+    ;; this comes last.
+    (global-highlight-parentheses-mode 1))
+
+  ;; Include this if you also want to make the parentheses bold:
+  (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
+
+  :hook ((modus-themes-after-load-theme-hook . my-modus-themes-highlight-parentheses)))
+  #+end_src
+
+** highlight-indent-guides.el
+
+#+begin_src elisp
+(use-package highlight-indent-guides
+  :config
+  (setq highlight-indent-guides-method 'character)
+  :hook ((prog-mode-hook . highlight-indent-guides-mode)))
 #+end_src
 
 * Org Mode
