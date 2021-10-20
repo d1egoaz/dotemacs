@@ -2595,7 +2595,9 @@ display portions of a program, which are referred to as blocks.
   ;; (setq compilation-scroll-output 'first-error)
   (setq compilation-scroll-output t)
   (setq compilation-auto-jump-to-first-error t)
-  (setq compilation-always-kill t) ;; kill old compile processes before starting the new one
+  (setq compilation-always-kill t) ; kill old compile processes before starting the new one
+  (setq compilation-ask-about-save nil)  ; save all buffers on `compile'
+
 
   (defun compilation-add-separator ()
     "Insert separator in read-only buffer."
