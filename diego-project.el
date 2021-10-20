@@ -93,6 +93,18 @@
              compilation-buffer-name-function)))
     (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
 
+
+;;;###autoload
+(defun diego/recompile ()
+  "Function has been almost copied from the original recompile.
+It has been modified to always run on comint mode".
+  (interactive)
+  (save-some-buffers (not compilation-ask-about-save)
+                     compilation-save-buffers-predicate)
+  (let ((default-directory (or compilation-directory default-directory))
+    (command (eval compile-command)))
+    (apply #'compilation-start (list command t nil nil)))) ; make sure to always use comint mode
+
 (defun diego/current-project-name ()
   (project-root (project-current)))
 
