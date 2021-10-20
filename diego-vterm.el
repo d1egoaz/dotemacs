@@ -58,10 +58,10 @@ Receives an optional BUFFERNAME to be used."
 (defun diego/vterm-project ()
   "Switch to (or create) a vterm for current project and cd into project root."
   (interactive)
-  (let* ( (proj (project-current))
-          (default-directory (if proj (project-root proj) "/tmp"))
-          (name (diego/project-name-from-root default-directory))
-          (buffername (format "*vterm-project: %s*" name)))
+  (let* ((proj (project-current))
+         (default-directory (if proj (project-root proj) "/tmp"))
+         (name (diego/project-name-from-root default-directory))
+         (buffername (format "*vterm-project: %s*" name)))
     (diego/vterm buffername)))
 
 ;;;###autoload
