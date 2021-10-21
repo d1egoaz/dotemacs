@@ -3374,9 +3374,8 @@ Emacs Everywhere from, just press C-c C-c.
  "bY"      #'(diego/copy-whole-buffer-to-clipboard :which-key "Copy buffer to clipboard")
  ;; Compile
  "c"       '(:ignore t :which-key "compile")
- "cc"      #'diego/recompile
- "cC"      #'diego/project-compile
-
+ "cc"      #'diego/project-compile
+ "cC"      #'diego/recompile
  "cd"     #'diego/dev
  "cD"     #'diego/dev-project
  ;; Evaluate elisp expressions
