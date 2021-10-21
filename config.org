@@ -3309,6 +3309,7 @@ Emacs Everywhere from, just press C-c C-c.
  "aa"   #'((lambda () (interactive) (org-agenda-list)) :which-key "Org Agenda Week")
  "aA"      #'org-agenda
  "ac"      #'(world-clock :which-key "World clock")
+ "aC"      #'calendar
  "ad"      #'(dired-jump :which-key "Dired current dir")
  "ae"      #'(elfeed :which-key "Elfeed - RSS")
  "ak"      #'(kubel :which-key "Kubel")
@@ -3348,7 +3349,7 @@ Emacs Everywhere from, just press C-c C-c.
  "bY"      #'(diego/copy-whole-buffer-to-clipboard :which-key "Copy buffer to clipboard")
  ;; Compile
  "c"       '(:ignore t :which-key "compile")
- "cc"      #'recompile
+ "cc"      #'diego/recompile
  "cC"      #'diego/project-compile
 
  "cd"     #'diego/dev
@@ -3388,19 +3389,24 @@ Emacs Everywhere from, just press C-c C-c.
  "gL"      #'magit-log
  "gv"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
  ;; Help
- "h"       '(:ignore t :which-key "help")
+ "h"       '(:ignore t :which-key "help/highlight")
  "ha"      #'(consult-apropos :which-key "Describe apropos")
- "hc"      #'(describe-command :which-key "Describe command")
- "hf"      #'(describe-function :which-key "Describe function/macro")
- "hF"      #'(describe-face :which-key "Describe face")
+ "hc"      #'describe-command
+ "hC"      #'describe-charecter
+ "hf"      #'describe-function
+ "hF"      #'describe-face
  "hk"      #'(helpful-key :which-key "Describe key")
  "hl"      #'(find-library :which-key "Describe library")
- "hm"      #'(describe-mode :which-key "Describe mode")
+ "hm"      #'describe-mode
  "hp"      #'(helpful-at-point :which-key "Describe at point")
- "ho"      #'(describe-symbol :which-key "Describe symbol")
- "hv"      #'(describe-variable :which-key "Describe variable")
+ "ho"      #'describe-symbol
+ "hv"      #'describe-variable
  "hw"      #'define-word-at-point
  "hW"      #'dictionary-search
+ "Hs"      #'highlight-symbol-at-point
+ "Hl"      #'highlight-lines-matching-regexp
+ "Hr"      #'highlight-regexp
+ "Hu"      #'unhighlight-regexp
  "hr"      #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
@@ -3427,6 +3433,7 @@ Emacs Everywhere from, just press C-c C-c.
  "ju"      #'(ffap-menu :which-key "Jump to URL")
  "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
  "jp"      #'(diego/open-url :which-key "Jump to URL by search provider")
+ "js"      #'(avy-goto-symbol-1 :which-key "Jump to begginning of word")
  ;; LSP
  "l"       '(:ignore t :which-key "lsp")
  "lc"      #'lsp-treemacs-call-hierarchy
