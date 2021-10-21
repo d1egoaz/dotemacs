@@ -2935,7 +2935,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   :config
   (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   (setq org-clock-out-remove-zero-time-clocks nil)
-  (setq org-cycle-emulate-tab 'white) ; allows to collapse the current outline (call org-cycle)
+  ;; (setq org-cycle-emulate-tab 'white) ; allows to collapse the current outline (call org-cycle)
   (setq org-confirm-babel-evaluate nil)
   (setq org-download-image-html-width 500)
   (setq org-edit-src-content-indentation 0) ; not need to waste space
