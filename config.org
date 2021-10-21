@@ -545,7 +545,8 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-links 'faint)
   (setq modus-themes-mode-line 'accented-3d)
   (setq modus-themes-mode-line '(padded accented))
-  (setq modus-themes-org-blocks 'tinted-background)
+  ;; (setq modus-themes-org-blocks 'tinted-background)
+  (setq modus-themes-org-blocks 'gray-background)
   (setq modus-themes-paren-match 'intense-bold)
   (setq modus-themes-prompts 'intense-accented)
   (setq modus-themes-region 'accent)
@@ -557,10 +558,23 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-scale-headings nil)
   (setq modus-themes-slanted-constructs t) ; use slanted text (italics) unless it is absolutely necessary, strings and code comments
   (setq modus-themes-subtle-line-numbers t)
-  (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g (setq modus-themes-syntax 'all-syntax) ; Lots of options---continue reading the manual
+  (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g
+  (setq modus-themes-syntax '(faint green-strings yellow-comments alt-syntax))
+  (setq modus-themes-tabs-accented t)
 
-  ;; testing
-  (setq modus-themes-tabs-accented t) ; I don't think it works in MacOS
+;; (modus-themes-with-colors
+;; (custom-set-faces
+;; `(font-lock-keyword-face ((,class :foreground "#fb4933")))
+;; `(font-lock-string-face ((,class :foreground "#b8bb26")))
+;; `(font-lock-comment ((,class :foreground "#F8F8F0")))
+;; ))
+
+(setq modus-themes-vivendi-color-overrides
+      '((bg-main . "#1d2021")
+        (fg-main . "#c2c2c2")))
+;; disable with:
+;; (setq modus-themes-vivendi-color-overrides nil)
+
   ;; Load the theme files before enabling a theme
   (modus-themes-load-themes)
   :config
@@ -569,6 +583,7 @@ Command/Super plus =/- for zooming in/out.
   ;; (modus-themes-load-vivendi)
   :bind ("<f5>" . #'modus-themes-toggle))
 #+end_src
+
 ** Maximize the Emacs Frame on Startup
 
 #+begin_src elisp
