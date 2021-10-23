@@ -580,8 +580,8 @@ Command/Super plus =/- for zooming in/out.
   (modus-themes-load-themes)
   :config
   ;; Load the theme of your choice:
-  (modus-themes-load-operandi)
-  ;; (modus-themes-load-vivendi)
+  ;; (modus-themes-load-operandi)
+  (modus-themes-load-vivendi)
   :bind ("<f5>" . #'modus-themes-toggle))
 #+end_src
 
