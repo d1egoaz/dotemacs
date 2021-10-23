@@ -104,8 +104,25 @@ It has been modified to always run on comint mode."
         (command (eval compile-command)))
     (apply #'compilation-start (list command t nil nil)))) ; make sure to always use comint mode
 
+;;;###autoload
 (defun diego/current-project-name ()
-  (project-root (project-current)))
+  (when-let ((proj (project-current)))
+    (project-root proj)))
+
+;;;###autoload
+(defun diego/project-short-name (root-dir)
+  (if (or (string-prefix-p "~/src/github.com/Shopify" root-dir)
+          (string-prefix-p "/Volumes/GoogleDrive/My Drive" root-dir))
+      (file-name-nondirectory (directory-file-name root-dir)) ;; remove last / and get only dir name
+    root-dir))
+
+;;;###autoload
+(defun diego/tab-name-for-buffer (b _a)
+  (if-let* ((project (project-current nil (buffer-file-name b))) ; project for file
+            (root-dir (project-root project)) ; get only root dir
+            (name (diego/project-short-name root-dir))) ; get only dir name
+      name
+    "*general*"))
 
 (provide 'diego-project)
 ;;; diego-project.el ends here
