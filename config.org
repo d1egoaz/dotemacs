@@ -775,7 +775,6 @@ line, and updates them whenever another command is invoked.
   (setq display-time-default-load-average nil))
 #+end_src
 
-
 * Windows
 
 ** Jump to windows (ace-window.el)
@@ -875,14 +874,6 @@ nil)
 
 (defvar diego-tabs-as-workspaces-enabled t)
 
-(setq switch-to-buffer-obey-display-actions t)
-
-(defun diego/project-name-from-root-dir (project-root-dir)
-  (if (or (string-prefix-p "~/src/github.com/Shopify" project-root-dir)
-          (string-prefix-p "/Volumes/GoogleDrive/My Drive" project-root-dir))
-      (file-name-nondirectory (directory-file-name project-root-dir))
-    project-root-dir))
-
 (defun diego--display-buffer-from-help-p (b _a)
   "Clicking a link from the *Help* buffer opens source code in the same window."
   (unless current-prefix-arg
@@ -923,7 +914,6 @@ nil)
          (window-height . fit-window-to-buffer)
          (window-parameters . ((no-other-window . t)
                                (mode-line-format . none))))
-
         ;; left side window
         ("\\*Help.*"
          ;; (display-buffer-reuse-window display-buffer-in-side-window)
@@ -981,22 +971,24 @@ nil)
         ("\\*diego/vterm\\*"
          (display-buffer-in-tab)
          (tab-name . "*vterm*"))
-        ("\\*kubel manager.*"
-         (display-buffer-in-tab)
-         (tab-name . "*kubel*"))
         ("\\*kubectl RTF logs.*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
-        ("\\*kubel-process\\*"
-         (display-buffer-in-side-window)
+        ("\\*kubel-process.*"
+         (display-buffer-in-tab display-buffer-in-side-window)
+         (tab-name . "*kubel*")
          (window-height . 0.2)
          (side . bottom)
          (slot . 0))
         ("\\*kubel resource.*"
-         (display-buffer-in-side-window)
+         (display-buffer-in-tab display-buffer-in-side-window)
+         (tab-name . "*kubel*")
          (window-width . 0.5)
          (side . right)
          (slot . 0))
+        ("\\*kubel.*"
+         (display-buffer-in-tab)
+         (tab-name . "*kubel*"))
         ;;;; Elfeed
         ("\\*elfeed-search\\*"
          (display-buffer-in-tab)
@@ -1005,25 +997,20 @@ nil)
          (display-buffer-in-side-window)
          (side . bottom)
          (window-height . 0.7))
-
         ;;;; Scratch buffers
         ("\\*scratch.*"
          (display-buffer-in-tab)
          (tab-name . "*scratch*"))
-
-        ;;; Automatic tab management
-        ;; every new buffer/file goes to a tab, even when visiting an existing
-        ;; buffer, if tab doesn't exist, create it.
-        ;; idea from https://emacs.stackexchange.com/a/64486
-        ((lambda (b _a)
-           (when diego-tabs-as-workspaces-enabled
-             (buffer-local-value 'buffer-file-name (get-buffer b))))
+        ("\\*\\(straight-process\\|Async-native-compile-log\\)\\*"
          (display-buffer-in-tab)
-         (tab-name . (lambda (b _a)
-                       (if-let* ((bfn (buffer-file-name b))
-                                 (root (vc-git-root bfn)))
-                           (diego/project-name-from-root-dir root)
-                         "*special*"))))
+         (tab-name . "*general*"))
+        ;;; Automatic tab management
+        ;; every new buffer/file goes to a tab given by the root project
+        ;; idea from https://emacs.stackexchange.com/a/64486
+        ((lambda (b _a) t)
+         (display-buffer-in-tab)
+         (tab-name . diego/tab-name-for-buffer))
+        ;; end display-buffer-alist
         ))
 #+end_src
 
