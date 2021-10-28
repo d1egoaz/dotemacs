@@ -624,7 +624,6 @@ Command/Super plus =/- for zooming in/out.
 
   ;; some parts of the code copied from https://github.com/ieure/scratch-el/blob/master/scratch.el
   (setq diego--scratch-mode-list '(("org-mode" . org-mode)
-                                   ("fundamental-mode" . fundamental-mode)
                                    ("emacs-lisp" . emacs-lisp-mode)
                                    ("markdown" . gfm-mode)))
 
@@ -641,7 +640,12 @@ When called interactively with a prefix arg, prompt for the mode."
     (let* ((name (concat (make-temp-name (format "*scratch-%s-" mode)) "*")))
       (switch-to-buffer name)
       (with-current-buffer (get-buffer-create name)
-        (funcall mode))))
+        (funcall mode)
+        (save-excursion
+          (insert (format "Scratch buffer for: %s\n\n" mode))
+          (goto-char (point-min))
+          (comment-region (point-at-bol) (point-at-eol)))
+        (forward-line 2))))
 
   (defun diego/make-new-scratch-buffer ()
     "New temporary scratch buffer with a random name."
