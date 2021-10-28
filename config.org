@@ -1083,6 +1083,16 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
   (setq tab-bar-show t)
   (setq tab-bar-tab-hints nil) ; don't show numbers
 
+
+  ;; close tab and project
+  (defun diego--close-tab-for-project (tab _bool)
+    (let ((name (alist-get 'name tab)))
+      (if (string= "*kubel*" name)
+          (kill-matching-buffers "\\*kubel" nil t)
+        (when (project-current)
+          (project-kill-buffers t)))))
+  (setq tab-bar-tab-pre-close-functions '(diego--close-tab-for-project))
+
 ;;;; Indicators for `tab-bar-format' --- EXPERIMENTAL
 
   (defun prot-tab-format-modified ()
@@ -1097,9 +1107,16 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
     "Format `mode-line-misc-info' for the tab bar."
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-misc-info)) ignore)))
 
-  (defun prot-tab-format-buffer-id ()
+  (defun diego-tab-format-buffer-id ()
     "Buffer true name for files or just the buffer name."
-    `((global menu-item ,(format "[%s]" (or buffer-file-truename (buffer-name))) ignore)))
+    `((global menu-item ,(format "[%s]"
+                                 (if buffer-file-truename
+                                     (concat "File: "
+                                             (if (string-prefix-p (diego/current-project-name) buffer-file-truename)
+                                                 (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
+                                               buffer-file-truename))
+                                   (concat "Buffer: " (buffer-name))))
+              ignore)))
 
   (defun prot-tab-format-space-single ()
     "Format space for the tab bar."
@@ -1120,7 +1137,7 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
           ;; tab-bar-format-tabs-groups
           tab-bar-format-tabs
           prot-tab-format-space-double
-          prot-tab-format-buffer-id
+          diego-tab-format-buffer-id
           prot-tab-format-vc
           prot-tab-format-space-single
           tab-bar-format-align-right
