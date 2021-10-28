@@ -121,6 +121,7 @@
   - [[#highlight-parenthesesel][highlight-parentheses.el]]
   - [[#highlight-indent-guidesel][highlight-indent-guides.el]]
   - [[#beaconel][beacon.el]]
+  - [[#blamerel][blamer.el]]
 - [[#org-mode][Org Mode]]
   - [[#orgel][org.el]]
   - [[#org-downloadel][org-download.el]]
@@ -2886,6 +2887,17 @@ Never lose your cursor again.
 (use-package beacon
   :config
   (beacon-mode 1))
+#+end_src
+
+** blamer.el
+#+begin_src elisp
+(use-package blamer
+  :straight (:type git :host github :repo "artawower/blamer.el")
+  :init
+  (setq blamer-idle-time 1.0)
+  (setq blamer-min-offset 70)
+  :config
+  (global-blamer-mode 1))
 #+end_src
 
 * Org Mode
