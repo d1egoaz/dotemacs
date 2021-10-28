@@ -2755,6 +2755,8 @@ electric-pair-skip-whitespace, when non-nil, causes the minor mode to skip white
 
 ** flyspell.el
 
+`z=` to correct word.
+
 #+begin_src elisp
 (use-package flyspell
   :after org
@@ -2762,7 +2764,10 @@ electric-pair-skip-whitespace, when non-nil, causes the minor mode to skip white
          (text-mode-hook . flyspell-mode)))
 
 (use-package flyspell-correct
-  :after flyspell)
+  :after flyspell
+  :bind (([remap ispell-word] . #'flyspell-correct-at-point))
+  :config
+  (setq flyspell-correct-interface #'flyspell-correct-dummy)) ; provides save, skip
 #+end_src
 
 ** Define word
@@ -3059,6 +3064,7 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
 
 
 ** evil-org-agenda.el
+
 #+begin_src elisp
 (use-package evil-org-agenda
   :after (evil org evil-org)
