@@ -3438,11 +3438,11 @@ Emacs Everywhere from, just press C-c C-c.
 
  "gL"      #'magit-log
  "gv"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
- ;; Help
+ ;; Help/Highlight
  "h"       '(:ignore t :which-key "help/highlight")
  "ha"      #'(consult-apropos :which-key "Describe apropos")
  "hc"      #'describe-command
- "hC"      #'describe-charecter
+ "hC"      #'describe-character
  "hf"      #'describe-function
  "hF"      #'describe-face
  "hk"      #'(helpful-key :which-key "Describe key")
@@ -3484,6 +3484,12 @@ Emacs Everywhere from, just press C-c C-c.
  "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
  "jp"      #'(diego/open-url :which-key "Jump to URL by search provider")
  "js"      #'(avy-goto-symbol-1 :which-key "Jump to begginning of word")
+ ;; Kill
+ "kk"      #'(kill-current-buffer :which-key "Kill current buffer")
+ "kh"      #'((lambda () (interactive) (kill-matching-buffers "\\*helpful" nil t)) :which-key "Kill help buffers")
+ "kv"      #'((lambda () (interactive) (kill-matching-buffers "\\*vterm" nil t)) :which-key "Kill vterm buffers")
+ "k TAB"    #'(tab-bar-close-tab :which-key "Kill workspace tab")
+ "kw"      #'(kill-buffer-and-window :which-key "Kill current buffer and window")
  ;; LSP
  "l"       '(:ignore t :which-key "lsp")
  "lc"      #'lsp-treemacs-call-hierarchy
