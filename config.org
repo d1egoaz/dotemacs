@@ -59,11 +59,14 @@
   - [[#disable-file-changed-on-disk-messages][Disable file changed on disk messages]]
   - [[#restore-cursor-to-last-visited-place-in-a-file][Restore cursor to last visited place in a file]]
   - [[#save-some-buffers-default-to-root-project][Save Some Buffers default to root project]]
+  - [[#dired-reuse-buffer-when-opening-directories][Dired reuse buffer when opening directories]]
+  - [[#make-script-files-executable-automatically][Make Script Files Executable Automatically]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
   - [[#new-line-at-eof][New line at EOF]]
   - [[#display-line-numbers-and-truncated-lines][Display line numbers and truncated lines]]
   - [[#highlight-current-line][Highlight current line]]
+  - [[#highlight-todo-notes-etc][Highlight TODO, NOTES, etc.]]
   - [[#avoid-performance-issues-with-long-lines][Avoid performance issues with long lines]]
   - [[#underscore-_-and-hyphen---as-a-word-characters][Underscore =_= and hyphen =-= as a word characters]]
   - [[#indentation-spaces-and-tabs][Indentation, spaces, and tabs]]
@@ -732,6 +735,8 @@ line, and updates them whenever another command is invoked.
 
 (use-package keycast
   :after moody
+  :init
+  (setq keycast-insert-after 'mode-line-misc-info)
   :config
   (setq keycast-window-predicate 'moody-window-active-p)
   (setq keycast-remove-tail-elements nil) ; leave mode line alone
@@ -756,7 +761,7 @@ line, and updates them whenever another command is invoked.
         (add-hook 'pre-command-hook 'keycast--update t)
       (remove-hook 'pre-command-hook 'keycast--update)))
 
-  (add-to-list 'global-mode-string '("" mode-line-keycast " "))
+  ;; (add-to-list 'global-mode-string '("" mode-line-keycast " "))
   (set-face-attribute 'keycast-key nil :height 1.0)
   (set-face-attribute 'keycast-command nil :height 0.5)
   (keycast-mode 1))
