@@ -164,7 +164,8 @@
 (defun diego/copy-whole-buffer-to-clipboard ()
   "Copy entire buffer to clipboard"
   (interactive)
-  (clipboard-kill-ring-save (point-min) (point-max)))
+  (clipboard-kill-ring-save (point-min) (point-max))
+  (message "buffer '%s' copied to kill ring" (buffer-name)))
 
 ;;;###autoload
 (defun diego/evil-insert-line-above (count)
@@ -304,6 +305,21 @@ exist after each headings's drawers."
     (browse-url
      (url-encode-url
       (format site (read-from-minibuffer "Query: "))))))
+
+
+(defun diego/delete-file ()
+  "Removes file and buffer."
+  (interactive)
+  (if-let ((filename (buffer-file-name))
+           (buffer (current-buffer))
+           (name (buffer-name)))
+      (if (file-exists-p filename) ; it can be a new file that is not saved yet
+          (when (yes-or-no-p (format "Are you sure you want to delete '%s' ? " filename))
+            (delete-file filename)
+            (kill-buffer buffer)
+            (message "File '%s' successfully deleted" filename))
+        (message "File '%s' doesn't exist" filename))
+    (message "Buffer '%s' is not visiting a file" (buffer-name))))
 
 (provide 'diego-common)
 ;;; diego-common.el ends here
