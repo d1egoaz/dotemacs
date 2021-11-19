@@ -916,13 +916,22 @@ nil)
          (slot . 2))
 
         ;; bottom side window
-        ("\\*Embark Actions.*"
-         (display-buffer-in-side-window)
+        ("\\*Flycheck errors\\*"
+         (display-buffer-reuse-window display-buffer-in-side-window)
          (side . bottom)
-         (slot . -1)
-         (window-height . fit-window-to-buffer)
-         (window-parameters . ((no-other-window . t)
-                               (mode-line-format . none))))
+         (window-height . 0.33))
+        ;; bottom side window
+        ("\\*Choices\\*"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . bottom)
+         (window-height . 0.33))
+
+        ("\\*Embark Collect \\(Live\\|Completions\\)\\*"
+         nil
+         (window-parameters (mode-line-format . none)))
+        ("\\*Embark Actions.*"
+         nil
+         (window-parameters (mode-line-format . none)))
         ;; left side window
         ("\\*Help.*"
          ;; (display-buffer-reuse-window display-buffer-in-side-window)
@@ -1016,7 +1025,10 @@ nil)
         ;;; Automatic tab management
         ;; every new buffer/file goes to a tab given by the root project
         ;; idea from https://emacs.stackexchange.com/a/64486
-        ((lambda (b _a) t)
+        ((lambda (b _a)
+           (or (string-prefix-p "magit:" b)
+               ;; (string-prefix-p "vterm" b)
+               (buffer-local-value 'buffer-file-name (get-buffer b)))) ; (buffer-file-name (get-buffer b)))) ;; project-current
          (display-buffer-in-tab)
          (tab-name . diego/tab-name-for-buffer))
         ;; end display-buffer-alist
@@ -1025,9 +1037,19 @@ nil)
 
 #+begin_src elisp
 (setq window-combination-resize t)
-(setq even-window-sizes 'height-only)
+;; (setq even-window-sizes 'height-only)
 (setq window-sides-vertical nil)
-(setq switch-to-buffer-in-dedicated-window 'pop)
+;; (setq switch-to-buffer-in-dedicated-window 'pop)
+
+;; (setq switch-to-buffer-obey-display-actions t)
+
+;; it has issues with magit diff, as buffer opens in the same window
+;; from https://github.com/nex3/perspective-el#some-musings-on-emacs-window-layouts
+;; (customize-set-variable 'display-buffer-base-action
+;;                         '((display-buffer-reuse-window display-buffer-same-window)
+;;                           (reusable-frames . t)))
+
+(setq even-window-sizes nil)     ; avoid resizing
 
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'custom-mode-hook #'visual-line-mode)
