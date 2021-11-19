@@ -1552,21 +1552,25 @@ second use, define the second {motion} and perform the exchange.
   (evil-exchange-install))
 #+end_src
 
-** evil-escape.el
-
-Customizable key sequence to escape from insert state and everything else in Emacs.
+** evil-goggles.el
 
 #+begin_src elisp
-(use-package evil-escape
-  :straight (:type git :host github :repo "hlissner/evil-escape")
+(use-package evil-goggles
   :after evil
-  :commands evil-escape
   :config
-  (setq evil-escape-excluded-states '(normal visual multiedit emacs motion))
-  (setq evil-escape-delay 0.2)
-  (setq-default evil-escape-key-sequence "jk")
-  :hook
-  (after-init-hook . evil-escape-mode))
+  (evil-goggles-mode))
+#+end_src
+** evil-snipe.el
+
+#+begin_src elisp
+(use-package evil-snipe
+  :after evil
+  :config
+  (setq evil-snipe-scope 'whole-visible)
+  (evil-snipe-mode)
+  (evil-snipe-override-mode)
+  :hook ((magit-mode-hook . turn-off-evil-snipe-override-mode)))
+
 #+end_src
 
 ** evil-surround.el
