@@ -1125,24 +1125,29 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
     "Format `mode-line-modified' for the tab bar."
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-modified)) ignore)))
 
-  (defun prot-tab-format-vc ()
+  (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
-    `((global menu-item ,(string-trim-right (format-mode-line vc-mode)) ignore)))
+    `((global menu-item ,(propertize (string-trim-right (format-mode-line vc-mode)) 'face '(:height 0.7 :foreground "yellow")) ignore)))
 
   (defun prot-tab-format-misc-info ()
     "Format `mode-line-misc-info' for the tab bar."
-    `((global menu-item ,(string-trim-right (format-mode-line mode-line-misc-info)) ignore)))
+    `((global menu-item ,(propertize (format-mode-line mode-line-misc-info) 'face '(:height 0.7)) ignore)))
+    ;; `((global menu-item ,(propertize (string-trim-right (format-mode-line mode-line-misc-info)) 'face '(:height 0.7)) ignore)))
 
   (defun diego-tab-format-buffer-id ()
     "Buffer true name for files or just the buffer name."
-    `((global menu-item ,(format "[%s]"
+    `((global menu-item ,(propertize (format "[%s]"
                                  (if buffer-file-truename
                                      (concat "File: "
                                              (if (string-prefix-p (diego/current-project-name) buffer-file-truename)
                                                  (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
                                                buffer-file-truename))
-                                   (concat "Buffer: " (buffer-name))))
+                                  (concat "Buffer: " (buffer-name)))) 'face '(:height 0.7))
               ignore)))
+
+    (defun diego-tab-format-keycast ()
+    "Format `mode-line-modified' for the tab bar."
+  `((global menu-item ,(string-trim-right (format-mode-line mode-line-keycast)) ignore)))
 
   (defun prot-tab-format-space-single ()
     "Format space for the tab bar."
@@ -1160,18 +1165,20 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
         '(prot-tab-format-space-single
           prot-tab-format-modified
           prot-tab-format-evil
-          ;; tab-bar-format-tabs-groups
+          ;; tab-bar-format-tabs-groups ; remove as it duplicates the tabs
           tab-bar-format-tabs
-          prot-tab-format-space-double
-          diego-tab-format-buffer-id
-          prot-tab-format-vc
           prot-tab-format-space-single
+          diego-tab-format-vc
+          prot-tab-format-space-single
+          diego-tab-format-buffer-id
+          ;; prot-tab-format-space-single
+          diego-tab-format-keycast
           tab-bar-format-align-right
           prot-tab-format-misc-info
-          prot-tab-format-space-double
-          tab-bar-format-global
-          prot-tab-format-space-single))
+          ))
 
+          ;; tab-bar-format-global
+          ;; prot-tab-format-space-single))
 
   (defun diego/tab-bar-list-names ()
     (mapcar (lambda (tab)
