@@ -514,7 +514,7 @@ Copied from https://github.com/dunn/company-emoji
 #+begin_src elisp
 (defun diego--set-emoji-font (frame)
   "Adjust the font settings of FRAME so Emacs can display emoji properly."
-  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+  (set-fontset-font t '(#x1f000 . #x1faff) (font-spec :family "Apple Color Emoji") frame 'prepend))
 
 ;; For when Emacs is started in GUI mode:
 (diego--set-emoji-font nil)
