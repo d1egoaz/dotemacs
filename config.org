@@ -774,8 +774,8 @@ line, and updates them whenever another command is invoked.
 #+begin_src elisp
 (use-package time
   :init
-  (setq display-time-format "%Y-%m(%b)-%d(%a) %l:%M%p %Z")
-  (setq display-time-interval 30)
+  (setq display-time-format "%Y-%m(%b)-%d(%a) %I:%M%p %Z")
+  (setq display-time-interval 17)
   (setq display-time-default-load-average nil))
 #+end_src
 
