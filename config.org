@@ -1343,37 +1343,6 @@ in their place.
 (global-so-long-mode 1)
 #+end_src
 
-** Underscore =_= and hyphen =-= as a word characters
-
-An underscore =_= is a word character in Vim. This means that word motions like w skip over
-underlines in a sequence of letters as if it was a letter itself. In contrast, in Evil the
-underscore is often a non-word character like operators, e.g. +.
-
-#+begin_src elisp
-(defun diego--chars-as-word-char-for-syntax-table (st)
-  (modify-syntax-entry ?/ "w" st)
-  (modify-syntax-entry ?_ "w" st)
-  (modify-syntax-entry ?- "w" st))
-
-(defun diego--treat-chars-as-word-char ()
-  (mapc 'diego--chars-as-word-char-for-syntax-table
-        (list  emacs-lisp-mode-syntax-table help-mode-syntax-table Info-mode-syntax-table org-mode-syntax-table prog-mode-syntax-table ))
-
-  (with-eval-after-load 'ruby-mode
-    (diego--chars-as-word-char-for-syntax-table ruby-mode-syntax-table))
-
-  (with-eval-after-load 'helpful-mode
-    (diego--chars-as-word-char-for-syntax-table helpful-mode-syntax-table))
-
-  (with-eval-after-load 'yaml-mode
-    (diego--chars-as-word-char-for-syntax-table yaml-mode-syntax-table))
-
-  (with-eval-after-load 'html-mode
-    (diego--chars-as-word-char-for-syntax-table html-mode-syntax-table)))
-
-(add-hook 'after-change-major-mode-hook #'diego--treat-chars-as-word-char)
-#+end_src
-
 ** Indentation, spaces, and tabs
 
 Favor spaces over tabs.
