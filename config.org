@@ -1402,7 +1402,8 @@ https://github.com/noctuid/evil-guide
   (setq evil-want-C-i-jump t)
   (setq evil-want-C-u-delete t) ; when insert mode
   (setq evil-want-Y-yank-to-eol t) ; behave like y$
-  (setq evil-undo-system 'undo-redo) ; default to natively Emacs 28
+  ;; (setq evil-undo-system 'undo-redo) ; default to natively Emacs 28
+  (setq evil-undo-system 'undo-fu)
   (setq evil-want-fine-undo t)
   :config
   ;; set up some basic equivalents for vim mapping functions. This creates
