@@ -1248,6 +1248,8 @@ on =auto-revert-mode= for the change to take effect.
 (use-package autorevert
   :straight (:type built-in)
   :config
+  ;; Revert Dired and other buffers
+  (setq global-auto-revert-non-file-buffers t)
   (setq auto-revert-interval 1)
   (setq revert-without-query '(".*")) ; disables prompt
   (global-auto-revert-mode 1))
@@ -1270,6 +1272,16 @@ visited the same file.
 
 #+begin_src elisp
 (setq save-some-buffers-default-predicate 'save-some-buffers-root)
+#+end_src
+** Dired reuse buffer when opening directories
+
+#+begin_src elisp
+(setq dired-kill-when-opening-new-dired-buffer t)
+#+end_src
+** Make Script Files Executable Automatically
+
+#+begin_src elisp
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 #+end_src
 
 * Editor
