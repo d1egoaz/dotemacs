@@ -1188,13 +1188,15 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
   (defun diego/create-or-select-tab ()
     (interactive)
     (let* ((tabs (diego/tab-bar-list-names))
-           (proj (diego/current-project-name)))
-      (if (member proj tabs)
-            (tab-switch proj)
+           (tab (diego/tab-name-for-buffer (current-buffer) nil)))
+      (if (member tab tabs)
+          (progn
+            (message "switching to tab: %s" tab)
+            (tab-switch tab)
+            )
         (progn
           (tab-new)
-          (tab-rename proj)))))
-
+          (tab-rename tab)))))
 
   (setq tab-bar-mode t)
   (tab-bar-mode 1))
