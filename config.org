@@ -836,22 +836,22 @@ You can also start by calling ace-window and then decide to switch the action to
          (funcall #',split-type)
          (call-interactively #',fn))))
 
-(defun my/split-window-right (&optional size)
-  "Split the selected window into two windows, one above the other.
+  (defun my/split-window-right (&optional size)
+    "Split the selected window into two windows, one above the other.
 The selected window is below.  The newly split-off window is
 below and displays the same buffer.  Return the new window."
-  (interactive "P")
-  (split-window-right size)
-  (other-window 1))
+    (interactive "P")
+    (split-window-right size)
+    (other-window 1))
 
-(defun my/split-window-below (&optional size)
-  "Split the selected window into two side-by-side windows.
+  (defun my/split-window-below (&optional size)
+    "Split the selected window into two side-by-side windows.
 The selected window is on the left.  The newly split-off window
 is on the right and displays the same buffer.  Return the new
 window."
-  (interactive "P")
-  (split-window-below size)
-  (other-window 1))
+    (interactive "P")
+    (split-window-below size)
+    (other-window 1))
 
   (define-key embark-file-map (kbd "o") (my/embark-ace-action find-file))
   (define-key embark-file-map (kbd "-") (my/embark-split-action find-file my/split-window-below))
@@ -859,7 +859,7 @@ window."
   (define-key embark-buffer-map (kbd "o") (my/embark-ace-action switch-to-buffer))
   (define-key embark-buffer-map (kbd "-") (my/embark-split-action switch-to-buffer my/split-window-below))
   (define-key embark-buffer-map (kbd "/") (my/embark-split-action switch-to-buffer my/split-window-right)))
-#+end_src
+  #+end_src
 
 ** Window rules
 
