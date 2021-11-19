@@ -1326,6 +1326,13 @@ Add a newline automatically at the end of the file.
 (global-hl-line-mode 1)
 #+end_src
 
+** Highlight TODO, NOTES, etc.
+
+#+begin_src elisp
+(add-hook 'find-file-hook
+          (lambda() (highlight-phrase "\\(BUG\\|FIXME\\|TODO\\|NOTE\\):")))
+#+end_src
+
 ** Avoid performance issues with long lines
 
 When the lines in a file are so long that performance could suffer to an unacceptable degree, we say
