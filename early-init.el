@@ -33,17 +33,17 @@
 (setq gc-cons-threshold most-positive-fixnum)
 (setq garbage-collection-messages t)    ; indicator of GC activity
 
-;; don't try to adjust frame size when UI elements changes
-(setq frame-inhibit-implied-resize t)
-
-;; Disable GUI elements
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
+;; packages are compiled ahead-of-time when they are installed and site files
+;; are compiled when gccemacs is installed.
+(setq native-comp-deferred-compilation nil)
+(setq native-comp-async-report-warnings-errors 'silent)
 
 ;; Disable `package' in favor of `straight'.
 (setq package-enable-at-startup nil)
 
-(setq native-comp-async-report-warnings-errors 'silent)
+;; don't try to adjust frame size when UI elements changes
+(setq frame-inhibit-implied-resize t)
 
 ;; The rest of this file sets up straight.el so that packages are installed by
 ;; it rather than built-in package.el.
