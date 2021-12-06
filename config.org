@@ -628,6 +628,7 @@ Command/Super plus =/- for zooming in/out.
   ;; some parts of the code copied from https://github.com/ieure/scratch-el/blob/master/scratch.el
   (setq diego--scratch-mode-list '(("org-mode" . org-mode)
                                    ("emacs-lisp" . emacs-lisp-mode)
+                                   ("fundamental-mode" . fundamental-mode)
                                    ("markdown" . gfm-mode)))
 
   (defun diego--scratch-buffer-querymode ()
