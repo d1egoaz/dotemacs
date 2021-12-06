@@ -905,45 +905,33 @@ nil)
          (display-buffer-in-side-window)
          (side . top)
          (window-height . 0.16)
-         (slot . -1))
+         (slot . -2))
         ("\\*Messages\\*"
          (display-buffer-in-side-window)
          (side . top)
          (window-height . 0.16)
-         (slot . 1))
+         (slot . -1))
         ("\\*Warnings\\*"
          (display-buffer-in-side-window)
          (side . top)
          (window-height . 0.16)
-         (slot . 2))
+         (slot . 0))
+        ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Flymake log\\)\\*"
+         (display-buffer-in-side-window)
+         (window-height . 0.16)
+         (side . top)
+         (slot . 1))
 
         ;; bottom side window
         ("\\*Flycheck errors\\*"
          (display-buffer-reuse-window display-buffer-in-side-window)
          (side . bottom)
-         (window-height . 0.33))
-        ;; bottom side window
-        ("\\*Choices\\*"
-         (display-buffer-reuse-window display-buffer-in-side-window)
-         (side . bottom)
+         (slot . 0)
          (window-height . 0.33))
 
-        ("\\*Embark Collect \\(Live\\|Completions\\)\\*"
-         nil
-         (window-parameters (mode-line-format . none)))
-        ("\\*Embark Actions.*"
-         nil
-         (window-parameters (mode-line-format . none)))
         ;; left side window
         ("\\*Help.*"
-         ;; (display-buffer-reuse-window display-buffer-in-side-window)
-         (display-buffer-in-side-window)
-         (side . left)
-         (window-width . 0.40)
-         (slot . -1))
-        ("\\*Apropos\\*"
-         ;; (display-buffer-reuse-window display-buffer-in-side-window)
-         (display-buffer-in-side-window)
+         (display-buffer-reuse-mode-window display-buffer-in-side-window)
          (side . left)
          (window-width . 0.40)
          (slot . -1))
@@ -952,14 +940,20 @@ nil)
          (display-buffer-reuse-window display-buffer-in-side-window)
          (side . left)
          (window-width . 0.40)
-         (slot . -1))
+         (slot . 0))
+        ("\\*Apropos\\*"
+         ;; (display-buffer-reuse-window display-buffer-in-side-window)
+         (display-buffer-in-side-window)
+         (side . left)
+         (window-width . 0.40)
+         (slot . 1))
 
         ;; right side window
         ("\\*compilation\\*"
          (display-buffer-in-side-window)
          (side . right)
          (window-width . 0.50)
-         (slot . 0))
+         (slot . -2))
         ("\\*vterm\\*"
          (display-buffer-reuse-mode-window display-buffer-in-side-window)
          (side . right)
@@ -974,7 +968,17 @@ nil)
          (display-buffer-in-side-window)
          (side . right)
          (window-width . 0.20)
-         (slot . 0))
+         (slot . 1))
+
+        ;; bottom buffer (NOT side window)
+        ("\\*Embark Actions\\*"
+         (display-buffer-reuse-mode-window display-buffer-at-bottom)
+         (window-height . fit-window-to-buffer)
+         (window-parameters . ((no-other-window . t)
+                               (mode-line-format . none))))
+        ("\\*\\(Embark\\)?.*Completions.*"
+         (display-buffer-reuse-mode-window display-buffer-at-bottom)
+         (window-parameters . ((no-other-window . t))))
 
         ;; below current window
         ("\\*Calendar.*"
@@ -984,14 +988,13 @@ nil)
          (display-buffer-reuse-mode-window display-buffer-below-selected)
          (window-height . fit-window-to-buffer))
 
-        ;; dedicated tabs
-        ;;; tabs for apps
+        ;; dedicated tabs - tabs for apps
 
         ;;;; Kubel
         ("\\*diego/vterm\\*"
          (display-buffer-in-tab)
          (tab-name . "*vterm*"))
-        ("\\*kubectl RTF logs.*"
+        ("\\*\\(kubectl\\|kubel\\).*"
          (display-buffer-in-tab)
          (tab-name . "*kubel*"))
         ("\\*kubel-process.*"
@@ -1006,9 +1009,6 @@ nil)
          (window-width . 0.5)
          (side . right)
          (slot . 0))
-        ("\\*kubel.*"
-         (display-buffer-in-tab)
-         (tab-name . "*kubel*"))
         ;;;; Elfeed
         ("\\*elfeed-search\\*"
          (display-buffer-in-tab)
@@ -1024,26 +1024,29 @@ nil)
         ("\\*\\(straight-process\\|Async-native-compile-log\\)\\*"
          (display-buffer-in-tab)
          (tab-name . "*general*"))
+
         ;;; Automatic tab management
-        ;; every new buffer/file goes to a tab given by the root project
+        ;; Every new buffer/file goes to a tab given by the root project, even visited file should
+        ;; switch to its tab.
         ;; idea from https://emacs.stackexchange.com/a/64486
         ((lambda (b _a)
+           ;; (diego--debug-buffer-alist b _a)
            (or (string-prefix-p "magit:" b)
-               ;; (string-prefix-p "vterm" b)
-               (buffer-local-value 'buffer-file-name (get-buffer b)))) ; (buffer-file-name (get-buffer b)))) ;; project-current
+               (buffer-local-value 'buffer-file-name (get-buffer b))))
          (display-buffer-in-tab)
          (tab-name . diego/tab-name-for-buffer))
-        ;; end display-buffer-alist
+        ;; end display-buffer-alist elements
         ))
 #+end_src
 
 #+begin_src elisp
 (setq window-combination-resize t)
-;; (setq even-window-sizes 'height-only)
+(setq even-window-sizes 'height-only)
+;; (setq even-window-sizes nil)     ; avoid resizing
 (setq window-sides-vertical nil)
-;; (setq switch-to-buffer-in-dedicated-window 'pop)
-
-;; (setq switch-to-buffer-obey-display-actions t)
+;; TEST
+(setq switch-to-buffer-in-dedicated-window 'pop)
+(setq switch-to-buffer-obey-display-actions t)
 
 ;; it has issues with magit diff, as buffer opens in the same window
 ;; from https://github.com/nex3/perspective-el#some-musings-on-emacs-window-layouts
@@ -1051,7 +1054,6 @@ nil)
 ;;                         '((display-buffer-reuse-window display-buffer-same-window)
 ;;                           (reusable-frames . t)))
 
-(setq even-window-sizes nil)     ; avoid resizing
 
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'custom-mode-hook #'visual-line-mode)
