@@ -555,6 +555,7 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-prompts 'intense-accented)
   (setq modus-themes-region 'accent)
   (setq modus-themes-scale-1 1.1)
+  (setq modus-themes-intense-markup t)
   (setq modus-themes-scale-2 1.15)
   (setq modus-themes-scale-3 1.21)
   (setq modus-themes-scale-4 1.27)

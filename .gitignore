@@ -2,3 +2,5 @@
 /eln-cache/
 /var/
 /straight/
+/elpa/
+/.cache/
