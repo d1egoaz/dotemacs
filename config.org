@@ -2631,8 +2631,11 @@ go-impl generates method stubs for implementing an interface.
   (setq markdown-display-remote-images t)
   ;; Enable fontification for code blocks
   (setq markdown-fontify-code-blocks-natively t)
+
   ;; use pandoc with source code syntax highlighting for markdown-preview
-  (setq markdown-command "pandoc -s --highlight-style pygments -f gfm --toc -t html5"))
+  ;; metadata is to fix: [WARNING] This document format requires a nonempty element
+  (let ((css "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css"))
+    (setq markdown-command (format "pandoc -s --highlight-style pygments -f gfm --toc -t html5 --css %s --metadata pagetitle=MarkdownPreview" css))))
 #+end_src
 
 ** Misc
