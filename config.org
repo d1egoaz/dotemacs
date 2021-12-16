@@ -3194,7 +3194,7 @@ Never lose the cursor again.
   (setq org-log-into-drawer t)
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
-  (setq org-src-window-setup 'current-window)
+  (setq org-src-window-setup 'reorganize-frame)
   (setq org-startup-with-inline-images t)
   (setq org-todo-keywords '((sequence "TODO(t!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)" "IN-PROGRESS(i!)")))
   (setq org-capture-templates
