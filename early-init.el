@@ -36,7 +36,7 @@
 ;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
 ;; packages are compiled ahead-of-time when they are installed and site files
 ;; are compiled when gccemacs is installed.
-(setq native-comp-deferred-compilation nil)
+(setq native-comp-deferred-compilation t) ; has to be t to have straight package native compiled
 (setq native-comp-async-report-warnings-errors 'silent)
 
 ;; Disable `package' in favor of `straight'.
