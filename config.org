@@ -2802,6 +2802,16 @@ display portions of a program, which are referred to as blocks.
 #+end_src
 
 * Productivity
+** ediff.el
+
+#+begin_src elisp
+(use-package ediff
+  :straight (:type built-in)
+  :config
+  (setq ediff-split-window-function #'split-window-horizontally)
+  ;; stop creating a new frame for navigating changes
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain))
+#+end_src
 
 ** Syntax checking (flycheck.el)
 
