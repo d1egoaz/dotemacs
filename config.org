@@ -2181,10 +2181,17 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
                              (embark-export)))
         (x (user-error "embark category %S doesn't support writable export" x)))))
 
+  (defun +embark-collect-hook ()
+    (when (eq embark-collect--kind :live)
+      (with-selected-window (active-minibuffer-window)
+        (setq-local vertico-resize t vertico-count 0)
+        (vertico--exhibit))))
+
+  (add-hook 'embark-collect-mode-hook #'+embark-collect-hook)
+
   :bind
   (("M-a"                     . #'embark-act)
-   ("C-;"                     . #'embark-act)
-   ("M-."                     . #'embark-dwim)
+   ("M-d"                     . #'embark-dwim)
    ("C-h B"                   . #'embark-bindings)
    ;; alternative for `describe-bindings'
    ([remap describe-bindings] . #'embark-bindings)
