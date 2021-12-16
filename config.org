@@ -3054,6 +3054,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 
   ;; Include this if you also want to make the parentheses bold:
   (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
+  (global-highlight-parentheses-mode 1)
 
   :hook ((modus-themes-after-load-theme-hook . my-modus-themes-highlight-parentheses)))
   #+end_src
@@ -3068,12 +3069,20 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
 #+end_src
 ** beacon.el
 
-Never lose your cursor again.
+Never lose the cursor again.
 
 #+begin_src elisp
-(use-package beacon
+(use-package pulse
+  :straight (:type built-in)
   :config
-  (beacon-mode 1))
+  ;; (set-face-foreground 'pulse-highlight-start-face "cyan")
+  ;; (set-face-background 'pulse-highlight-start-face "cyan")
+  (defun pulse-line (&rest _)
+    "Pulse the current line."
+    (pulse-momentary-highlight-one-line (point)))
+
+  (dolist (command '(evil-scroll-line-to-top evil-scroll-line-to-bottom evil-scroll-line-to-center scroll-up scroll-down recenter-top-bottom other-window evil-scroll-down evil-scroll-up evil-window-left evil-window-right))
+    (advice-add command :after #'pulse-line)))
 #+end_src
 
 ** blamer.el
