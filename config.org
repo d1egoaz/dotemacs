@@ -2932,6 +2932,15 @@ Use directly this server instead of trying localhost.
 #+begin_src elisp
 (use-package define-word)
 #+end_src
+** langtool.el
+
+#+begin_src elisp
+(use-package langtool
+  :config
+  (setq langtool-mother-tongue "en")
+  (setq langtool-default-language "en-US")
+  (setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/5.5/libexec/languagetool-commandline.jar"))
+#+end_src
 
 ** buff-move.el
 
