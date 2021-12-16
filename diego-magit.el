@@ -25,6 +25,7 @@
 ;;; Code:
 
 (require 'magit)
+(require 'forge)
 
 ;;;###autoload
 (defun diego/git-create-branch-from-origin-main ()
