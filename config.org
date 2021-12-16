@@ -61,6 +61,7 @@
   - [[#save-some-buffers-default-to-root-project][Save Some Buffers default to root project]]
   - [[#dired-reuse-buffer-when-opening-directories][Dired reuse buffer when opening directories]]
   - [[#make-script-files-executable-automatically][Make Script Files Executable Automatically]]
+  - [[#jump-to-specific-line-of-a-file][Jump to specific line of a file]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
   - [[#new-line-at-eof][New line at EOF]]
@@ -68,7 +69,6 @@
   - [[#highlight-current-line][Highlight current line]]
   - [[#highlight-todo-notes-etc][Highlight TODO, NOTES, etc.]]
   - [[#avoid-performance-issues-with-long-lines][Avoid performance issues with long lines]]
-  - [[#underscore-_-and-hyphen---as-a-word-characters][Underscore =_= and hyphen =-= as a word characters]]
   - [[#indentation-spaces-and-tabs][Indentation, spaces, and tabs]]
   - [[#whitespace-cleanup-on-buffer-save][Whitespace cleanup on buffer save]]
   - [[#enable-narrowing-functions][Enable narrowing functions]]
@@ -79,7 +79,8 @@
   - [[#evil-argsel][evil-args.el]]
   - [[#evil-commentaryel][evil-commentary.el]]
   - [[#evil-exchangeel][evil-exchange.el]]
-  - [[#evil-escapeel][evil-escape.el]]
+  - [[#evil-gogglesel][evil-goggles.el]]
+  - [[#evil-snipeel][evil-snipe.el]]
   - [[#evil-surroundel][evil-surround.el]]
   - [[#evil-tuning][evil Tuning]]
   - [[#better-jumpel][better-jump.el]]
@@ -108,14 +109,16 @@
   - [[#compilation-mode][Compilation mode]]
   - [[#restclientel][restclient.el]]
 - [[#productivity][Productivity]]
+  - [[#ediffel][ediff.el]]
   - [[#syntax-checking-flycheckel][Syntax checking (flycheck.el)]]
   - [[#snippets-yasnippetel][Snippets (yasnippet.el)]]
   - [[#expand-regionel][expand-region.el]]
-  - [[#parens-dumbparensel][Parens (dumbparens.el)]]
+  - [[#parens-elec-pairel][Parens (elec-pair.el)]]
   - [[#format-allel][format-all.el]]
   - [[#vtermel][vterm.el]]
   - [[#flyspellel][flyspell.el]]
   - [[#define-word][Define word]]
+  - [[#langtoolel][langtool.el]]
   - [[#buff-moveel][buff-move.el]]
   - [[#ripgrepel][ripgrep.el]]
   - [[#ieditel][iedit.el]]
@@ -125,6 +128,8 @@
   - [[#highlight-indent-guidesel][highlight-indent-guides.el]]
   - [[#beaconel][beacon.el]]
   - [[#blamerel][blamer.el]]
+  - [[#string-inflectionel][string-inflection.el]]
+  - [[#undo-fu][undo-fu]]
 - [[#org-mode][Org Mode]]
   - [[#orgel][org.el]]
   - [[#org-downloadel][org-download.el]]
@@ -149,9 +154,10 @@
 - [[#functions][Functions]]
 - [[#work-specific-functions][Work Specific Functions]]
 - [[#test-in-progress][Test In Progress]]
-  - [[#dogearsel][dogears.el]]
+  - [[#company-boxel][company-box.el]]
+  - [[#kill-last-buffer-from-tab-kills-tab][kill last buffer from tab kills tab]]
 - [[#inspiration][Inspiration]]
-- [[#pending-tasks-713][Pending tasks]]
+- [[#pending-tasks-813][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
   - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
   - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
@@ -164,6 +170,8 @@
   - [[#move-functions-to-its-own-package-usage][move functions to it's own package usage]]
   - [[#fix-file-backup-creation][fix file backup creation]]
   - [[#fix-evil-jump-c-o-c-i][fix evil jump C-o, C-i]]
+  - [[#configure-path][Configure path?]]
+  - [[#custom-imenu-for-mode][custom imenu for mode]]
 
 * Getting Started
 
@@ -553,32 +561,31 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-org-blocks 'gray-background)
   (setq modus-themes-paren-match 'intense-bold)
   (setq modus-themes-prompts 'intense-accented)
-  (setq modus-themes-region 'accent)
+  (setq modus-themes-region 'bg-only)
   (setq modus-themes-scale-1 1.1)
   (setq modus-themes-intense-markup t)
   (setq modus-themes-scale-2 1.15)
   (setq modus-themes-scale-3 1.21)
   (setq modus-themes-scale-4 1.27)
   (setq modus-themes-scale-5 1.33)
-  (setq modus-themes-scale-headings nil)
+  (setq modus-themes-scale-headings t)
   (setq modus-themes-slanted-constructs t) ; use slanted text (italics) unless it is absolutely necessary, strings and code comments
   (setq modus-themes-subtle-line-numbers t)
   (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g
   (setq modus-themes-syntax '(faint green-strings yellow-comments alt-syntax))
-  (setq modus-themes-tabs-accented t)
+  (setq modus-themes-tabs-accented nil)
 
-;; (modus-themes-with-colors
-;; (custom-set-faces
-;; `(font-lock-keyword-face ((,class :foreground "#fb4933")))
-;; `(font-lock-string-face ((,class :foreground "#b8bb26")))
-;; `(font-lock-comment ((,class :foreground "#F8F8F0")))
-;; ))
-
-(setq modus-themes-vivendi-color-overrides
-      '((bg-main . "#1d2021")
-        (fg-main . "#c2c2c2")))
-;; disable with:
-;; (setq modus-themes-vivendi-color-overrides nil)
+  (setq modus-themes-vivendi-color-overrides
+        '(;;(bg-main . "#1d2021")
+          ;; (bg-main . "#100b17")
+          ;; (bg-dim . "#161129")
+          ;; (bg-alt . "#181732")
+          ;; (bg-tab-bar . "#262b41")
+          ;; (bg-tab-active . "#120f18")
+          ;; (bg-main . "#000000")
+          (fg-main . "#c2c2c2")))
+  ;; disable with:
+  (setq modus-themes-vivendi-color-overrides nil)
 
   ;; Load the theme files before enabling a theme
   (modus-themes-load-themes)
