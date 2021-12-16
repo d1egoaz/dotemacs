@@ -3258,7 +3258,6 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
          (evil-org-mode-hook . diego--org-set-key-theme)))
 #+end_src
 
-
 ** evil-org-agenda.el
 
 #+begin_src elisp
@@ -3480,8 +3479,19 @@ Emacs Everywhere from, just press C-c C-c.
 
 #+begin_src elisp
 (use-package emacs-everywhere
-  :config
-  (setq emacs-everywhere-markdown-apps '("Discord" "Slack"))
+  :after ox-gfm
+  :init
+  (setq emacs-everywhere-markdown-apps '("Discord" "Slack" "Microsoft Edge Beta"))
+  (setq emacs-everywhere-markdown-windows
+        '("Stack Exchange" "Stack Overflow" "Reddit" ; Sites
+          "Pull Request" "Issue" "Comparing .*\\.\\.\\." ; Github
+          "Discord" "Slack"))
+
+  (defun emacs-everywhere-markdown-p ()
+    t)
+  (defun emacs-everywhere-major-mode-org-or-markdown ()
+    (gfm-mode))
+
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
           (width . 120)
@@ -3523,13 +3533,44 @@ Emacs Everywhere from, just press C-c C-c.
 #+begin_src elisp
 ;; ** Global Keybindings
 
-;; repeat last macro with Q
+;; repeat last macro with Q, use macro and then Q to repeat it
 (define-key evil-normal-state-map "Q" (kbd "@@"))
 
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
 (global-set-key (kbd "M-o") #'other-window)
 (global-set-key (kbd "C-M-o") #'ace-window)
+
+(global-set-key (kbd "s-b") #'consult-buffer)
+(global-set-key (kbd "s-r") #'consult-recent-file)
+
+;; https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
+(defun my-delete-word (arg)
+  "Delete characters forward until encountering the end of a word.
+With argument, do this that many times.
+This command does not push text to `kill-ring'."
+  (interactive "p")
+  (delete-region
+   (point)
+   (progn
+     (forward-word arg)
+     (point))))
+
+(defun my-backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+With argument, do this that many times.
+This command does not push text to `kill-ring'."
+  (interactive "p")
+  (my-delete-word (- arg)))
+(global-set-key (kbd "<M-backspace>") 'my-backward-delete-word)
+
+;; (general-nvmap
+;; "C-o" #'backward-global-mark
+;; "C-i" #'forward-global-mark)
+
+(general-nvmap
+"g-r" #'xref-find-references
+"g-i" #'lsp-find-implementation)
 
 (general-define-key
  :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
@@ -3580,6 +3621,7 @@ Emacs Everywhere from, just press C-c C-c.
  "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
  "bK"      #'(kill-buffer :which-key "Kill selected buffer")
  "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
+ "br"      #'revert-buffer
 
  "bm"      '(:ignore t :which-key "move buffer")
  "bmk"     #'(buf-move-up :which-key "Move up")
@@ -3598,6 +3640,7 @@ Emacs Everywhere from, just press C-c C-c.
  "c"       '(:ignore t :which-key "compile")
  "cc"      #'diego/project-compile
  "cC"      #'diego/recompile
+ "cr"      #'diego/recompile
  "cd"     #'diego/dev
  "cD"     #'diego/dev-project
  ;; Evaluate elisp expressions
@@ -3612,7 +3655,7 @@ Emacs Everywhere from, just press C-c C-c.
  ;; Files
  "f"       '(:ignore t :which-key "files")
  "fC"      #'(copy-file :which-key "Copy file")
- "fD"      #'(delete-file :which-key "Delete file")
+ "fD"      #'(diego/delete-file :which-key "Delete file")
  "ff"      #'(find-file :which-key "Find file")
  "fj"      #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
  "fp"      #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
@@ -3624,8 +3667,10 @@ Emacs Everywhere from, just press C-c C-c.
  ;; Git
  "g"       '(:ignore t :which-key "git")
  "ga"      #'(vc-annotate :which-key "Annotate, show edit history") ;; f vc-annotate-find-revision-at-line, l vc-annotate-show-log-revision-at-line, D, F, J
+ "gb"      #'magit-log-buffer-file
  "gs"      #'(magit-status :which-key "Magit status")
  "gF"      #'magit-fetch-all
+ "gg"      #'magit-dispatch
 
  "gl"      '(:ignore t :which-key "git link")
  "glh"      #'git-link-homepage
@@ -3647,13 +3692,16 @@ Emacs Everywhere from, just press C-c C-c.
  "hp"      #'(helpful-at-point :which-key "Describe at point")
  "ho"      #'describe-symbol
  "hv"      #'describe-variable
- "hw"      #'define-word-at-point
- "hW"      #'dictionary-search
- "Hs"      #'highlight-symbol-at-point
+ "hr"      #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
+ "H"       '(:ignore t :which-key "highlight")
+ "Ho"      #'highlight-symbol-at-point
  "Hl"      #'highlight-lines-matching-regexp
  "Hr"      #'highlight-regexp
  "Hu"      #'unhighlight-regexp
- "hr"      #'((lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory))) :which-key "Reload emacs config")
+ "hw"       '(:ignore t :which-key "help with words")
+ "hwd"      #'define-word-at-point
+ "hws"      #'dictionary-search
+ "hwl"      #'langtool-check
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
  "iu"      #'(insert-char :which-key "Unicode char")
@@ -3690,8 +3738,8 @@ Emacs Everywhere from, just press C-c C-c.
  "l"       '(:ignore t :which-key "lsp")
  "lc"      #'lsp-treemacs-call-hierarchy
  "ld"      #'xref-find-definitions
- "le"      #'lsp-ui-flycheck-list
- "li"      #'lsp-goto-type-implementation
+ "le"      #'flycheck-list-errors
+ "li"      #'lsp-find-implementation
  "ln"      #'lsp-ui-find-next-reference
  "lp"      #'lsp-ui-find-prev-reference
  "lr"      #'xref-find-references
