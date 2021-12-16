@@ -2861,26 +2861,20 @@ er/expand-region
 (use-package expand-region)
 #+end_src
 
-** Parens (dumbparens.el)
+** Parens (elec-pair.el)
 
-https://github.com/raxod502/dumbparens/
-A simpler version of Smartparens.
-
-(use-package dumbparens
-:straight (dumbparens :host github :repo "raxod502/dumbparens")
-:init
-(setq dumbparens-mode-bindings nil) ; to avoid remapping keys, like C-a
-(dumbparens-global-mode))
-
-electric-pair-preserve-balance, when non-nil, makes the default pairing logic balance out the number of opening and closing delimiters.
-electric-pair-delete-adjacent-pairs, when non-nil, makes backspacing between two adjacent delimiters also automatically delete the closing delimiter.
-electric-pair-open-newline-between-pairs, when non-nil, makes inserting a newline between two adjacent pairs also automatically open an extra newline after point.
-electric-pair-skip-whitespace, when non-nil, causes the minor mode to skip whitespace forward before deciding whether to skip over the closing delimiter.
 #+begin_src elisp
 (use-package elec-pair
   :straight (:type built-in)
-  ;; :hook (prog-mode . electric-pair-mode)
   :config
+  (setq electric-pair-pairs '(
+                            (?\" . ?\")
+                            (?\` . ?\`)
+                            (?\( . ?\))
+                            (?\{ . ?\})
+                            ))
+  (setq electric-pair-text-pairs electric-pair-pairs)
+  (setq electric-pair-inhibit-predicate (lambda (c) (char-equal c ?\<)))
   (electric-pair-mode 1))
 #+end_src
 
