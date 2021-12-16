@@ -2703,6 +2703,12 @@ On the kubel screen, place your cursor on the resource:
   :after (kubel evil))
 #+end_src
 
+*** kubedoc.el
+#+begin_src elisp
+(use-package kubedoc
+  :straight (:host github :repo "d1egoaz/kubedoc.el"))
+#+end_src
+
 ** hideshow.el
 
 Hideshow mode is a buffer-local minor mode that allows you to selectively
