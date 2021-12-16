@@ -2761,9 +2761,10 @@ display portions of a program, which are referred to as blocks.
   (setq comint-scroll-to-bottom-on-input t) ; always insert at the bottom
   (setq comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
 
-  ;; (setq compilation-scroll-output 'first-error)
-  (setq compilation-scroll-output t)
-  (setq compilation-auto-jump-to-first-error t)
+  (setq compilation-scroll-output 'first-error)
+  ;; (setq compilation-scroll-output t)
+   ;; (setq compilation-auto-jump-to-first-error t)
+   (setq compilation-auto-jump-to-first-error nil)
   (setq compilation-always-kill t) ; kill old compile processes before starting the new one
   (setq compilation-ask-about-save nil)  ; save all buffers on `compile'
 
