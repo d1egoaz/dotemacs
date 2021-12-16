@@ -2362,8 +2362,12 @@ search interfaces in web browsers and other programs (think of what happens when
 
 #+begin_src elisp
 (use-package avy
-  :init
-  (avy-setup-default))
+  :config
+  (setq avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq avy-style 'at-full)
+  ;; (define-key evil-motion-state-map (kbd "p") #'avy-goto-word-1)
+  ;; (define-key evil-motion-state-map (kbd "P") #'avy-goto-line)
+)
 #+end_src
 
 ** imenu-list.el
@@ -2402,7 +2406,8 @@ consult-grep -> embark-export to grep-mode buffer -> wgrep for editing of all ma
 (use-package wgrep
   :commands wgrep-change-to-wgrep-mode
   :config
-  (setq wgrep-auto-save-buffer t))
+  (setq wgrep-auto-save-buffer t)
+  (setq wgrep-change-readonly-file t))
 #+end_src
 
 ** Visual regex
@@ -2451,7 +2456,6 @@ https://github.com/emacs-lsp/lsp-treemacs
 
   (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
   (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
-
 
   (evil-add-command-properties #'lsp-find-definition :jump t)
   (evil-add-command-properties #'lsp-goto-type-definition :jump t)
