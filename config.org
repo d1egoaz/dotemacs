@@ -2540,8 +2540,76 @@ https://github.com/pope/ob-go
  "i" #'go-goto-imports
  "." #'godoc-at-point
  "t"   '(:ignore t :which-key "test")
- "tt" #'diego/go-run-test-current-function)
+ "tt" #'diego/go-run-test-current-function
+ "tg" #'go-gen-test-exported)
 #+end_src
+*** flycheck-golangci
+
+#+begin_src elisp
+(use-package flycheck-golangci-lint
+  ;; :after (flycheck go-mode lsp)
+  :config
+  ;; (setq flycheck-golangci-lint-config "/Users/diegoalvarez/code/go/.golangci.yml")
+  (setq flycheck-golangci-lint-fast t)
+  (setq flycheck-golangci-lint-tests t)
+  (setq flycheck-golangci-lint-enable-linters '(
+                                                ;; default
+                                                "deadcode" "errcheck" "gosimple" "govet" "ineffassign"
+                                                "staticcheck" "structcheck" "typecheck" "unused" "varcheck"
+                                                ;; extras
+                                                "errname" "errorlint" "exhaustive" "exportloopref" "gocritic" "goconst"
+                                                "gocritic" "godot"  "gofmt" "goimports" "gosec" "govet" "ifshort"
+                                                "makezero" "nestif" "nilerr" "noctx" "paralleltest" "prealloc" "predeclared"
+                                                "revive"  "stylecheck" "testpackage" "unconvert" "unparam"
+                                                "varnamelen" "wastedassign" "whitespace" "wsl"
+                                                ;; experiment
+                                                "wrapcheck"
+                                                ;;"goerr113"
+                                                ))
+
+  (defun diego--setup-golangci-lint ()
+    (flycheck-golangci-lint-setup)
+    (push 'golangci-lint flycheck-checkers))
+  ;; (flycheck-add-next-checker 'lsp-ui 'golangci-lint))
+
+  :hook ((go-mode-hook . diego--setup-golangci-lint)))
+#+end_src
+
+*** go-gen-test
+
+#+begin_src elisp
+(use-package go-gen-test)
+#+end_src
+
+*** gotest.el
+    #+begin_src elisp
+    (use-package gotest
+      :after go-mode
+      :config
+      (dolist (elt go-test-compilation-error-regexp-alist-alist)
+        (add-to-list 'compilation-error-regexp-alist-alist elt))
+
+      (defun prepend-go-compilation-regexps ()
+        (dolist (elt (reverse go-test-compilation-error-regexp-alist))
+          (add-to-list 'compilation-error-regexp-alist elt t)))
+
+      (add-hook 'go-mode-hook 'prepend-go-compilation-regexps))
+    #+end_src
+
+*** go-impl
+
+go-impl generates method stubs for implementing an interface.
+
+#+begin_src elisp
+(use-package go-impl)
+#+end_src
+;;go-impl--completing-function
+(defun without-orderless (fn & rest args)
+  (let ((completion-styles '(basic partial-completion)))
+    (apply fn args)))
+
+(advice-add 'command-which-should-not-use-orderless
+            :around #'without-orderless)
 
 ** Markdown
 
