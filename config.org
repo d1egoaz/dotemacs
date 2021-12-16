@@ -3091,9 +3091,35 @@ Never lose the cursor again.
   :straight (:type git :host github :repo "artawower/blamer.el")
   :init
   (setq blamer-idle-time 1.0)
-  (setq blamer-min-offset 70)
+  (setq blamer-min-offset 60))
+  ;; :config
+  ;; (global-blamer-mode 1))
+#+end_src
+
+** string-inflection.el
+
+#+begin_src elisp
+(use-package string-inflection)
+#+end_src
+** undo-fu
+
+#+begin_src elisp
+(use-package undo-fu
   :config
-  (global-blamer-mode 1))
+  (setq undo-limit 8000000           ; 8mb (default is 160kb)
+        undo-strong-limit 8000000   ; 8mb   (default is 240kb)
+        undo-outer-limit 48000000))  ; 48mb  (default is 24mb)
+
+(use-package undo-fu-session
+  :after undo-fu
+  :config
+  (setq undo-fu-session-incompatible-files '("\\.gpg$" "/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+  (setq undo-fu-session-incompatible-major-modes '(vterm-mode kubel-mode))
+  ;; (global-undo-fu-session-mode)
+  :hook ((prog-mode-hook       . undo-fu-session-mode)
+         (gfm-mode-hook        . undo-fu-session-mode)
+         (org-mode-hook        . undo-fu-session-mode)
+         (text-mode-hook       . undo-fu-session-mode)))
 #+end_src
 
 * Org Mode
