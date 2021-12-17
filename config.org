@@ -129,7 +129,8 @@
   - [[#beaconel][beacon.el]]
   - [[#blamerel][blamer.el]]
   - [[#string-inflectionel][string-inflection.el]]
-  - [[#undo-fu][undo-fu]]
+  - [[#undo-fuel][undo-fu.el]]
+  - [[#mixed-pitchel][mixed-pitch.el]]
 - [[#org-mode][Org Mode]]
   - [[#orgel][org.el]]
   - [[#org-downloadel][org-download.el]]
@@ -508,9 +509,10 @@ Increase how much is read from processes in a single chunk (default is
 *** Setting The Font Face
 
 #+begin_src elisp
-(set-face-attribute 'variable-pitch nil :font "Helvetica")
+;; (set-face-attribute 'variable-pitch nil :font "Helvetica")
 (set-face-attribute 'fixed-pitch nil :font "Iosevka SS08-14")
-(set-face-attribute 'variable-pitch nil :font "Helvetica-14")
+;; (set-face-attribute 'variable-pitch nil :font "Helvetica-14")
+(set-face-attribute 'variable-pitch nil :font "SF Pro Text-15")
 (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
 (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
 
@@ -552,7 +554,12 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-completions 'opinionated) ; {nil,'moderate,'opinionated}
   (setq modus-themes-diffs nil)
   (setq modus-themes-fringes 'subtle) ; {nil,'subtle,'intense}
-  (setq modus-themes-headings '((1 . section) (2 . rainbow-line) (t . no-bold))) ; Lots of options---continue reading the manual
+  (setq modus-themes-headings
+        (quote ((1 . (background rainbow overline variable-pitch 1.4))
+                (2 . (background rainbow overline variable-pitch 1.2))
+                (3 . (background rainbow overline variable-pitch 1.1))
+                (4 . (background rainbow overline variable-pitch 1.0))
+                (t . (monochrome)))))
   (setq modus-themes-hl-line 'underline-accented)
   (setq modus-themes-links 'faint)
   (setq modus-themes-mode-line 'accented-3d)
@@ -585,7 +592,7 @@ Command/Super plus =/- for zooming in/out.
           ;; (bg-main . "#000000")
           (fg-main . "#c2c2c2")))
   ;; disable with:
-  (setq modus-themes-vivendi-color-overrides nil)
+  ;; (setq modus-themes-vivendi-color-overrides nil)
 
   ;; Load the theme files before enabling a theme
   (modus-themes-load-themes)
@@ -1672,6 +1679,12 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
     "zz" #'evil-scroll-line-to-center
     "zb" #'evil-scroll-line-to-bottom
     "gr" #'magit-refresh)
+  (general-nvmap :keymaps 'magit-log-mode-map
+    "zt" #'evil-scroll-line-to-top
+    "zz" #'evil-scroll-line-to-center
+    "zb" #'evil-scroll-line-to-bottom
+    "gr" #'magit-refresh)
+
   (general-define-key
    :keymaps 'magit-status-mode-map
    :states '(normal visual emacs motion)
@@ -2631,6 +2644,8 @@ go-impl generates method stubs for implementing an interface.
   (setq markdown-display-remote-images t)
   ;; Enable fontification for code blocks
   (setq markdown-fontify-code-blocks-natively t)
+  (setq markdown-header-scaling t)
+  (setq markdown-gfm-uppercase-checkbox t)
 
   ;; use pandoc with source code syntax highlighting for markdown-preview
   ;; metadata is to fix: [WARNING] This document format requires a nonempty element
@@ -3101,7 +3116,7 @@ Never lose the cursor again.
 #+begin_src elisp
 (use-package string-inflection)
 #+end_src
-** undo-fu
+** undo-fu.el
 
 #+begin_src elisp
 (use-package undo-fu
@@ -3121,6 +3136,13 @@ Never lose the cursor again.
          (org-mode-hook        . undo-fu-session-mode)
          (text-mode-hook       . undo-fu-session-mode)))
 #+end_src
+** mixed-pitch.el
+ #+begin_src elisp
+ (use-package mixed-pitch
+   :hook ((prog-mode-hook       . mixed-pitch-mode)
+          (gfm-mode-hook        . mixed-pitch-mode)
+          (text-mode-hook       . mixed-pitch-mode)))
+ #+end_src
 
 * Org Mode
 
@@ -3683,7 +3705,7 @@ This command does not push text to `kill-ring'."
  "h"       '(:ignore t :which-key "help/highlight")
  "ha"      #'(consult-apropos :which-key "Describe apropos")
  "hc"      #'describe-command
- "hC"      #'describe-character
+ "hC"      #'describe-char
  "hf"      #'describe-function
  "hF"      #'describe-face
  "hk"      #'(helpful-key :which-key "Describe key")
