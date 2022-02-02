@@ -2108,6 +2108,7 @@ M-w copy
     (unless (eq src 'consult--source-buffer)
       (set src (plist-put (symbol-value src) :hidden t))))
 
+   ;;;###autoload
   (defun buffer-list-for-mode (mode)
     (seq-filter (lambda (buffer)
                   (eq mode (buffer-local-value 'major-mode buffer)))
@@ -2129,8 +2130,11 @@ M-w copy
                 :items  ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'vterm-mode)))))
   (add-to-list 'consult-buffer-sources 'vterm-buffer-source 'append)
 
+   ;;;###autoload
   (defun diego/consult-buffer-for-project ()
     (interactive)
+    (require 'consult)
+    ;; start with initial narrowing of `p`: project
     (setq unread-command-events (append unread-command-events (list ?p 32)))
     (consult-buffer))
 
@@ -2168,7 +2172,6 @@ M-w copy
          :map vertico-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
-
 #+end_src
 
 *** embark.el
@@ -3161,9 +3164,10 @@ Never lose the cursor again.
 ** mixed-pitch.el
  #+begin_src elisp
  (use-package mixed-pitch
-   :hook ((prog-mode-hook       . mixed-pitch-mode)
-          (gfm-mode-hook        . mixed-pitch-mode)
-          (text-mode-hook       . mixed-pitch-mode)))
+   :hook (
+          (org-mode-hook       . mixed-pitch-mode)
+          (gfm-mode-hook        . mixed-pitch-mode)))
+          ;; (text-mode-hook       . mixed-pitch-mode)))
  #+end_src
 
 * Org Mode
