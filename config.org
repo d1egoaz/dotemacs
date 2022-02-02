@@ -154,7 +154,6 @@
 - [[#functions][Functions]]
 - [[#work-specific-functions][Work Specific Functions]]
 - [[#test-in-progress][Test In Progress]]
-  - [[#kill-last-buffer-from-tab-kills-tab][kill last buffer from tab kills tab]]
 - [[#inspiration][Inspiration]]
 - [[#pending-tasks-813][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
@@ -3227,12 +3226,14 @@ Never lose the cursor again.
   (setq org-download-image-dir org-attach-directory)
   (setq org-refile-targets '(("~/gdrive/deft/gtd-inbox.org" :maxlevel . 1) ("~/gdrive/deft/gtd-personal.org" :level . 1) ("~/gdrive/deft/gtd-work.org" :maxlevel . 2)))
   :config
-  (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
+
   (setq org-clock-out-remove-zero-time-clocks nil)
   ;; (setq org-cycle-emulate-tab 'white) ; allows to collapse the current outline (call org-cycle)
   (setq org-confirm-babel-evaluate nil)
   (setq org-download-image-html-width 500)
   (setq org-edit-src-content-indentation 0) ; not need to waste space
+  (setq org-adapt-indentation 'headline-data) ; indent content
   (setq org-ellipsis "⌄ ")
   (setq org-fontify-quote-and-verse-blocks t)
   ;; (setq org-hide-leading-stars nil)
@@ -3346,7 +3347,7 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
                                ))
 #+end_src
 
-** Create table of dontents
+** Create table of contents
 
 To use, add a =:TOC:= tag to the headline.
 Every time the file is saved, it'll be auto-updated with the current table of contents.
@@ -3845,7 +3846,7 @@ This command does not push text to `kill-ring'."
  "tn"      #'(global-display-line-numbers-mode :which-key "Line numbers")
  "tt"      #'toggle-truncate-lines
  "tT"      #'(consult-theme :which-key "Toggle theme")
- "tv"      #'variable-pitch-mode
+ "tv"      #'mixed-pitch-mode ; variable-pitch-mode
  "tw"      #'whitespace-mode
  "tW"      #'(visual-line-mode :which-key "Soft line wrapping")
  ;; Quit/Restart
@@ -3891,6 +3892,21 @@ This command does not push text to `kill-ring'."
 #+begin_src elisp
 (load-file (substitute-in-file-name "$EMACS_ADDITIONAL_DIR/emacs.el"))
 (load (expand-file-name "diego-dev.el" user-emacs-directory))
+#+end_src
+
+* Test In Progress
+
+#+begin_src elisp
+(use-package web-mode)
+#+end_src
+
+#+begin_src elisp
+(use-package code-review)
+#+end_src
+
+#+begin_src elisp
+(use-package dtache
+  :straight (dtache :type git :host gitlab :repo "niklaseklund/dtache"))
 #+end_src
 
 * Inspiration
