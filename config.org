@@ -2731,14 +2731,34 @@ On the kubel screen, place your cursor on the resource:
 
 #+begin_src elisp
 (use-package kubel
-  :straight (kubel :host github :repo "d1egoaz/kubel")
+  ;; :straight (kubel :host github :repo "d1egoaz/kubel")
+  ;; :straight (kubel :host github :repo "d1egoaz/kubel" :branch "diego/multiple-kubel-buffers")
+  ;; :load-path "/Users/diegoalvarez/.emacs.d/straight/repos/kubel/kubel.el"
+  :load-path "/Users/diegoalvarez/.emacs.d/straight/repos/kubel"
+  ;; :load-path "/Users/diegoalvarez/code/oss/kubel"
+  ;; :straight (kubel :host github :repo "abrochard/kubel")
   :config
   (evil-define-key 'normal 'kubel-yaml-editing-mode "q" #'kill-current-buffer)
+
+  ;; https://github.com/abrochard/kubel/issues/53 https://github.com/abrochard/kubel/pull/44
+  ;; (setq kubel-use-namespace-list 'on)
   ;; list namespaces automatically
-  ;; (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
-  )
+  (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
+  (setq-default kube-namespace "cloudbuddies")
+
+  (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
+  (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
+  (add-to-list 'savehist-additional-variables 'kubel--kubernetes-resources-list-cached)
+
+  (defun diego--kubel-hook ()
+    (require 'f)
+    (f-mkdir "/tmp/kubel") ; unset default directory
+    (f-touch "/tmp/kubel/.project"))
+  :hook ((kubel-mode-hook . diego--kubel-hook)))
 
 (use-package kubel-evil
+  ;; :load-path "/Users/diegoalvarez/code/oss/kubel2"
+  :load-path "/Users/diegoalvarez/.emacs.d/straight/repos/kubel/kubel-evil.el"
   :after (kubel evil))
 #+end_src
 
@@ -3969,3 +3989,24 @@ https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Bmisc/multiple-curso
 :LOGBOOK:
 - State "TODO"       from              [2021-06-22 Tue 09:19]
 :END:
+** Configure path?
+
+Configure PATH on macOS
+#+begin_example elisp
+(use-package exec-path-from-shell
+  :config (when (memq window-system '(mac ns x))
+            (exec-path-from-shell-initialize)))
+#+end_example
+
+** TODO custom imenu for mode
+:LOGBOOK:
+- State "TODO"       from              [2021-09-17 Fri 15:50]
+:END:
+#+begin_example elisp
+(defun configure-imenu-Custom ()
+  (setq imenu-generic-expression
+        '(("Faces" "^\\(?:Show\\|Hide\\) \\(.*\\) face: \\[sample\\]" 1)
+          ("Variables" "^\\(?:Show Value\\|Hide\\) \\([^:\n]*\\)" 1))))
+
+(add-hook 'Custom-mode-hook #'configure-imenu-Custom)
+#+end_example
