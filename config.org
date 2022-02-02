@@ -61,7 +61,6 @@
   - [[#save-some-buffers-default-to-root-project][Save Some Buffers default to root project]]
   - [[#dired-reuse-buffer-when-opening-directories][Dired reuse buffer when opening directories]]
   - [[#make-script-files-executable-automatically][Make Script Files Executable Automatically]]
-  - [[#jump-to-specific-line-of-a-file][Jump to specific line of a file]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
   - [[#new-line-at-eof][New line at EOF]]
@@ -1292,11 +1291,13 @@ visited the same file.
 #+begin_src elisp
 (setq save-some-buffers-default-predicate 'save-some-buffers-root)
 #+end_src
+
 ** Dired reuse buffer when opening directories
 
 #+begin_src elisp
 (setq dired-kill-when-opening-new-dired-buffer t)
 #+end_src
+
 ** Make Script Files Executable Automatically
 
 #+begin_src elisp
@@ -1334,7 +1335,17 @@ Add a newline automatically at the end of the file.
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
-(global-visual-line-mode 1)
+
+(setq-default truncate-lines t)
+(setq-default truncate-partial-width-windows nil)
+(setq-default visual-line-mode nil)
+
+(defun my-truncate-lines-disable ()
+ (let ((inhibit-message t))
+  (setq truncate-lines t)))
+
+;; (global-visual-line-mode nil)
+(add-hook 'prog-mode-hook #'my-truncate-lines-disable)
 #+end_src
 
 ** Highlight current line
