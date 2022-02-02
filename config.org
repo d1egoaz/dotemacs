@@ -1165,7 +1165,7 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 
   (defun diego-tab-format-keycast ()
     "Format `mode-line-modified' for the tab bar."
-    `((global menu-item ,(string-trim-right (format-mode-line mode-line-keycast)) ignore)))
+    `((global menu-item ,(string-trim-right (format-mode-line keycast-mode-line)) ignore)))
 
   (defun prot-tab-format-space-single ()
     "Format space for the tab bar."
