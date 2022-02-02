@@ -138,7 +138,7 @@
   - [[#evil-org-agendael][evil-org-agenda.el]]
   - [[#make-org-capture-start-in-insert-mode][Make org-capture start in insert mode]]
   - [[#org-babel][Org-Babel]]
-  - [[#create-table-of-dontents][Create table of dontents]]
+  - [[#create-table-of-contents][Create table of contents]]
   - [[#imenu-org-depth][iMenu org depth]]
 - [[#misc-1][Misc]]
   - [[#helpfulel][helpful.el]]
@@ -155,7 +155,6 @@
 - [[#functions][Functions]]
 - [[#work-specific-functions][Work Specific Functions]]
 - [[#test-in-progress][Test In Progress]]
-  - [[#company-boxel][company-box.el]]
   - [[#kill-last-buffer-from-tab-kills-tab][kill last buffer from tab kills tab]]
 - [[#inspiration][Inspiration]]
 - [[#pending-tasks-813][Pending tasks]]
@@ -560,15 +559,15 @@ Command/Super plus =/- for zooming in/out.
                 (3 . (background rainbow overline variable-pitch 1.1))
                 (4 . (background rainbow overline variable-pitch 1.0))
                 (t . (monochrome)))))
-  (setq modus-themes-hl-line 'underline-accented)
-  (setq modus-themes-links 'faint)
+  (setq modus-themes-hl-line '(underline-accented))
+  (setq modus-themes-links '(faint))
   (setq modus-themes-mode-line 'accented-3d)
   (setq modus-themes-mode-line '(padded accented))
   ;; (setq modus-themes-org-blocks 'tinted-background)
-  (setq modus-themes-org-blocks 'gray-background)
-  (setq modus-themes-paren-match 'intense-bold)
-  (setq modus-themes-prompts 'intense-accented)
-  (setq modus-themes-region 'bg-only)
+  (setq modus-themes-org-blocks '(gray-background))
+  (setq modus-themes-paren-match '(intense-bold))
+  (setq modus-themes-prompts '(intense-accented))
+  (setq modus-themes-region '(bg-only))
   (setq modus-themes-scale-1 1.1)
   (setq modus-themes-intense-markup t)
   (setq modus-themes-scale-2 1.15)
@@ -580,7 +579,7 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-subtle-line-numbers t)
   (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g
   (setq modus-themes-syntax '(faint green-strings yellow-comments alt-syntax))
-  (setq modus-themes-tabs-accented nil)
+  (setq modus-themes-tabs-accented t)
 
   (setq modus-themes-vivendi-color-overrides
         '(;;(bg-main . "#1d2021")
