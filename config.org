@@ -1896,7 +1896,19 @@ candidates are called backends, modules for displaying them are frontends.
          ("<tab>" . #'company-complete-selection)))
 #+end_src
 
-;; Dabbrev
+*** company-box.el
+
+#+begin_src elisp
+(use-package company-box
+  :after company
+  :hook (company-mode-hook . company-box-mode)
+  :config
+  (setq company-box-show-single-candidate t)
+  (setq company-box-backends-colors nil)
+  (setq company-box-max-candidates 50))
+#+end_src
+
+***  Dabbrev
 #+begin_src elisp
 (use-package dabbrev
   :config
