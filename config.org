@@ -1985,20 +1985,19 @@ Provides the vertical completion user interface.
 
   ;; Customize highlighting based on completion-category
   ;; https://github.com/minad/vertico/wiki#customize-highlighting-based-on-completion-category
+
   (defun +completion-category-highlight-files (cand)
     (let ((len (length cand)))
-      (when (and (> len 0)
-                 (eq (aref cand (1- len)) ?/))
-        (add-face-text-property 0 len 'font-lock-function-name-face 'append cand)))
-    cand)
+      (when (and (> len 0) (eq (aref cand (1- len)) ?/))
+        (add-face-text-property 0 len 'dired-directory 'append cand)) cand))
 
   (defvar +completion-category-hl-func-overrides
     `((file . ,#'+completion-category-highlight-files))
     "Alist mapping category to highlight functions.")
 
   (advice-add #'vertico--arrange-candidates :around
-              (defun vertico-format-candidates+ (func metadata)
-                (let ((hl-func (or (alist-get (completion-metadata-get metadata 'category)
+              (defun vertico-format-candidates+ (func)
+                (let ((hl-func (or (alist-get (vertico--metadata-get 'category)
                                               +completion-category-hl-func-overrides)
                                    #'identity)))
                   (cl-letf* (((symbol-function 'actual-vertico-format-candidate)
@@ -2007,7 +2006,21 @@ Provides the vertical completion user interface.
                               (lambda (cand &rest args)
                                 (apply #'actual-vertico-format-candidate
                                        (funcall hl-func cand) args))))
-                    (funcall func metadata)))))
+                    (funcall func)))))
+
+
+  ;; And the following could be added to the previous code to highlight enabled modes in the command palette (M-x).
+
+  (defun +completion-category-highlight-commands (cand)
+    (let ((len (length cand)))
+      (when (and (> len 0)
+                 (with-current-buffer (nth 1 (buffer-list)) ; get buffer before minibuffer
+                   (or (eq major-mode (intern cand)) ; check major mode
+                       (ignore-errors (auto-minor-mode-enabled-p (intern cand)))))) ; check minor modes
+        (add-face-text-property 0 len '(:foreground "red") 'append cand))) ; choose any color or face you like
+    cand)
+
+  (add-to-list '+completion-category-hl-func-overrides `(command . ,#'+completion-category-highlight-commands))
 
   :bind (:map
          vertico-map
