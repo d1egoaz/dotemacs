@@ -28,6 +28,7 @@
   - [[#kill-ring-not-save-duplicates][Kill ring not save duplicates]]
   - [[#use-short-answers-yn][Use short answers y/n]]
   - [[#server-mode][Server mode]]
+  - [[#default-emacs-client][Default emacs client]]
   - [[#increase-read-output-from-processes][Increase read output from processes]]
   - [[#recentel][Recent.el]]
 - [[#ui---lets-make-emacs-look-a-little-better][UI - Let's make Emacs look a little better.]]
@@ -464,6 +465,13 @@ routed here.
 
 #+begin_src elisp
 (server-start)
+#+end_src
+
+** Default emacs client
+
+Fix `with-editor: Cannot determine a suitable Emacsclient` issue.
+#+begin_src elisp
+(setq-default with-editor-emacsclient-executable "emacsclient")
 #+end_src
 
 ** Increase read output from processes
