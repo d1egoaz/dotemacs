@@ -3612,6 +3612,7 @@ Emacs Everywhere from, just press C-c C-c.
 
 (global-set-key (kbd "s-b") #'consult-buffer)
 (global-set-key (kbd "s-r") #'consult-recent-file)
+(global-set-key (kbd "s-w") #'delete-window)
 
 ;; https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
 (defun my-delete-word (arg)
