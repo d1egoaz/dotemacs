@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: todo
+# key: todo
+# condition: t
+# --
+`(format-time-string "// TODO: @d1egoaz %Y-%m-%d: ")`$0

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: surrownd with code block
+# key: surrownd
+# condition: t
+# --
+#+begin_src ${1:sh}
+`%`$0
+#+end_src

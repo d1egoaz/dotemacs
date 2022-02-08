@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# Author : Diego Alvarez <diego.canada@icloud.com>
+# name : debug dprintf
+# key: pd
+# --
+fmt.Printf("   >>> `(buffer-name)`/$0: $1: %T: %+v\n", $1, $1)

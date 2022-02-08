@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# Author : Diego Alvarez <diego.canada@icloud.com>
+# name : printf
+# key: pp
+# --
+fmt.Println("   >>> `(buffer-name)`/$1: $2")
