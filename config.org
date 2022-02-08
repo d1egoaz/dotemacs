@@ -399,10 +399,19 @@ initial GC threshold in =early-init.el=.
 ** Pinentry
 
 Emacs can be prompted for the PIN of GPG private keys.
-Remember to modify gpg agent config.
 
+reload gpg agent: gpg-connect-agent reloadagent /bye
+
+First, edit the gpg-agent configuration to allow loopback pinentry mode:
+=~/.gnupg/gpg-agent.conf=
+#+begin_example
 allow-loopback-pinentry
-pinentry-program /opt/homebrew/bin/pinentry-mac
+#+end_example
+
+=~/.gnupg/gpg.conf=
+#+begin_example
+pinentry-mode loopback
+#+end_example
 
 #+begin_src elisp
 (setq epg-pinentry-mode 'loopback)
@@ -3958,8 +3967,11 @@ This command does not push text to `kill-ring'."
 Configure PATH on macOS
 #+begin_src elisp
 (use-package exec-path-from-shell
-  :config (when (memq window-system '(mac ns x))
-            (exec-path-from-shell-initialize)))
+:config
+;; (setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOPATH"))
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)))
 #+end_src
 
 
