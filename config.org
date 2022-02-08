@@ -1968,10 +1968,11 @@ Provides the vertical completion user interface.
 #+begin_src elisp
 (use-package vertico
   :after orderless ; https://github.com/oantolin/orderless/issues/64#issuecomment-868989378
-  :straight (vertico :type git :host github :repo "minad/vertico"
-                     :includes vertico-directory
-                     ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
-                     :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
+  ;;:straight (vertico
+  ;; :type git :host github :repo "minad/vertico"
+  ;;                   :includes vertico-directory
+  ;; Allow reuse of minibuffer history (like ivy-resume or selectrum-last)
+  ;;                   :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-repeat.el" "extensions/vertico-quick.el"))
   :init
   (add-hook 'vertico-mode-hook (lambda ()
                                  (setq completion-in-region-function
@@ -2079,7 +2080,7 @@ M-w copy
 #+begin_src elisp
 (use-package consult
   :after vertico
-  :straight (consult :type git :host github :repo "minad/consult")
+  ;;:straight (consult :type git :host github :repo "minad/consult")
   :init
 
   ;; Optionally configure the register formatting. This improves the register
@@ -2217,7 +2218,7 @@ https://github.com/oantolin/embark/wiki/Default-Actions
 #+begin_src elisp
 (use-package embark
   :after wgrep
-  :straight (embark :type git :host github :repo "oantolin/embark")
+ ;; :straight (embark :type git :host github :repo "oantolin/embark")
   :init
 
   ;; Optionally replace the key help with a completing-read interface
@@ -2315,7 +2316,7 @@ Orderless is a completion-style to allow convenient filters.
 
 #+begin_src elisp
 (use-package orderless
-  :straight (orderless :type git :host github :repo "oantolin/orderless")
+ ;; :straight (orderless :type git :host github :repo "oantolin/orderless")
   :init
   (setq completion-styles '(orderless))
   (setq completion-category-defaults nil)
