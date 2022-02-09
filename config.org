@@ -2316,7 +2316,6 @@ Orderless is a completion-style to allow convenient filters.
 
 #+begin_src elisp
 (use-package orderless
- ;; :straight (orderless :type git :host github :repo "oantolin/orderless")
   :init
   (setq completion-styles '(orderless))
   (setq completion-category-defaults nil)
@@ -2326,47 +2325,54 @@ Orderless is a completion-style to allow convenient filters.
   (setq completions-detailed t)
   :config
   ;; adapted from https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
+  (defvar +orderless-dispatch-alist
+    '((?% . char-fold-to-regexp)
+      (?! . orderless-without-literal)
+      (?, . orderless-initialism)
+      (?= . orderless-literal)))
+
   ;; Recognizes the following patterns:
   ;; * =literal literal=
+  ;; * %char-fold char-fold%
   ;; * ,initialism initialism,
   ;; * !without-literal without-literal!
   ;; * .ext (file extension)
   ;; * regexp$ (regexp matching at end)
-  (defun diego/orderless-dispatch (pattern _index _total)
+  (defun +orderless-dispatch (pattern index _total)
     (cond
      ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-     ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
+     ((string-suffix-p "$" pattern)
+      `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
      ;; File extensions
-     ((string-match-p "\\`\\.." pattern) `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
+     ((and
+       ;; Completing filename or eshell
+       (or minibuffer-completing-file-name
+           (derived-mode-p 'eshell-mode))
+       ;; File extension
+       (string-match-p "\\`\\.." pattern))
+      `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
      ;; Ignore single !
      ((string= "!" pattern) `(orderless-literal . ""))
-     ;; Without literal
-     ((string-prefix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 1)))
-     ((string-suffix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 0 -1)))
-     ;; Initialism strict matching
-     ((string-prefix-p "," pattern) `(orderless-strict-initialism . ,(substring pattern 1)))
-     ((string-suffix-p "," pattern) `(orderless-strict-initialism . ,(substring pattern 0 -1)))
-     ;; Literal matching
-     ((string-prefix-p "=" pattern) `(orderless-literal . ,(substring pattern 1)))
-     ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))))
+     ;; Prefix and suffix
+     ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
+          (cons (cdr x) (substring pattern 1))
+        (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
+          (cons (cdr x) (substring pattern 0 -1)))))))
 
-  (setq orderless-matching-styles '(orderless-regexp))
-  (setq orderless-style-dispatchers '(diego/orderless-dispatch))
-  (setq orderless-skip-highlighting nil)
-
-  ;; Pressing SPC takes you out of completion, so with the default separator you
-  ;; are limited to one component, which is no fun. To fix this add a separator
-  ;; that is allowed to occur in identifiers, for example, for Emacs Lisp code
-  ;; you could use an ampersand:
-  (setq orderless-component-separator "[ +]")
-  ;; The matching portions of candidates aren’t highlighted. That’s because
-  ;; company-capf is hard-coded to look for the completions-common-part face, and
-  ;; it only use one face, company-echo-common to highlight candidates.
-  (defun just-one-face (fn &rest args)
-    (let ((orderless-match-faces [completions-common-part]))
-      (apply fn args)))
-
-  (advice-add 'company-capf--candidates :around #'just-one-face))
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        ;;; Enable partial-completion for files.
+        ;;; Either give orderless precedence or partial-completion.
+        ;;; Note that completion-category-overrides is not really an override,
+        ;;; but rather prepended to the default completion-styles.
+        ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+        completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+                                        ;; enable initialism by default for symbols
+                                        (command (styles +orderless-with-initialism))
+                                        (variable (styles +orderless-with-initialism))
+                                        (symbol (styles +orderless-with-initialism)))
+        orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+        orderless-style-dispatchers '(+orderless-dispatch)))
 #+end_src
 
 ** Key bindings hints (which-key.el)
