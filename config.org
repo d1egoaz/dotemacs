@@ -3032,7 +3032,7 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   (setq bookmark-set-fringe-mark t) ; Emacs28
   (setq bookmark-save-flag 1)
 
-  (setq bookmark-default-file "~/gdrive/deft/bookmarks.el")
+  (setq bookmark-default-file "~/Documents/deft/bookmarks.el")
   (setq bookmark-watch-bookmark-file 'silent)
 
   (defun diego--bookmark-url-handler (bookmark)
@@ -3204,8 +3204,8 @@ Never lose the cursor again.
    "ds" #'org-schedule
    "dt" #'org-time-stamp)
   :init
-  (setq org-directory "~/gdrive/deft")
-  (setq org-agenda-files (list "~/gdrive/deft/journal.org" "~/gdrive/deft/gtd-inbox.org" "~/gdrive/deft/gtd-personal.org" "~/gdrive/deft/gtd-work.org" ))
+  (setq org-directory "~/Documents/deft")
+  (setq org-agenda-files (list "~/Documents/deft/journal.org" "~/Documents/deft/gtd-inbox.org" "~/Documents/deft/gtd-personal.org" "~/Documents/deft/gtd-work.org" ))
   (setq org-agenda-window-setup 'reorganize-frame)
   (setq org-agenda-deadline-faces
          '((1.001 . error)
@@ -3217,7 +3217,7 @@ Never lose the cursor again.
   (setq org-attach-directory org-attach-id-dir)
   (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
   (setq org-download-image-dir org-attach-directory)
-  (setq org-refile-targets '(("~/gdrive/deft/gtd-inbox.org" :maxlevel . 1) ("~/gdrive/deft/gtd-personal.org" :level . 1) ("~/gdrive/deft/gtd-work.org" :maxlevel . 2)))
+  (setq org-refile-targets '(("~/Documents/deft/gtd-inbox.org" :maxlevel . 1) ("~/Documents/deft/gtd-personal.org" :level . 1) ("~/Documents/deft/gtd-work.org" :maxlevel . 2)))
   :config
   (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
 
@@ -3249,13 +3249,13 @@ Never lose the cursor again.
           ;;   ""                                = template
           ;;   :prepend t                        = properties
           ;; https://orgmode.org/manual/Template-expansion.html
-          ("t" "Todo" entry (file+headline "~/gdrive/deft/gtd-inbox.org" "Inbox")
+          ("t" "Todo" entry (file+headline "~/Documents/deft/gtd-inbox.org" "Inbox")
            "* TODO %?\nCreated on on %U\n" :prepend t :empty-lines 1)
-          ("l" "Link" entry (file+headline "~/gdrive/deft/notes.org" "Links")
+          ("l" "Link" entry (file+headline "~/Documents/deft/notes.org" "Links")
            "* %? %^L %^g \n%T" :prepend t)
-          ("n" "Note" entry (file+headline "~/gdrive/deft/notes.org" "Notes")
+          ("n" "Note" entry (file+headline "~/Documents/deft/notes.org" "Notes")
            "* %^{title}%^g\n%T\n\n%?" :prepend t)
-          ("j" "Journal" entry (file+olp+datetree "~/gdrive/deft/journal.org")
+          ("j" "Journal" entry (file+olp+datetree "~/Documents/deft/journal.org")
            "* %?\nSCHEDULED: <%(org-read-date nil nil \"today\")>" :clock-in t :clock-resume t))))
 #+end_src
 
@@ -3500,7 +3500,7 @@ The best RSS reader.
 (use-package elfeed-org
   :after elfeed
   :config
-  (setq rmh-elfeed-org-files (list "~/gdrive/deft/elfeed.org"))
+  (setq rmh-elfeed-org-files (list "~/Documents/deft/elfeed.org"))
   (elfeed-org))
 #+end_src
 
@@ -3700,7 +3700,7 @@ This command does not push text to `kill-ring'."
  "fC"      #'(copy-file :which-key "Copy file")
  "fD"      #'(diego/delete-file :which-key "Delete file")
  "ff"      #'(find-file :which-key "Find file")
- "fj"      #'((lambda () (interactive) (find-file "~/gdrive/deft/journal.org")) :which-key "Journal file")
+ "fj"      #'((lambda () (interactive) (find-file "~/Documents/deft/journal.org")) :which-key "Journal file")
  "fp"      #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
  "fr"      #'(consult-recent-file :which-key "Recent files")
  "fR"      #'(rename-file :which-key "Rename file")
