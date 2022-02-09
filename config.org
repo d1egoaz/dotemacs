@@ -3009,6 +3009,8 @@ er/expand-region
 #+begin_src elisp
 (use-package flyspell
   :after org
+  :config
+  (setq ispell-program-name "aspell")
   :hook ((prog-mode-hook       . flyspell-prog-mode)
          (gfm-mode-hook        . flyspell-prog-mode)
          (text-mode-hook       . flyspell-mode)
