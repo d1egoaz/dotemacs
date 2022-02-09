@@ -65,6 +65,15 @@
               (list (abbreviate-file-name d)))
             cands)))
 
+;; run to update project list
+(defun prot-project-add-projects ()
+  "Append `prot-project--list-projects' to `project--list'."
+  (interactive)
+  (project--ensure-read-project-list)
+  (let ((projects (prot-project--list-projects)))
+    (setq project--list (append projects project--list))
+    (project--write-project-list)))
+
 ;;;###autoload
 (defun diego/open-project-readme ()
   "Open the README.md file in a project."
