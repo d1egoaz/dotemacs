@@ -1981,56 +1981,6 @@ Provides the vertical completion user interface.
   (setq vertico-cycle t)
   (setq vertico-count 20)
 
-  ;; Prefix current candidate with arrow
-  ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
-  (advice-add #'vertico--format-candidate :around
-              (lambda (orig cand prefix suffix index _start)
-                (setq cand (funcall orig cand prefix suffix index _start))
-                (concat
-                 (if (= vertico--index index)
-                     (propertize "» " 'face 'vertico-current)
-                   "  ")
-                 cand)))
-
-  ;; Customize highlighting based on completion-category
-  ;; https://github.com/minad/vertico/wiki#customize-highlighting-based-on-completion-category
-
-  (defun +completion-category-highlight-files (cand)
-    (let ((len (length cand)))
-      (when (and (> len 0) (eq (aref cand (1- len)) ?/))
-        (add-face-text-property 0 len 'dired-directory 'append cand)) cand))
-
-  (defvar +completion-category-hl-func-overrides
-    `((file . ,#'+completion-category-highlight-files))
-    "Alist mapping category to highlight functions.")
-
-  (advice-add #'vertico--arrange-candidates :around
-              (defun vertico-format-candidates+ (func)
-                (let ((hl-func (or (alist-get (vertico--metadata-get 'category)
-                                              +completion-category-hl-func-overrides)
-                                   #'identity)))
-                  (cl-letf* (((symbol-function 'actual-vertico-format-candidate)
-                              (symbol-function #'vertico--format-candidate))
-                             ((symbol-function #'vertico--format-candidate)
-                              (lambda (cand &rest args)
-                                (apply #'actual-vertico-format-candidate
-                                       (funcall hl-func cand) args))))
-                    (funcall func)))))
-
-
-  ;; And the following could be added to the previous code to highlight enabled modes in the command palette (M-x).
-
-  (defun +completion-category-highlight-commands (cand)
-    (let ((len (length cand)))
-      (when (and (> len 0)
-                 (with-current-buffer (nth 1 (buffer-list)) ; get buffer before minibuffer
-                   (or (eq major-mode (intern cand)) ; check major mode
-                       (ignore-errors (auto-minor-mode-enabled-p (intern cand)))))) ; check minor modes
-        (add-face-text-property 0 len '(:foreground "red") 'append cand))) ; choose any color or face you like
-    cand)
-
-  (add-to-list '+completion-category-hl-func-overrides `(command . ,#'+completion-category-highlight-commands))
-
   :bind (:map
          vertico-map
          ("\C-tab" . #'vertico-quick-insert)
@@ -2310,23 +2260,22 @@ Orderless is a completion-style to allow convenient filters.
 #+begin_src elisp
 (use-package orderless
   :init
-  (setq completion-styles '(orderless))
+  (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
   ;; Enable `partial-completion' for files to allow path expansion.
-  (setq completion-category-overrides '((file (styles . (partial-completion)))))
+  (setq completion-category-overrides '((file (styles . (orderles partial-completion)))))
   (setq completions-format 'one-column)
   (setq completions-detailed t)
   :config
+
   ;; adapted from https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
   (defvar +orderless-dispatch-alist
-    '((?% . char-fold-to-regexp)
-      (?! . orderless-without-literal)
+    '((?! . orderless-without-literal)
       (?, . orderless-initialism)
       (?= . orderless-literal)))
 
   ;; Recognizes the following patterns:
   ;; * =literal literal=
-  ;; * %char-fold char-fold%
   ;; * ,initialism initialism,
   ;; * !without-literal without-literal!
   ;; * .ext (file extension)
@@ -2352,20 +2301,8 @@ Orderless is a completion-style to allow convenient filters.
         (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
           (cons (cdr x) (substring pattern 0 -1)))))))
 
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        ;;; Enable partial-completion for files.
-        ;;; Either give orderless precedence or partial-completion.
-        ;;; Note that completion-category-overrides is not really an override,
-        ;;; but rather prepended to the default completion-styles.
-        ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-        completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
-                                        ;; enable initialism by default for symbols
-                                        (command (styles +orderless-with-initialism))
-                                        (variable (styles +orderless-with-initialism))
-                                        (symbol (styles +orderless-with-initialism)))
-        orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-        orderless-style-dispatchers '(+orderless-dispatch)))
+  (setq orderless-component-separator #'orderless-escapable-split-on-space) ;; allow escaping space with backslash
+  (setq orderless-style-dispatchers '(+orderless-dispatch)))
 #+end_src
 
 ** Key bindings hints (which-key.el)
