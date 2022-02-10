@@ -26,10 +26,7 @@
 
 (require 'project)
 
-(defvar diego--project-project-roots
-  '("~/src/github.com/Shopify"
-    "~/code/"
-    "~/dotfiles/"))
+(defvar diego--project-project-roots '("~/src/github.com/Shopify" "~/code/oss"))
 
 ;; Copied from Manuel Uberti:
 ;; <https://www.manueluberti.eu/emacs/2020/11/14/extending-project/>.
@@ -66,6 +63,8 @@
             cands)))
 
 ;; run to update project list
+;; run project-remember-projects-under on ~
+;; then run prot-project-add-projects
 (defun prot-project-add-projects ()
   "Append `prot-project--list-projects' to `project--list'."
   (interactive)
