@@ -400,12 +400,13 @@ initial GC threshold in =early-init.el=.
 
 Emacs can be prompted for the PIN of GPG private keys.
 
-reload gpg agent: gpg-connect-agent reloadagent /bye
+reload gpg agent: =gpg-connect-agent reloadagent /bye=
 
 First, edit the gpg-agent configuration to allow loopback pinentry mode:
 =~/.gnupg/gpg-agent.conf=
 #+begin_example
 allow-loopback-pinentry
+#pinentry-program /opt/homebrew/bin/pinentry-mac
 #+end_example
 
 =~/.gnupg/gpg.conf=
