@@ -138,6 +138,7 @@
   - [[#evil-org-agendael][evil-org-agenda.el]]
   - [[#make-org-capture-start-in-insert-mode][Make org-capture start in insert mode]]
   - [[#org-babel][Org-Babel]]
+  - [[#mermaid-support][mermaid support]]
   - [[#create-table-of-contents][Create table of contents]]
   - [[#imenu-org-depth][iMenu org depth]]
 - [[#misc-1][Misc]]
@@ -3346,6 +3347,16 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
                                (latex . t)
                                ))
 #+end_src
+** mermaid support
+#+begin_src elisp
+(use-package mermaid-mode)
+
+(use-package ob-mermaid
+  :after mermaid-mode
+  :config
+  (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"))
+#+end_src
+
 
 ** Create table of contents
 
