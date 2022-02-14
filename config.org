@@ -3871,7 +3871,7 @@ This command does not push text to `kill-ring'."
  "wa"      #'ace-window
  "wb"      #'balance-windows
  "wB"      #'balance-windows-area
- "wd"      #'diego/dedicated-mode
+ "ww"      #'diego/dedicated-mode
  "w-"      #'(+evil/window-split-and-follow :which-key "Horizontal split window")
  "w/"      #'(+evil/window-vsplit-and-follow :which-key "Vertical split window")
  "wd"      #'(evil-window-delete :which-key "Close window")
