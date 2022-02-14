@@ -2265,10 +2265,12 @@ Orderless is a completion-style to allow convenient filters.
 #+begin_src elisp
 (use-package orderless
   :init
-  (setq completion-styles '(orderless basic))
+  ;; (setq completion-styles '(orderless basic))
+  (setq completion-styles '(orderless))
   (setq completion-category-defaults nil)
   ;; Enable `partial-completion' for files to allow path expansion.
-  (setq completion-category-overrides '((file (styles . (orderles partial-completion)))))
+  ;; (setq completion-category-overrides '((file (styles . (orderless partial-completion)))))
+  (setq completion-category-overrides nil)
   (setq completions-format 'one-column)
   (setq completions-detailed t)
   :config
