@@ -1969,6 +1969,10 @@ Provides the vertical completion user interface.
 #+begin_src elisp
 (use-package vertico
   :after orderless ; https://github.com/oantolin/orderless/issues/64#issuecomment-868989378
+  :straight (:files (:defaults "extensions/*")
+                    :includes (vertico-directory
+                               vertico-repeat
+                               vertico-quick))
   :init
   (add-hook 'vertico-mode-hook (lambda ()
                                  (setq completion-in-region-function
