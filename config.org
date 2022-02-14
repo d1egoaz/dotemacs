@@ -3217,7 +3217,6 @@ Never lose the cursor again.
   (setq org-attach-id-dir (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
   (setq org-attach-directory org-attach-id-dir)
   (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
-  (setq org-download-image-dir org-attach-directory)
   (setq org-refile-targets '(("~/Documents/deft/gtd-inbox.org" :maxlevel . 1) ("~/Documents/deft/gtd-personal.org" :level . 1) ("~/Documents/deft/gtd-work.org" :maxlevel . 2)))
   :config
   (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
@@ -3225,7 +3224,6 @@ Never lose the cursor again.
   (setq org-clock-out-remove-zero-time-clocks nil)
   ;; (setq org-cycle-emulate-tab 'white) ; allows to collapse the current outline (call org-cycle)
   (setq org-confirm-babel-evaluate nil)
-  (setq org-download-image-html-width 500)
   (setq org-edit-src-content-indentation 0) ; not need to waste space
   (setq org-adapt-indentation 'headline-data) ; indent content
   (setq org-ellipsis "⌄ ")
@@ -3264,7 +3262,15 @@ Never lose the cursor again.
 
 #+begin_src elisp
 (use-package org-download
-  :commands org-download-screenshot)
+  :after org
+  :commands org-download-screenshot
+  :config
+  (setq org-download-heading-lvl nil)
+  (setq org-download-image-dir org-attach-directory)
+  (setq org-download-image-html-width 500)
+  (setq org-download-method 'attach)
+  (setq org-download-screenshot-method "screencapture -i %s")
+  (setq org-download-timestamp "_%Y%m%d_%H%M%S"))
 #+end_src
 
 ** evil-org.el
