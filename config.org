@@ -2524,11 +2524,16 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
   ;; (setq godef-command "go doc") ; original godef
   (setq gofmt-command "goimports") ; original gofmt
 
+  (defun outline-go-mode-hook ()
+     (set (make-local-variable 'outline-regexp) "\\(func \\|\\(.*struct {\\)\\|\\(type \\)\\)"))
+
   (defun lsp-go-install-save-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer 0 t)
     (add-hook 'before-save-hook #'lsp-organize-imports 0 t))
 
-  :hook ((go-mode-hook . lsp-deferred)
+  :hook (
+         (go-mode-hook . outline-go-mode-hook)
+         (go-mode-hook . lsp-deferred)
          (go-mode-hook . lsp-go-install-save-hooks)))
 #+end_src
 
