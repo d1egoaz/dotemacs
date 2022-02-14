@@ -3530,16 +3530,16 @@ Emacs Everywhere from, just press C-c C-c.
 (use-package emacs-everywhere
   :after ox-gfm
   :init
-  (setq emacs-everywhere-markdown-apps '("Discord" "Slack" "Microsoft Edge Beta"))
+  (setq emacs-everywhere-markdown-apps '("Slack"))
   (setq emacs-everywhere-markdown-windows
         '("Stack Exchange" "Stack Overflow" "Reddit" ; Sites
           "Pull Request" "Issue" "Comparing .*\\.\\.\\." ; Github
           "Discord" "Slack"))
 
-  (defun emacs-everywhere-markdown-p ()
-    t)
-  (defun emacs-everywhere-major-mode-org-or-markdown ()
-    (gfm-mode))
+  ;; use by default gfm-mode instead of using org-mode and pandoc
+  (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-major-mode-org-or-markdown)
+  (remove-hook 'emacs-everywhere-init-hooks #'org-mode)
+  (add-hook 'emacs-everywhere-init-hooks #'gfm-mode)
 
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
@@ -3547,6 +3547,7 @@ Emacs Everywhere from, just press C-c C-c.
           (height . 20))))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
+;; currently not used as I'm always using gfm-mode
 (use-package ox-gfm
   :after org
   :config
