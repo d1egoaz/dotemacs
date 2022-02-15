@@ -2068,7 +2068,7 @@ M-w copy
   ;; disable fd for now until https://github.com/minad/consult/wiki#find-files-using-fd
   ;; (setq consult-find-args "fd --color=never --full-path ARG OPTS")
   ;; add --hidden
-  (setq consult-ripgrep-args "rg --hidden --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
+  (setq consult-ripgrep-args "rg --hidden --glob=!.git/ --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
 
   (setq consult-fontify-preserve t)
   (setq consult-preview-key nil)
