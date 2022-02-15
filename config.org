@@ -3346,16 +3346,15 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
                                (latex . t)
                                ))
 #+end_src
+
 ** mermaid support
+
 #+begin_src elisp
 (use-package mermaid-mode)
 
 (use-package ob-mermaid
-  :after mermaid-mode
-  :config
-  (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"))
+  :after mermaid-mode)
 #+end_src
-
 
 ** Create table of contents
 
