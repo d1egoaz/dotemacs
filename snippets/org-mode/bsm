@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: bsm
+# key: bsm
+# --
+
+#+begin_src mermaid :file `(concat "./images/mermaid-tmp/" (make-temp-name "mermaid-"))`.png
+  $0
+#+end_src
