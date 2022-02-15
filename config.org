@@ -3216,7 +3216,6 @@ Never lose the cursor again.
            (0.0 . org-upcoming-distant-deadline)))
   (setq org-agenda-span 'month); or 'week
   (setq org-attach-id-dir (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
-  (setq org-attach-directory org-attach-id-dir)
   (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
   (setq org-refile-targets '(("~/Documents/deft/gtd-inbox.org" :maxlevel . 1) ("~/Documents/deft/gtd-personal.org" :level . 1) ("~/Documents/deft/gtd-work.org" :maxlevel . 2)))
   :config
