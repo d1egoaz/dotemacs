@@ -1802,9 +1802,9 @@ TODO remove use package as it's now part of Emacs
 
   (setq project-switch-commands '((project-find-file "Find file" ?f)
                                   (diego/open-project-readme "README.md" ?.)
-                                  (consult-ripgrep "Ripgrep" ?r)
+                                  (consult-ripgrep "Search" ?s)
                                   (project-dired "Dired" ?d)
-                                  (magit-status "Git status" ?m)
+                                  (magit-status "Git status" ?g)
                                   (diego/consult-buffer-for-project "Recent project buffer" ?R)
                                   (project-shell-command "Shell command" ?!)
                                   (diego--open-readme-and-vterm "Vterm project" ?v))))
@@ -3843,10 +3843,8 @@ This command does not push text to `kill-ring'."
  "Pr"      #'(profiler-report :which-key "Profiler report")
  ;; Search
  "s"       '(:ignore t :which-key "search")
- "se"      #'(iedit-mode :which-key "iedit") ; next item TAB
  "sd"      #'(consult-find :which-key "Search")
  "sg"      #'(consult-grep :which-key "Search")
- "sr"      #'replace-regexp
  "ss"      #'(consult-line :which-key "Search")
  "sS"      #'(diego/search-symbol-at-point :which-key "Search at point")
  "sp"      #'(consult-ripgrep :which-key "Search in project")
@@ -3865,6 +3863,12 @@ This command does not push text to `kill-ring'."
  "q"       '(:ignore t :which-key "quit/restart")
  "qf"      #'(delete-frame :which-key "Delete frame")
  "qq"      #'(kill-emacs :which-key "Quit Emacs")
+ ;; Replace
+ "r"       '(:ignore t :which-key "replace")
+ "ri"      #'(iedit-mode :which-key "iedit") ; next item TAB
+ "rs"      #'replace-string
+ "rr"      #'replace-regexp
+ "rw"      #'fixup-whitespace
  ;; Window manipulation
  "w"       '(:ignore t :which-key "windows")
  "wa"      #'ace-window
@@ -3913,8 +3917,8 @@ This command does not push text to `kill-ring'."
 #+end_src
 
 #+begin_src elisp
-(use-package code-review)
 #+end_src
+(use-package code-review)
 
 #+begin_src elisp
 (use-package dtache
@@ -3930,7 +3934,6 @@ Configure PATH on macOS
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
 #+end_src
-
 
 * Inspiration
 
