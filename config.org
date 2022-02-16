@@ -1164,12 +1164,11 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
-    `((global menu-item ,(propertize (string-trim-right (format-mode-line vc-mode)) 'face '(:height 0.7 :foreground "yellow")) ignore)))
+    `((global menu-item ,(propertize (string-trim-right (format-mode-line vc-mode)) 'face '(modus-themes-subtle-magenta :height 0.7)) ignore)))
 
   (defun prot-tab-format-misc-info ()
     "Format `mode-line-misc-info' for the tab bar."
     `((global menu-item ,(propertize (format-mode-line mode-line-misc-info) 'face '(:height 0.7)) ignore)))
-  ;; `((global menu-item ,(propertize (string-trim-right (format-mode-line mode-line-misc-info)) 'face '(:height 0.7)) ignore)))
 
   (defun diego-tab-format-buffer-id ()
     "Buffer true name for files or just the buffer name."
@@ -1180,8 +1179,9 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
                                                              (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
                                                            buffer-file-truename))
                                                (unless (string-prefix-p "*kubel" (buffer-name))
-                                                 (concat "Buffer: " (buffer-name))))) 'face '(:height 0.7))
-              ignore)))
+                                                 (concat "Buffer: " (buffer-name))))
+                                             )
+                                     'face '(modus-themes-active-blue :height 0.8)) ignore)))
 
   (defun diego-tab-format-keycast ()
     "Format `mode-line-modified' for the tab bar."
@@ -1203,16 +1203,17 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
         '(prot-tab-format-space-single
           prot-tab-format-modified
           prot-tab-format-evil
+          prot-tab-format-misc-info
           ;; tab-bar-format-tabs-groups ; remove as it duplicates the tabs
           tab-bar-format-tabs
           prot-tab-format-space-single
-          diego-tab-format-vc
-          prot-tab-format-space-single
-          diego-tab-format-buffer-id
           ;; prot-tab-format-space-single
-          diego-tab-format-keycast
+          diego-tab-format-buffer-id
+          diego-tab-format-vc
+          ;; prot-tab-format-space-single
           tab-bar-format-align-right
-          prot-tab-format-misc-info
+          ;; prot-tab-format-space-single
+          ;; diego-tab-format-keycast
           ))
 
   ;; tab-bar-format-global
