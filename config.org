@@ -1315,12 +1315,6 @@ visited the same file.
 (setq save-some-buffers-default-predicate 'save-some-buffers-root)
 #+end_src
 
-** Dired reuse buffer when opening directories
-
-#+begin_src elisp
-(setq dired-kill-when-opening-new-dired-buffer t)
-#+end_src
-
 ** Make Script Files Executable Automatically
 
 #+begin_src elisp
@@ -2835,6 +2829,22 @@ display portions of a program, which are referred to as blocks.
 #+end_src
 
 * Productivity
+** dired.el
+#+begin_src elisp
+(use-package dired
+  :straight (:type built-in)
+  :general
+  (general-define-key
+   :keymaps 'dired-mode-map
+   :states '(normal visual emacs motion)
+   :prefix ","
+   :non-normal-prefix "M-SPC m"
+   "w"  #'wdired-change-to-wdired-mode)
+  :config
+  ;; reuse buffer when opening directories
+  (setq dired-kill-when-opening-new-dired-buffer t))
+#+end_src
+
 ** ediff.el
 
 #+begin_src elisp
