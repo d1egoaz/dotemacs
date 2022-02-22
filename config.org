@@ -581,11 +581,12 @@ Command/Super plus =/- for zooming in/out.
 #+begin_src elisp
 (use-package modus-themes
   :init
-  (setq modus-themes-completions '((t background intense accented)))
+  (setq modus-themes-completions '((t background accented)))
   (setq modus-themes-box-buttons '(variable-pitch flat semilight 0.9))
   ;; (setq modus-themes-diffs nil)
   (setq modus-themes-diffs 'bg-only)
-  (setq modus-themes-fringes 'subtle) ; {nil,'subtle,'intense}
+  ;; (setq modus-themes-fringes 'intense) ; {nil,'subtle,'intense}
+  (setq modus-themes-fringes nil)
   (setq modus-themes-headings
         (quote ((1 . (background rainbow overline variable-pitch 1.4))
                 (2 . (background rainbow overline variable-pitch 1.2))
