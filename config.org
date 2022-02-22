@@ -1920,7 +1920,7 @@ candidates are called backends, modules for displaying them are frontends.
 #+begin_src elisp
 (use-package company-box
   :after company
-  :hook (company-mode-hook . company-box-mode)
+  :hook ((company-mode-hook . company-box-mode))
   :config
   (setq company-box-show-single-candidate t)
   (setq company-box-backends-colors nil)
@@ -3339,7 +3339,7 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
    "q" #'org-agenda-set-tags)
   :config
   (evil-org-agenda-set-keys)
-  :hook (org-agenda-mode-hook . evil-org-agenda-mode))
+  :hook ((org-agenda-mode-hook . evil-org-agenda-mode)))
 #+end_src
 
 ** Make org-capture start in insert mode
@@ -3507,7 +3507,7 @@ The best RSS reader.
       (elfeed-search-set-filter (format "@2-weeks-ago +unread %s" tags))
       (goto-char (point-min))))
 
-  (define-transient-command diego/elfeed-filter ()
+  (transient-define-prefix diego/elfeed-filter ()
     [["Arguments"
       ("a" "apple" "+apple")
       ("c" "Tech Crunch" "+techcrunch")
