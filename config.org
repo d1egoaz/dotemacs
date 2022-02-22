@@ -2673,17 +2673,16 @@ go-impl generates method stubs for implementing an interface.
 
 #+begin_src elisp
 (use-package dockerfile-mode)
+(use-package graphql-mode :mode "\\.g\\(?:raph\\)?ql$")
 (use-package json-mode)
 (use-package nix-mode)
+(use-package protobuf-mode)
 (use-package terraform-mode)
+(use-package web-mode)
 (use-package yaml-mode
   :mode (("\\.yml\\'"       . #'yaml-mode)
          ("\\.yaml\\'"      . #'yaml-mode)
          ("\\.yaml.lock\\'" . #'yaml-mode)))
-(use-package protobuf-mode)
-(use-package graphql-mode
-  :mode "\\.g\\(?:raph\\)?ql$")
-
 #+end_src
 ** Kubernetes
 
