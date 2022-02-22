@@ -60,7 +60,6 @@
   - [[#disable-file-changed-on-disk-messages][Disable file changed on disk messages]]
   - [[#restore-cursor-to-last-visited-place-in-a-file][Restore cursor to last visited place in a file]]
   - [[#save-some-buffers-default-to-root-project][Save Some Buffers default to root project]]
-  - [[#dired-reuse-buffer-when-opening-directories][Dired reuse buffer when opening directories]]
   - [[#make-script-files-executable-automatically][Make Script Files Executable Automatically]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
@@ -109,6 +108,7 @@
   - [[#compilation-mode][Compilation mode]]
   - [[#restclientel][restclient.el]]
 - [[#productivity][Productivity]]
+  - [[#diredel][dired.el]]
   - [[#ediffel][ediff.el]]
   - [[#syntax-checking-flycheckel][Syntax checking (flycheck.el)]]
   - [[#snippets-yasnippetel][Snippets (yasnippet.el)]]
@@ -571,8 +571,10 @@ Command/Super plus =/- for zooming in/out.
 #+begin_src elisp
 (use-package modus-themes
   :init
-  (setq modus-themes-completions 'opinionated) ; {nil,'moderate,'opinionated}
-  (setq modus-themes-diffs nil)
+  (setq modus-themes-completions '((t background intense accented)))
+  (setq modus-themes-box-buttons '(variable-pitch flat semilight 0.9))
+  ;; (setq modus-themes-diffs nil)
+  (setq modus-themes-diffs 'bg-only)
   (setq modus-themes-fringes 'subtle) ; {nil,'subtle,'intense}
   (setq modus-themes-headings
         (quote ((1 . (background rainbow overline variable-pitch 1.4))
@@ -590,7 +592,7 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-prompts '(intense-accented))
   (setq modus-themes-region '(bg-only))
   (setq modus-themes-scale-1 1.1)
-  (setq modus-themes-intense-markup t)
+  (setq modus-themes-markup '(background intense bold))
   (setq modus-themes-scale-2 1.15)
   (setq modus-themes-scale-3 1.21)
   (setq modus-themes-scale-4 1.27)
