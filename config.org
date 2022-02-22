@@ -508,6 +508,16 @@ Increase how much is read from processes in a single chunk (default is
   (recentf-mode 1))
 #+end_src
 
+** Configure PATH on macOS
+
+   #+begin_src elisp
+   (use-package exec-path-from-shell
+     :config
+     ;; (setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOPATH"))
+     (when (memq window-system '(mac ns x))
+       (exec-path-from-shell-initialize)))
+   #+end_src
+
 * UI - Let's make Emacs look a little better.
 
 ** Disable toolbars and scrollbars
@@ -3923,11 +3933,6 @@ This command does not push text to `kill-ring'."
 #+end_src
 
 * Test In Progress
-
-#+begin_src elisp
-(use-package web-mode)
-#+end_src
-
 #+begin_src elisp
 #+end_src
 (use-package code-review)
@@ -3937,14 +3942,17 @@ This command does not push text to `kill-ring'."
   :straight (dtache :type git :host gitlab :repo "niklaseklund/dtache"))
 #+end_src
 
-Configure PATH on macOS
 #+begin_src elisp
-(use-package exec-path-from-shell
-:config
-;; (setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOPATH"))
-
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize)))
+(use-package diff-hl
+  :after magit
+  :hook ((prog-mode-hook       . diff-hl-prog-mode)
+         (gfm-mode-hook        . diff-hl-prog-mode)
+         (text-mode-hook       . diff-hl-mode)
+         (git-commit-mode-hook . diff-hl-mode)
+         (org-mode-hook        . diff-hl-mode))
+  :config
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+end_src
 
 * Inspiration
