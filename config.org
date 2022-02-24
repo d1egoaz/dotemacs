@@ -31,6 +31,7 @@
   - [[#default-emacs-client][Default emacs client]]
   - [[#increase-read-output-from-processes][Increase read output from processes]]
   - [[#recentel][Recent.el]]
+  - [[#configure-path-on-macos][Configure PATH on macOS]]
 - [[#ui---lets-make-emacs-look-a-little-better][UI - Let's make Emacs look a little better.]]
   - [[#disable-toolbars-and-scrollbars][Disable toolbars and scrollbars]]
   - [[#increase-fill-column-width][Increase fill column width]]
@@ -2934,6 +2935,9 @@ er/expand-region
 #+end_src
 
 ** format-all.el
+
+Lets you auto-format source code in many languages using the same command for all languages, instead
+of learning a different Emacs package and formatting command for each language.
 
 #+begin_src elisp
 (use-package format-all)

@@ -29,7 +29,7 @@
 
 ;;;###autoload
 (defun diego/git-create-branch-from-origin-main ()
-  "Creates a new branch starting from origin/main."
+  "Create a new branch starting from origin/main."
   (interactive)
   (magit-fetch-branch "origin" "main" nil)
   (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/main): " "d1egoaz_")))
@@ -38,7 +38,7 @@
 
 ;;;###autoload
 (defun diego/git-create-branch-from-origin-master ()
-  "Creates a new branch starting from origin/master."
+  "Create a new branch starting from origin/master."
   (interactive)
   (magit-fetch-branch "origin" "master" nil)
   (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/master): " "d1egoaz_")))
