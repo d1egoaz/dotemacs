@@ -36,7 +36,7 @@
 
 ;;;###autoload
 (defun diego/delete-last-char-eol ()
-  "Delete last character in line"
+  "Delete last character in line."
   (interactive)
   (save-excursion
     (move-end-of-line 1)
@@ -47,7 +47,7 @@
                         "¯\\_(ツ)_/¯"
                         "(╯°□°）╯︵ ┻━┻"
                         "(⌐■_■)"
-                        "¯\(°_°)/¯"))
+                        "¯\\(°_°)/¯"))
 ;;;###autoload
 (defun diego/emoji-insert ()
   (interactive)
