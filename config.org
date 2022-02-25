@@ -3812,6 +3812,7 @@ This command does not push text to `kill-ring'."
  "jM"      #'consult-kmacro
  "jo"      #'consult-outline
  "ju"      #'(ffap-menu :which-key "Jump to URL")
+ "jU"      #'browse-url
  "jr"      #'(consult-buffer :which-key "Jump to recent file/buffer")
  "jp"      #'(diego/open-url :which-key "Jump to URL by search provider")
  "js"      #'(avy-goto-symbol-1 :which-key "Jump to begginning of word")
