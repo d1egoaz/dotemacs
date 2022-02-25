@@ -928,9 +928,13 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
   (print a)
   nil)
 
-;; make pop-to-buffer obey display-buffer-alist
-
 (defvar diego-tabs-as-workspaces-enabled t)
+
+(defun diego/toggle-diego-tabs-as-workspaces ()
+  "Toggle diego-tabs-as-workspaces-enabled."
+  (interactive)
+  (setq diego-tabs-as-workspaces-enabled (not diego-tabs-as-workspaces-enabled))
+  (message "Tabs as workspaces %s" (if diego-tabs-as-workspaces-enabled "enabled" "disabled")))
 
 (defun diego--display-buffer-from-help-p (b _a)
   "Clicking a link from the *Help* buffer opens source code in the same window."
@@ -1078,8 +1082,9 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ;; idea from https://emacs.stackexchange.com/a/64486
         ((lambda (b _a)
            ;; (diego--debug-buffer-alist b _a)
-           (or (string-prefix-p "magit:" b)
-               (buffer-local-value 'buffer-file-name (get-buffer b))))
+           (and diego-tabs-as-workspaces-enabled
+                (or (string-prefix-p "magit:" b)
+                    (buffer-local-value 'buffer-file-name (get-buffer b)))))
          (display-buffer-in-tab)
          (tab-name . diego/tab-name-for-buffer))
         ;; end display-buffer-alist elements
@@ -3679,6 +3684,7 @@ This command does not push text to `kill-ring'."
  "TAB p"   #'(tab-previous :which-key "Previous workspace")
  "TAB n"   #'(tab-next :which-key "Next workspace")
  "TAB TAB"   #'(tab-recent :which-key "Recent workspace")
+ "TAB t"   #'(diego/toggle-diego-tabs-as-workspaces :which-key "Toggle tabs as workspaces")
  ;; Apps
  "a"       '(:ignore t :which-key "apps")
  "aa"   #'((lambda () (interactive) (org-agenda-list)) :which-key "Org Agenda Week")
@@ -3886,6 +3892,7 @@ This command does not push text to `kill-ring'."
  "tv"      #'mixed-pitch-mode ; variable-pitch-mode
  "tw"      #'whitespace-mode
  "tW"      #'(visual-line-mode :which-key "Soft line wrapping")
+ "t TAB"   #'(diego/toggle-diego-tabs-as-workspaces :which-key "Toggle tabs as workspaces")
  ;; Quit/Restart
  "q"       '(:ignore t :which-key "quit/restart")
  "qf"      #'(delete-frame :which-key "Delete frame")
@@ -3901,6 +3908,7 @@ This command does not push text to `kill-ring'."
  "wa"      #'ace-window
  "wb"      #'balance-windows
  "wB"      #'balance-windows-area
+ "ws"      #'diego/swap-windows
  "ww"      #'diego/dedicated-mode
  "w-"      #'(+evil/window-split-and-follow :which-key "Horizontal split window")
  "w/"      #'(+evil/window-vsplit-and-follow :which-key "Vertical split window")
@@ -3938,6 +3946,7 @@ This command does not push text to `kill-ring'."
 #+end_src
 
 * Test In Progress
+
 #+begin_src elisp
 #+end_src
 (use-package code-review)
