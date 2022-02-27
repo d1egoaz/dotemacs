@@ -90,7 +90,7 @@
   - [[#treemacsel][treemacs.el]]
 - [[#completion][Completion]]
   - [[#preserve-history-with-savehist-mode][Preserve history with savehist-mode]]
-  - [[#completion-framework-companyel][Completion framework (company.el)]]
+  - [[#completion-framework-corfuel][Completion framework (corfu.el)]]
   - [[#selection-and-narrowing][Selection and Narrowing]]
   - [[#key-bindings-hints-which-keyel][Key bindings hints (which-key.el)]]
 - [[#search-and-replace][Search And Replace]]
@@ -1893,72 +1893,30 @@ from previous history files.
   (setq savehist-additional-variables '(compile-command kill-ring regexp-search-ring)))
 #+end_src
 
-** Completion framework (company.el)
+** Completion framework (corfu.el)
 
-Company is a modular completion framework. Modules for retrieving completion
-candidates are called backends, modules for displaying them are frontends.
+*** corfu
 
 #+begin_src elisp
-(use-package company
+(use-package corfu
   :config
-  (setq company-idle-delay 0.1)
-  (setq company-minimum-prefix-length 1)
-  (setq company-require-match 'never)
-  (setq company-frontends
-        '(company-pseudo-tooltip-frontend  ; always show candidates in overlay tooltip
-          company-echo-metadata-frontend))  ; show selected candidate docs in echo area
-  (setq company-auto-complete nil)
-  (setq company-auto-complete-chars nil)
-
-  ;; Only search the current buffer for `company-dabbrev' (a backend that
-  ;; suggests text your open buffers). This prevents Company from causing
-  ;; lag once you have a lot of buffers open.
-  (setq company-dabbrev-other-buffers nil)
-
-  ;; Make `company-dabbrev' fully case-sensitive, to improve UX with
-  ;; domain-specific words with particular casing.
-  (setq company-dabbrev-ignore-case nil)
-  (setq company-dabbrev-downcase nil)
-
-  ;; When candidates in the autocompletion tooltip have additional
-  ;; metadata, like a type signature, align that information to the
-  ;; right-hand side. This usually makes it look neater.
-  (setq company-tooltip-align-annotations t)
-
-  (eldoc-add-command #'company-complete-selection
-                     #'company-complete-common
-                     #'company-capf
-                     #'company-abort)
-
-  ;; Always display the entire suggestion list onscreen, placing it
-  ;; above the cursor if necessary.
-  (setq company-tooltip-limit 20)
-  (setq company-tooltip-minimum company-tooltip-limit)
-
-  ;; disable company in shells
-  (defun my-shell-mode-setup-function ()
-    (when (and (fboundp 'company-mode)
-               (file-remote-p default-directory))
-      (company-mode -1)))
-  (add-hook 'shell-mode-hook 'my-shell-mode-setup-function)
-
-  (global-company-mode 1)
-  :bind (:map
-         company-active-map
-         ("TAB"   . #'company-complete-selection)
-         ("<tab>" . #'company-complete-selection)))
+  (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (setq corfu-auto t)                 ;; Enable auto completion
+  (setq corfu-auto-prefix 2)
+  (setq corfu-quit-no-match t)      ;; Never quit, even if there is no match
+  :bind
+  ;; Configure SPC for separator insertion
+  (:map corfu-map ("SPC" . corfu-insert-separator))
+  :init
+  (corfu-global-mode))
 #+end_src
 
-*** company-box.el
-
 #+begin_src elisp
-(use-package company-box
-  :after company
-  :hook ((company-mode-hook . company-box-mode))
+(use-package kind-icon
+  :after corfu
   :config
-  (setq company-box-show-single-candidate t)
-  (setq company-box-backends-colors nil)
-  (setq company-box-max-candidates 50))
+  (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 #+end_src
 
 ***  Dabbrev
@@ -2488,9 +2446,34 @@ https://github.com/emacs-lsp/lsp-treemacs
 - consult-lsp-symbols
 
 #+begin_src elisp
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p i" . cape-ispell)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
+
 (use-package lsp-mode
+  :after (corfu orderless)
   :commands lsp-deferred
   :config
+  (setq lsp-completion-provider :none) ;; we use Corfu!
   (lsp-enable-which-key-integration t)
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
 
@@ -2510,9 +2493,27 @@ https://github.com/emacs-lsp/lsp-treemacs
   (advice-add 'lsp-goto-type-definition :before #'evil-set-jump)
   (advice-add 'lsp-find-definition :before #'evil-set-jump)
 
-  :bind (:map
-         lsp-mode-map
-         ("TAB" . #'completion-at-point)))
+
+  :init
+  ;; corfu + orderless
+  (defun my/orderless-dispatch-flex-first (_pattern index _total)
+    (and (eq index 0) 'orderless-flex))
+
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+
+  ;; Optionally configure the first word as flex filtered.
+  (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+
+  ;; Optionally configure the cape-capf-buster.
+  (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
+  ;; (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
+  :hook
+  ((lsp-completion-mode-hook . my/lsp-mode-setup-completion)))
+;; :bind (:map
+;;        lsp-mode-map
+;;        ("TAB" . #'completion-at-point)))
 
 (use-package lsp-ui
   :after lsp-mode
