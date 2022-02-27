@@ -2245,7 +2245,10 @@ t cl-type"
 #+begin_src elisp
 (use-package marginalia
   :init
-  (marginalia-mode 1))
+  (marginalia-mode 1)
+  :config
+  (setq marginalia-truncate-width 120)
+  (setq marginalia-field-width 120))
 #+end_src
 
 *** orderless.el
