@@ -584,9 +584,8 @@ Command/Super plus =/- for zooming in/out.
   :init
   (setq modus-themes-completions '((t background accented)))
   (setq modus-themes-box-buttons '(variable-pitch flat semilight 0.9))
-  ;; (setq modus-themes-diffs nil)
-  (setq modus-themes-diffs 'bg-only)
-  ;; (setq modus-themes-fringes 'intense) ; {nil,'subtle,'intense}
+  (setq modus-themes-diffs nil)
+  (setq modus-themes-fringes 'intense) ; {nil,'subtle,'intense}
   (setq modus-themes-fringes nil)
   (setq modus-themes-headings
         (quote ((1 . (background rainbow overline variable-pitch 1.4))
