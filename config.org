@@ -111,6 +111,7 @@
 - [[#productivity][Productivity]]
   - [[#diredel][dired.el]]
   - [[#ediffel][ediff.el]]
+  - [[#diff-hlel][diff-hl.el]]
   - [[#syntax-checking-flycheckel][Syntax checking (flycheck.el)]]
   - [[#snippets-yasnippetel][Snippets (yasnippet.el)]]
   - [[#expand-regionel][expand-region.el]]
@@ -2894,6 +2895,17 @@ display portions of a program, which are referred to as blocks.
   (setq ediff-window-setup-function #'ediff-setup-windows-plain))
 #+end_src
 
+** diff-hl.el
+
+#+begin_src elisp
+(use-package diff-hl
+  :config
+  (setq diff-hl-draw-borders nil)
+  (setq diff-hl-side 'left)
+  :hook ((prog-mode-hook       . diff-hl-mode)
+         (gfm-mode-hook        . diff-hl-mode)
+         (org-mode-hook        . diff-hl-mode)))
+#+end_src
 ** Syntax checking (flycheck.el)
 
 #+begin_src elisp
@@ -3871,6 +3883,7 @@ This command does not push text to `kill-ring'."
  "ld"      #'xref-find-definitions
  "le"      #'flycheck-list-errors
  "li"      #'lsp-find-implementation
+ "lk"      #'lsp-describe-thing-at-point
  "ln"      #'lsp-ui-find-next-reference
  "lp"      #'lsp-ui-find-prev-reference
  "lr"      #'xref-find-references
@@ -3991,19 +4004,6 @@ This command does not push text to `kill-ring'."
 #+begin_src elisp
 (use-package dtache
   :straight (dtache :type git :host gitlab :repo "niklaseklund/dtache"))
-#+end_src
-
-#+begin_src elisp
-(use-package diff-hl
-  :after magit
-  :hook ((prog-mode-hook       . diff-hl-prog-mode)
-         (gfm-mode-hook        . diff-hl-prog-mode)
-         (text-mode-hook       . diff-hl-mode)
-         (git-commit-mode-hook . diff-hl-mode)
-         (org-mode-hook        . diff-hl-mode))
-  :config
-  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+end_src
 
 * Inspiration
