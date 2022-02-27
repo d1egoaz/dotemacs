@@ -3657,6 +3657,10 @@ Emacs Everywhere from, just press C-c C-c.
 ;; repeat last macro with Q, use macro and then Q to repeat it
 (define-key evil-normal-state-map "Q" (kbd "@@"))
 
+;; unset "C-k" in evil insert, fixes binding for corfu
+(define-key evil-insert-state-map (kbd "C-n") nil)
+(define-key evil-insert-state-map (kbd "C-p") nil)
+
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
 (global-set-key (kbd "M-o") #'other-window)
