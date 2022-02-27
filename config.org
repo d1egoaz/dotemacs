@@ -2759,14 +2759,13 @@ On the kubel screen, place your cursor on the resource:
   (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
   (setq-default kube-namespace "cloudbuddies")
 
-  (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
-  (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
-  (add-to-list 'savehist-additional-variables 'kubel--kubernetes-resources-list-cached)
-
   (defun diego--kubel-hook ()
     (require 'f)
     (f-mkdir "/tmp/kubel") ; unset default directory
-    (f-touch "/tmp/kubel/.project"))
+    (f-touch "/tmp/kubel/.project")
+    (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
+    (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
+    (add-to-list 'savehist-additional-variables 'kubel--kubernetes-resources-list-cached))
   :hook ((kubel-mode-hook . diego--kubel-hook)))
 
 (use-package kubel-evil
