@@ -1905,12 +1905,27 @@ from previous history files.
   (setq corfu-auto t)                 ;; Enable auto completion
   (setq corfu-auto-prefix 2)
   (setq corfu-quit-no-match t)      ;; Never quit, even if there is no match
+  (setq corfu-min-width 100)
+  (setq corfu-max-width corfu-min-width)     ; Always have the same width
+  (setq corfu-count 15)
+  (setq corfu-scroll-margin 4)
+  (setq corfu-echo-documentation nil)
+
+  (defun corfu-move-to-minibuffer ()
+    (interactive)
+    (let ((completion-extra-properties corfu--extra)
+          completion-cycle-threshold completion-cycling)
+      (apply #'consult-completion-in-region completion-in-region--data)))
   :bind
   ;; Configure SPC for separator insertion
-  (:map corfu-map ("SPC" . corfu-insert-separator))
+  (:map corfu-map
+        ("SPC" . corfu-insert-separator)
+        ("M-m" . corfu-move-to-minibuffer))
   :init
   (corfu-global-mode))
 #+end_src
+
+*** kind-icon
 
 #+begin_src elisp
 (use-package kind-icon
@@ -1918,6 +1933,29 @@ from previous history files.
   :config
   (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+end_src
+
+*** corfu-doc
+
+#+begin_src elisp
+(use-package corfu-doc
+  :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
+  :after corfu
+  :general (:keymaps 'corfu-map
+                     ;; This is a manual toggle for the documentation window.
+                     [remap corfu-show-documentation] #'corfu-doc-toggle ; Remap the default doc command
+                     ;; Scroll in the documentation window
+                     "M-n" #'corfu-doc-scroll-up
+                     "M-p" #'corfu-doc-scroll-down)
+  :config
+  (setq corfu-doc-delay 0.5)
+  (setq corfu-doc-max-width 70)
+  (setq corfu-doc-max-height 80)
+
+  ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+  ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+  ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+  (setq corfu-echo-documentation nil))
 #+end_src
 
 ***  Dabbrev
