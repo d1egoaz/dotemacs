@@ -2682,7 +2682,9 @@ go-impl generates method stubs for implementing an interface.
     "s" #'markdown-insert-gfm-code-block
     "l" #'markdown-insert-link)
   :mode (("\\.md\\'"       . #'gfm-mode)
-         ("\\.markdown\\'" . #'gfm-mode))
+         ("\\.markdown\\'" . #'gfm-mode)
+         ("readme\\.txt\\'" . markdown-mode)
+         ("README\\.txt\\'" . markdown-mode))
   :config
   ;; Display remote images
   (setq markdown-display-remote-images t)
@@ -2690,11 +2692,28 @@ go-impl generates method stubs for implementing an interface.
   (setq markdown-fontify-code-blocks-natively t)
   (setq markdown-header-scaling t)
   (setq markdown-gfm-uppercase-checkbox t)
+  (setq markdown-make-gfm-checkboxes-buttons t)
 
-  ;; use pandoc with source code syntax highlighting for markdown-preview
-  ;; metadata is to fix: [WARNING] This document format requires a nonempty element
-  (let ((css "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css"))
-    (setq markdown-command (format "pandoc -s --highlight-style pygments -f gfm --toc -t html5 --css %s --metadata pagetitle=MarkdownPreview" css))))
+  (setq markdown-italic-underscore t)
+  (setq markdown-gfm-additional-languages '("sh" "yaml" "yml"))
+  ;; (setq markdown-gfm-additional-languages nil)
+
+  ;; adds highlightjs syntax coloring.
+  ;; based on doom config
+  (setq markdown-content-type "application/xhtml+xml")
+  (setq markdown-css-paths
+        '("https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.min.css"
+          "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/github-dark.min.css"))
+
+  (setq markdown-xhtml-header-content
+        (concat "<meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>"
+                "<style> body { box-sizing: border-box; max-width: 740px; width: 100%; margin: 40px auto; padding: 0 10px; } </style>"
+                "<script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
+                "<script src='https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js'></script>"
+                ;; follows this to highlight source code blocks https://github.com/highlightjs/highlight.js#using-custom-html
+                "<script>document.addEventListener('DOMContentLoaded', () => { document.body.classList.add('markdown-body'); document.querySelectorAll('pre[lang] > code').forEach((code) => { code.classList.add(code.parentElement.lang); }); document.querySelectorAll('pre > code').forEach((code) => { hljs.highlightBlock(code); }); });</script>"))
+
+  (setq markdown-command "pandoc -f gfm --highlight-style pygments --toc -t html --metadata pagetitle=MarkdownPreview"))
 #+end_src
 
 ** Misc
