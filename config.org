@@ -2811,7 +2811,7 @@ On the kubel screen, place your cursor on the resource:
 
 #+begin_src elisp
 (use-package kubel
-  :straight (kubel :host github :repo "d1egoaz/kubel" :branch "origin/test")
+  :straight (kubel :host github :repo "d1egoaz/kubel" :branch "origin/master")
   :config
   (evil-define-key 'normal 'kubel-yaml-editing-mode "q" #'kill-current-buffer)
 
