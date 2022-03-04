@@ -32,6 +32,7 @@
   - [[#increase-read-output-from-processes][Increase read output from processes]]
   - [[#recentel][Recent.el]]
   - [[#configure-path-on-macos][Configure PATH on macOS]]
+  - [[#tramp][Tramp]]
 - [[#ui---lets-make-emacs-look-a-little-better][UI - Let's make Emacs look a little better.]]
   - [[#disable-toolbars-and-scrollbars][Disable toolbars and scrollbars]]
   - [[#increase-fill-column-width][Increase fill column width]]
@@ -519,6 +520,12 @@ Increase how much is read from processes in a single chunk (default is
      (when (memq window-system '(mac ns x))
        (exec-path-from-shell-initialize)))
    #+end_src
+
+** Tramp
+
+#+begin_src elisp
+(setq tramp-verbose 2)
+#+end_src
 
 * UI - Let's make Emacs look a little better.
 
@@ -1201,19 +1208,19 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 
   (defun diego-tab-insert-file-type-icon ()
     "Format file type for the tab bar to insert file icon."
-      (ignore-errors
-    `((global menu-item ,(propertize (concat " " (all-the-icons-icon-for-buffer)) 'face '(modus-themes-special-mild :height 1.0 :family "github-octicons")) ignore))))
+    (ignore-errors
+      `((global menu-item ,(propertize (concat " " (all-the-icons-icon-for-buffer)) 'face '(:background "#c4ede0" :foreground "#184034" :height 1.0 :family "github-octicons")) ignore))))
 
   (defun diego-tab-format-buffer-id ()
     "Buffer true name for files or just the buffer name."
-    `((global menu-item ,(propertize (if buffer-file-truename
-                                                 (concat " File: ["
-                                                         (if (string-prefix-p (diego/current-project-name) buffer-file-truename)
-                                                             (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
-                                                           buffer-file-truename) "] ")
-                                               (unless (string-prefix-p "*kubel" (buffer-name))
-                                                 (concat " Buffer: [" (buffer-name) "] ")))
-                                     'face '(modus-themes-special-mild :height 0.8 :weight bold)) ignore)))
+    `((global menu-item ,(propertize (if (and buffer-file-truename (not (file-remote-p buffer-file-truename)))
+                                         (concat " File: ["
+                                                 (if (string-prefix-p (diego/current-project-name) buffer-file-truename)
+                                                     (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
+                                                   buffer-file-truename) "] ")
+                                       (unless (string-prefix-p "*kubel" (buffer-name))
+                                         (concat " Buffer: [" (buffer-name) "] ")))
+                                     'face '(:background "#c4ede0" :foreground "#184034" :height 0.9 :weight bold)) ignore)))
 
   (defun diego-tab-format-keycast ()
     "Format `mode-line-modified' for the tab bar."
@@ -1242,12 +1249,12 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
           ;; prot-tab-format-space-single
           diego-tab-insert-file-type-icon
           diego-tab-format-buffer-id
-          prot-tab-format-space-single
-          diego-tab-insert-git-icon
-          diego-tab-format-vc
-          ;; diego-tab-insert-branch-icon
+          ;; diego-tab-insert-git-icon
           ;; prot-tab-format-space-single
           tab-bar-format-align-right
+          ;; prot-tab-format-space-single
+          ;; diego-tab-insert-branch-icon
+          diego-tab-format-vc
           ;; prot-tab-format-space-single
           ;; diego-tab-format-keycast
           ))
