@@ -1185,19 +1185,19 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-modified)) ignore)))
 
   (defun diego--tab-insert-icon (name)
-    `((global menu-item ,(propertize (concat " " (all-the-icons-octicon name)) 'face '(modus-themes-subtle-magenta :height 1.3 :family "github-octicons")) ignore)))
+    `((global menu-item ,(propertize (concat " " (all-the-icons-octicon name)) 'face '(:background "#fef2ea" :foreground "#813e00" :height 1.3 :family "github-octicons")) ignore)))
 
   (defun diego-tab-insert-git-icon ()
     "Format VC status for the tab bar to insert git icon."
-          (diego--tab-insert-icon "mark-github"))
+    (diego--tab-insert-icon "mark-github"))
 
   (defun diego-tab-insert-branch-icon ()
     "Format VC status for the tab bar to insert branch icon."
-          (diego--tab-insert-icon "git-branch"))
+    (diego--tab-insert-icon "git-branch"))
 
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
-    `((global menu-item ,(propertize (concat (format-mode-line vc-mode) " ") 'face '(modus-themes-subtle-magenta :height 0.7)) ignore)))
+    `((global menu-item ,(propertize (concat vc-mode " ") 'face '(:background "#fef2ea" :foreground "#813e00" :height 0.9 :weight 'bold)) ignore)))
 
   (defun prot-tab-format-misc-info ()
     "Format `mode-line-misc-info' for the tab bar."
