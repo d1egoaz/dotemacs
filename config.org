@@ -1048,26 +1048,26 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ;;;; Kubel
         ("\\*diego/vterm\\*"
          (display-buffer-in-tab)
-         (tab-name . "*vterm*"))
+         (tab-name . "<<vterm>>"))
         ("\\*\\(kubectl\\|kubel\\).*"
          (display-buffer-in-tab)
-         (tab-name . "*kubel*"))
+         (tab-name . "<<kubel>>"))
         ("\\*kubel-process.*"
          (display-buffer-in-tab display-buffer-in-side-window)
-         (tab-name . "*kubel*")
+         (tab-name . "<<kubel>>")
          (window-height . 0.2)
          (side . bottom)
          (slot . 0))
         ("\\*kubel resource.*"
          (display-buffer-in-tab display-buffer-in-side-window)
-         (tab-name . "*kubel*")
+         (tab-name . "<<kubel>>")
          (window-width . 0.5)
          (side . right)
          (slot . 0))
         ;;;; Elfeed
         ("\\*elfeed-search\\*"
          (display-buffer-in-tab)
-         (tab-name . "*elfeed*"))
+         (tab-name . "<<elfeed>>"))
         ("\\*elfeed-entry\\*"
          (display-buffer-in-side-window)
          (side . bottom)
@@ -1075,10 +1075,10 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ;;;; Scratch buffers
         ("\\*scratch.*"
          (display-buffer-in-tab)
-         (tab-name . "*scratch*"))
+         (tab-name . "<<scratch>>"))
         ("\\*\\(straight-process\\|Async-native-compile-log\\)\\*"
          (display-buffer-in-tab)
-         (tab-name . "*general*"))
+         (tab-name . "<<general>>"))
 
         ;;; Automatic tab management
         ;; Every new buffer/file goes to a tab given by the root project, even visited file should
