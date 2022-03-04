@@ -129,8 +129,8 @@
   - [[#bookmarksel][bookmarks.el]]
   - [[#highlight-parenthesesel][highlight-parentheses.el]]
   - [[#highlight-indent-guidesel][highlight-indent-guides.el]]
-  - [[#beaconel][beacon.el]]
   - [[#blamerel][blamer.el]]
+  - [[#pulseel][pulse.el]]
   - [[#string-inflectionel][string-inflection.el]]
   - [[#undo-fuel][undo-fu.el]]
   - [[#mixed-pitchel][mixed-pitch.el]]
@@ -3229,24 +3229,6 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   (setq highlight-indent-guides-method 'character)
   :hook ((prog-mode-hook . highlight-indent-guides-mode)))
 #+end_src
-** beacon.el
-
-Never lose the cursor again.
-
-#+begin_src elisp
-(use-package pulse
-  :straight (:type built-in)
-  :config
-  ;; (set-face-foreground 'pulse-highlight-start-face "cyan")
-  ;; (set-face-background 'pulse-highlight-start-face "cyan")
-  (defun pulse-line (&rest _)
-    "Pulse the current line."
-    (pulse-momentary-highlight-one-line (point)))
-
-  (dolist (command '(evil-scroll-line-to-top evil-scroll-line-to-bottom evil-scroll-line-to-center scroll-up scroll-down recenter-top-bottom other-window evil-scroll-down evil-scroll-up evil-window-left evil-window-right))
-    (advice-add command :after #'pulse-line)))
-#+end_src
-
 ** blamer.el
 #+begin_src elisp
 (use-package blamer
@@ -3256,6 +3238,28 @@ Never lose the cursor again.
   (setq blamer-min-offset 60))
   ;; :config
   ;; (global-blamer-mode 1))
+#+end_src
+
+** pulse.el
+
+Never lose the cursor again.
+
+#+begin_src elisp
+(use-package pulse
+  :straight (:type built-in)
+  :config
+  (set-face-attribute 'pulse-highlight-start-face nil :background (modus-themes-color 'cyan-intense-bg))
+
+  (defun pulse-line (&rest _)
+    "Pulse the current line."
+    (pulse-momentary-highlight-one-line (point)))
+
+  (dolist (command '(
+                     evil-scroll-line-to-top evil-scroll-line-to-bottom evil-scroll-line-to-center scroll-up scroll-down
+                     recenter-top-bottom other-window evil-scroll-down evil-scroll-up evil-window-left evil-window-right
+                     evil-avy-goto-line evil-window-split windmove-up windmove-down windmove-left windmove-right
+                     delete-window kill-current-buffer))
+    (advice-add command :after #'pulse-line)))
 #+end_src
 
 ** string-inflection.el
