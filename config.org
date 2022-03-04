@@ -3306,7 +3306,9 @@ Never lose the cursor again.
   (:keymaps
    'org-mode-map
    "C-j"  #'org-move-subtree-down
-   "C-k"  #'org-move-subtree-up)
+   "C-k"  #'org-move-subtree-up
+   "M-h" nil
+   "M-l" nil)
   ;; local leader
   (general-define-key
    :keymaps 'org-mode-map
@@ -3425,6 +3427,10 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
 (use-package evil-org
   :after (evil org)
   :straight (:host github :repo "hlissner/evil-org-mode")
+  :general
+  (general-nmap :keymaps 'evil-org-mode-map
+    "M-h" nil
+    "M-l" nil)
   :config
   ;; enable all bindings
   (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading calendar))
@@ -3749,6 +3755,11 @@ Emacs Everywhere from, just press C-c C-c.
 (global-set-key (kbd "M-h") #'previous-buffer)
 (global-set-key (kbd "M-l") #'next-buffer)
 
+(global-set-key (kbd "s-h") #'windmove-left)
+(global-set-key (kbd "s-l") #'windmove-right)
+(global-set-key (kbd "s-j") #'windmove-down)
+(global-set-key (kbd "s-k") #'windmove-up)
+
 ;; https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
 (defun my-delete-word (arg)
   "Delete characters forward until encountering the end of a word.
@@ -3774,8 +3785,8 @@ This command does not push text to `kill-ring'."
 ;; "C-i" #'forward-global-mark)
 
 (general-nvmap
-"g-r" #'xref-find-references
-"g-i" #'lsp-find-implementation)
+  "g-r" #'xref-find-references
+  "g-i" #'lsp-find-implementation)
 
 (general-define-key
  :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
@@ -3815,7 +3826,9 @@ This command does not push text to `kill-ring'."
  "aV"      #'(diego/vterm :which-key "Vterm in full window")
  ;; Buffers
  "b"       '(:ignore t :which-key "buffers")
- "bb"      #'(consult-buffer :which-key "Switch buffer")
+ ;; "bb"      #'(consult-buffer :which-key "Switch buffer")
+ "ba"      #'(consult-buffer :which-key "Switch buffer")
+ "bb"      #'(consult-project-buffer :which-key "Project buffer")
  "bB"      #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
  "bc"      #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
  "bC"      #'((lambda () (interactive) (switch-to-buffer "*compilation*")) :which-key "Compilation buffer")
@@ -3978,7 +3991,8 @@ This command does not push text to `kill-ring'."
  ;; Project
  "p"       '(:ignore t :which-key "project")
  "!"       #'(project-shell-command :which-key "Run cmd in project root")
- "pb"      #'(project-switch-to-buffer :which-key "Project buffer")
+ ;; "pb"      #'(project-switch-to-buffer :which-key "Project buffer")
+ "pb"      #'(consult-project-buffer :which-key "Project buffer")
  "pf"      #'(project-find-file :which-key "Project file")
  "pp"      #'(project-switch-project :which-key "Switch project")
  "pr"     #'(diego/consult-buffer-for-project :which-key "Project recent")
