@@ -592,9 +592,9 @@ Command/Super plus =/- for zooming in/out.
   :init
   (setq modus-themes-completions '((t background accented)))
   (setq modus-themes-box-buttons '(variable-pitch flat semilight 0.9))
-  (setq modus-themes-diffs nil)
+  (setq modus-themes-diffs 'bg-only)
   (setq modus-themes-fringes 'intense) ; {nil,'subtle,'intense}
-  (setq modus-themes-fringes nil)
+  ;; (setq modus-themes-fringes nil)
   (setq modus-themes-headings
         (quote ((1 . (background rainbow overline variable-pitch 1.4))
                 (2 . (background rainbow overline variable-pitch 1.2))
@@ -621,19 +621,14 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-subtle-line-numbers t)
   (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g
   (setq modus-themes-syntax '(faint green-strings yellow-comments alt-syntax))
-  (setq modus-themes-tabs-accented t)
+  (setq modus-themes-tabs-accented nil)
+  (setq modus-themes-vivendi-color-overrides '((fg-main . "#c2c2c2"))) ; default white is too bright
 
-  (setq modus-themes-vivendi-color-overrides
-        '(;;(bg-main . "#1d2021")
-          ;; (bg-main . "#100b17")
-          ;; (bg-dim . "#161129")
-          ;; (bg-alt . "#181732")
-          ;; (bg-tab-bar . "#262b41")
-          ;; (bg-tab-active . "#120f18")
-          ;; (bg-main . "#000000")
-          (fg-main . "#c2c2c2")))
-  ;; disable with:
-  ;; (setq modus-themes-vivendi-color-overrides nil)
+  (defun diego--improve-tabs-color ()
+    (require 'tab-line)
+    (set-face-attribute 'tab-bar-tab nil :background "#bfd9ff" :foreground "#002f88" :weight 'bold)
+    (set-face-attribute 'tab-line-tab nil :background "#e5cfef" :foreground "black" :weight 'normal)
+    (set-face-attribute 'tab-line-tab-modified nil :foreground "#7f002f" :weight 'normal))
 
   ;; Load the theme files before enabling a theme
   (modus-themes-load-themes)
@@ -641,7 +636,9 @@ Command/Super plus =/- for zooming in/out.
   ;; Load the theme of your choice:
   ;; (modus-themes-load-operandi)
   (modus-themes-load-vivendi)
-  :bind ("<f5>" . #'modus-themes-toggle))
+  (diego--improve-tabs-color)
+  :bind ("<f5>" . #'modus-themes-toggle)
+  :hook (modus-themes-after-load-theme-hook . diego--improve-tabs-color))
 #+end_src
 
 ** Maximize the Emacs Frame on Startup
