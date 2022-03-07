@@ -1146,6 +1146,26 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
   (after-init-hook . winner-mode))
 #+end_src
 
+** winmove.el
+
+#+begin_src elisp
+(use-package windmove
+  :straight (:type built-in)
+  :config
+  (windmove-install-defaults nil '(meta)
+                             '((windmove-display-left ?h)
+                               (windmove-display-right ?l)
+                               (windmove-display-up ?k)
+                               (windmove-display-down ?j)
+                               (windmove-display-same-window ?m)))
+  (windmove-install-defaults nil '(super)
+                             '((windmove-left ?h)
+                               (windmove-right ?l)
+                               (windmove-up ?k)
+                               (windmove-down ?j))))
+#+end_src
+
+
 * Workspaces/tabs (tab-bar.el)
 
 | Keymap      | Command                  |
@@ -3045,6 +3065,12 @@ of learning a different Emacs package and formatting command for each language.
 
 #+begin_src elisp
 (use-package vterm
+  :bind (:map
+         vterm-mode-map
+         ("<f5>" . nil)
+         ("<f6>" . nil)
+         ("M-h"  . nil)
+         ("M-l"  . nil))
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 500000)
@@ -3753,15 +3779,10 @@ Emacs Everywhere from, just press C-c C-c.
 (global-set-key (kbd "s-r") #'consult-recent-file)
 (global-set-key (kbd "s-w") #'delete-window)
 
-(global-set-key (kbd "M-h") #'previous-buffer)
-(global-set-key (kbd "M-l") #'next-buffer)
+(global-set-key (kbd "C-M-h") #'previous-buffer)
+(global-set-key (kbd "C-M-l") #'next-buffer)
 
-(global-set-key (kbd "s-h") #'windmove-left)
-(global-set-key (kbd "s-l") #'windmove-right)
-(global-set-key (kbd "s-j") #'windmove-down)
-(global-set-key (kbd "s-k") #'windmove-up)
-
-;; https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
+;; Https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
 (defun my-delete-word (arg)
   "Delete characters forward until encountering the end of a word.
 With argument, do this that many times.

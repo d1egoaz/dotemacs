@@ -30,10 +30,7 @@
   "Switch to (or create) a general vterm called *diego/vterm*.
 Rename buffer if BUFFERNAME is passed, and run the passed COMMAND."
   (interactive)
-  (message "UU: %s" current-prefix-arg)
   ;; HACK forces vterm to redraw, fixing strange artefacting in the tty.
-  (save-window-excursion
-    (pop-to-buffer "*scratch*"))
   (let ((name (if current-prefix-arg (generate-new-buffer-name buffername) buffername)))
     (if (get-buffer name)
         (switch-to-buffer name)
