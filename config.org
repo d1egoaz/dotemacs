@@ -2611,7 +2611,13 @@ https://github.com/emacs-lsp/lsp-treemacs
 *** Get latest gopls
 
 #+begin_src sh
-GO111MODULE=on go get golang.org/x/tools/gopls@latest
+go install golang.org/x/tools/gopls@latest
+#+end_src
+
+*** get latest goimports
+
+#+begin_src sh
+go install golang.org/x/tools/cmd/goimports@latest
 #+end_src
 
 *** go-mode.el
