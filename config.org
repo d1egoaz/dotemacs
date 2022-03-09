@@ -53,6 +53,7 @@
   - [[#jump-to-windows-ace-windowel][Jump to windows (ace-window.el)]]
   - [[#window-rules][Window rules]]
   - [[#window-history-winnerel][Window history (winner.el)]]
+  - [[#winmoveel][winmove.el]]
 - [[#workspacestabs-tab-barel][Workspaces/tabs (tab-bar.el)]]
 - [[#files][Files]]
   - [[#dont-prompt-for-confirmation-when-we-create-a-new-file-or-buffer][Don't prompt for confirmation when we create a new file or buffer.]]
@@ -624,21 +625,23 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-tabs-accented nil)
   (setq modus-themes-vivendi-color-overrides '((fg-main . "#c2c2c2"))) ; default white is too bright
 
-  (defun diego--improve-tabs-color ()
-    (require 'tab-line)
-    (set-face-attribute 'tab-bar-tab nil :background "#bfd9ff" :foreground "#002f88" :weight 'bold)
-    (set-face-attribute 'tab-line-tab nil :background "#e5cfef" :foreground "black" :weight 'normal)
-    (set-face-attribute 'tab-line-tab-modified nil :foreground "#7f002f" :weight 'normal))
+     (defun diego--improve-tabs-color ()
+       (require 'tab-line)
+       ;; (set-face-attribute 'tab-bar-tab nil :background "#bfd9ff" :foreground "#002f88")
+       (set-face-attribute 'tab-bar-tab nil :background "#0030b4" :foreground "lightgray")
+       ;; (set-face-attribute 'tab-line-tab nil :background "#e5cfef" :foreground "black" :weight 'normal)
 
-  ;; Load the theme files before enabling a theme
-  (modus-themes-load-themes)
-  :config
-  ;; Load the theme of your choice:
-  ;; (modus-themes-load-operandi)
-  (modus-themes-load-vivendi)
-  (diego--improve-tabs-color)
-  :bind ("<f5>" . #'modus-themes-toggle)
-  :hook (modus-themes-after-load-theme-hook . diego--improve-tabs-color))
+       (set-face-attribute 'tab-line-tab-modified nil :foreground "#7f002f" :weight 'normal))
+
+     ;; Load the theme files before enabling a theme
+     (modus-themes-load-themes)
+     :config
+     ;; Load the theme of your choice:
+     ;; (modus-themes-load-operandi)
+     (modus-themes-load-vivendi)
+     (diego--improve-tabs-color)
+     :bind ("<f5>" . #'modus-themes-toggle)
+     :hook (modus-themes-after-load-theme-hook . diego--improve-tabs-color))
 #+end_src
 
 ** Maximize the Emacs Frame on Startup
@@ -1220,7 +1223,7 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
 
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
-    `((global menu-item ,(propertize (concat vc-mode " ") 'face '(:background "#fef2ea" :foreground "#813e00" :height 0.9 :weight 'bold)) ignore)))
+    `((global menu-item ,(propertize (concat vc-mode " ") 'face '(:background "#fef2ea" :foreground "#813e00" :height 0.9)) ignore)))
 
   (defun prot-tab-format-misc-info ()
     "Format `mode-line-misc-info' for the tab bar."
@@ -1240,7 +1243,7 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
                                                    buffer-file-truename) "] ")
                                        (unless (string-prefix-p "*kubel" (buffer-name))
                                          (concat " Buffer: [" (buffer-name) "] ")))
-                                     'face '(:background "#c4ede0" :foreground "#184034" :height 0.9 :weight bold)) ignore)))
+                                     'face '(:background "#c4ede0" :foreground "#184034" :height 0.9)) ignore)))
 
   (defun diego-tab-format-keycast ()
     "Format `mode-line-modified' for the tab bar."
@@ -1271,12 +1274,12 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
           diego-tab-format-buffer-id
           ;; diego-tab-insert-git-icon
           ;; prot-tab-format-space-single
+          diego-tab-format-keycast
           tab-bar-format-align-right
           ;; prot-tab-format-space-single
           ;; diego-tab-insert-branch-icon
           diego-tab-format-vc
           ;; prot-tab-format-space-single
-          ;; diego-tab-format-keycast
           ))
 
   ;; tab-bar-format-global
