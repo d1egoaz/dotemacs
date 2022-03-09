@@ -105,12 +105,12 @@ It has been modified to always run on comint mode."
 (defun diego/tab-name-for-buffer (b _a)
   (let ((bufname (buffer-file-name b)))
     (if (and buffer-file-truename bufname (file-remote-p bufname))
-        "📔tramp"
+        "|tramp|"
       (if-let* ((project (project-current nil bufname)) ; project for file
                 (root-dir (project-root project)) ; get only root dir
                 (name (diego/project-short-name root-dir))) ; get only dir name
-          (format "📔%s" name)
-        "📔general"))))
+          (format "|%s|" name)
+        "|general|"))))
 
 (provide 'diego-project)
 ;;; diego-project.el ends here
