@@ -593,9 +593,8 @@ Command/Super plus =/- for zooming in/out.
   :init
   (setq modus-themes-completions '((t background accented)))
   (setq modus-themes-box-buttons '(variable-pitch flat semilight 0.9))
-  (setq modus-themes-diffs 'bg-only)
+  (setq modus-themes-diffs nil)
   (setq modus-themes-fringes 'intense) ; {nil,'subtle,'intense}
-  ;; (setq modus-themes-fringes nil)
   (setq modus-themes-headings
         (quote ((1 . (background rainbow overline variable-pitch 1.4))
                 (2 . (background rainbow overline variable-pitch 1.2))
@@ -606,7 +605,6 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-links '(faint))
   (setq modus-themes-mode-line 'accented-3d)
   (setq modus-themes-mode-line '(padded accented))
-  ;; (setq modus-themes-org-blocks 'tinted-background)
   (setq modus-themes-org-blocks '(gray-background))
   (setq modus-themes-paren-match '(intense-bold))
   (setq modus-themes-prompts '(intense-accented))
@@ -627,10 +625,7 @@ Command/Super plus =/- for zooming in/out.
 
      (defun diego--improve-tabs-color ()
        (require 'tab-line)
-       ;; (set-face-attribute 'tab-bar-tab nil :background "#bfd9ff" :foreground "#002f88")
        (set-face-attribute 'tab-bar-tab nil :background "#0030b4" :foreground "lightgray")
-       ;; (set-face-attribute 'tab-line-tab nil :background "#e5cfef" :foreground "black" :weight 'normal)
-
        (set-face-attribute 'tab-line-tab-modified nil :foreground "#7f002f" :weight 'normal))
 
      ;; Load the theme files before enabling a theme
