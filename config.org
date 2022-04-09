@@ -5,7 +5,7 @@
 #+CREATED: 2021-04-24
 #+STARTUP: show3levels
 
-* Table of Contents                                                   :TOC_2:
+* Table of Contents :TOC_2:
 - [[#getting-started][Getting Started]]
   - [[#why-emacs][Why Emacs]]
   - [[#how-i-install-emacs][How I Install Emacs]]
@@ -62,7 +62,7 @@
   - [[#disable-the-warning-x-and-y-are-the-same-file][Disable the warning X and Y are the same file]]
   - [[#disable-file-changed-on-disk-messages][Disable file changed on disk messages]]
   - [[#restore-cursor-to-last-visited-place-in-a-file][Restore cursor to last visited place in a file]]
-  - [[#save-some-buffers-default-to-root-project][Save Some Buffers default to root project]]
+  - [[#save-some-buffers-default-to-project-root][Save Some Buffers default to project root]]
   - [[#make-script-files-executable-automatically][Make Script Files Executable Automatically]]
 - [[#editor][Editor]]
   - [[#default-coding-system][Default coding system]]
@@ -89,14 +89,13 @@
 - [[#project-management][Project Management]]
   - [[#git][Git]]
   - [[#projectel][project.el]]
-  - [[#treemacsel][treemacs.el]]
 - [[#completion][Completion]]
   - [[#preserve-history-with-savehist-mode][Preserve history with savehist-mode]]
+  - [[#recursive-editing][Recursive Editing]]
   - [[#completion-framework-corfuel][Completion framework (corfu.el)]]
   - [[#selection-and-narrowing][Selection and Narrowing]]
   - [[#key-bindings-hints-which-keyel][Key bindings hints (which-key.el)]]
 - [[#search-and-replace][Search And Replace]]
-  - [[#ctrlf-isearch-replacement][Ctrlf (Isearch replacement)]]
   - [[#jumping-with-avyel][Jumping with (avy.el)]]
   - [[#imenu-listel][imenu-list.el]]
   - [[#writable-grep-wgrepel][Writable grep (wgrep.el)]]
@@ -111,7 +110,8 @@
   - [[#compilation-mode][Compilation mode]]
   - [[#restclientel][restclient.el]]
 - [[#productivity][Productivity]]
-  - [[#diredel][dired.el]]
+  - [[#keyfreqel][keyfreq.el]]
+  - [[#dired][dired]]
   - [[#ediffel][ediff.el]]
   - [[#diff-hlel][diff-hl.el]]
   - [[#syntax-checking-flycheckel][Syntax checking (flycheck.el)]]
@@ -130,8 +130,9 @@
   - [[#bookmarksel][bookmarks.el]]
   - [[#highlight-parenthesesel][highlight-parentheses.el]]
   - [[#highlight-indent-guidesel][highlight-indent-guides.el]]
+  - [[#linel][lin.el]]
   - [[#blamerel][blamer.el]]
-  - [[#pulseel][pulse.el]]
+  - [[#pulsarel-based-on-pulseel][pulsar.el (based on pulse.el)]]
   - [[#string-inflectionel][string-inflection.el]]
   - [[#undo-fuel][undo-fu.el]]
   - [[#mixed-pitchel][mixed-pitch.el]]
@@ -160,8 +161,12 @@
 - [[#functions][Functions]]
 - [[#work-specific-functions][Work Specific Functions]]
 - [[#test-in-progress][Test In Progress]]
+  - [[#codereview][codereview]]
+  - [[#demap][demap]]
+  - [[#dtache][dtache]]
+  - [[#org-modern][org-modern]]
 - [[#inspiration][Inspiration]]
-- [[#pending-tasks-813][Pending tasks]]
+- [[#pending-tasks-1114][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
   - [[#replace-persp-mode-by-tab-bar][Replace persp-mode by tab-bar]]
   - [[#replace-doom-mode-line-by-normal-mode-line][Replace doom-mode-line by normal mode-line]]
@@ -176,6 +181,8 @@
   - [[#fix-evil-jump-c-o-c-i][fix evil jump C-o, C-i]]
   - [[#configure-path][Configure path?]]
   - [[#custom-imenu-for-mode][custom imenu for mode]]
+  - [[#try-mct][Try MCT]]
+  - [[#is-undo-fu-really-working][is undo-fu really working?]]
 
 * Getting Started
 
@@ -471,7 +478,7 @@ Remove duplicates in the kill ring.
 
 ** Use short answers y/n
 
-yes-or-no-p uses shorter answers "y" or "n".
+y-or-n-p  uses shorter answers "y" or "n".
 
 #+begin_src elisp
 (setq use-short-answers t) ; new in Emacs28
@@ -509,6 +516,7 @@ Increase how much is read from processes in a single chunk (default is
   :config
   (setq recentf-max-menu-items 1000)
   (setq recentf-max-saved-items 1000)
+  (setq recentf-auto-cleanup nil)
   (recentf-mode 1))
 #+end_src
 
@@ -517,7 +525,7 @@ Increase how much is read from processes in a single chunk (default is
    #+begin_src elisp
    (use-package exec-path-from-shell
      :config
-     ;; (setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOPATH"))
+     (setq exec-path-from-shell-variables '("PATH" "MANPATH" "EMACS_ADDITIONAL_DIR"))
      (when (memq window-system '(mac ns x))
        (exec-path-from-shell-initialize)))
    #+end_src
@@ -549,15 +557,16 @@ Increase how much is read from processes in a single chunk (default is
 *** Setting The Font Face
 
 #+begin_src elisp
-;; (set-face-attribute 'variable-pitch nil :font "Helvetica")
-(set-face-attribute 'fixed-pitch nil :font "Iosevka SS08-14")
-;; (set-face-attribute 'variable-pitch nil :font "Helvetica-14")
-(set-face-attribute 'variable-pitch nil :font "SF Pro Text-15")
+;; Fontconfig pattern, fontname[-fontsize][:name1=values1][:name2=values2]...
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fonts.html
+(add-to-list 'default-frame-alist '(font . "Iosevka SS08-14:weight=demibold"))
+(setq-default line-spacing 1) ; needs to be changed for some fonts
+
+(set-face-attribute 'fixed-pitch nil :font "-*-Iosevka SS08-semibold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+;; (set-face-attribute 'fixed-pitch nil :font "Cascadia Code-14")
+(set-face-attribute 'variable-pitch nil :font "SF Pro Text-14")
 (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
 (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
-
-;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
-(add-to-list 'default-frame-alist '(font . "Iosevka SS08-14"))
 #+end_src
 
 *** Configure emoji font 😎
@@ -565,16 +574,19 @@ Increase how much is read from processes in a single chunk (default is
 Copied from https://github.com/dunn/company-emoji
 
 #+begin_src elisp
-(defun diego--set-emoji-font (frame)
-  "Adjust the font settings of FRAME so Emacs can display emoji properly."
-  (set-fontset-font t '(#x1f000 . #x1faff) (font-spec :family "Apple Color Emoji") frame 'prepend))
+;;(defun diego--set-emoji-font (frame)
+(set-fontset-font t 'emoji
+  '("Apple Color Emoji" . "iso10646-1") nil 'prepend)
+
+;;  "Adjust the font settings of FRAME so Emacs can display emoji properly."
+;;  (set-fontset-font t '(#x1f000 . #x1faff) (font-spec :family "") frame 'prepend))
 
 ;; For when Emacs is started in GUI mode:
-(diego--set-emoji-font nil)
+;;(diego--set-emoji-font nil)
 
 ;; Hook for when a frame is created with emacsclient
 ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
-(add-hook 'after-make-frame-functions #'diego--set-emoji-font)
+;;(add-hook 'after-make-frame-functions #'diego--set-emoji-font)
 #+end_src
 
 *** Zooming In and Out
@@ -596,15 +608,15 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-diffs nil)
   (setq modus-themes-fringes 'intense) ; {nil,'subtle,'intense}
   (setq modus-themes-headings
-        (quote ((1 . (background rainbow overline variable-pitch 1.4))
-                (2 . (background rainbow overline variable-pitch 1.2))
-                (3 . (background rainbow overline variable-pitch 1.1))
-                (4 . (background rainbow overline variable-pitch 1.0))
-                (t . (monochrome)))))
+    (quote ((1 . (background rainbow overline variable-pitch 1.4))
+        (2 . (background rainbow overline variable-pitch 1.2))
+        (3 . (background rainbow overline variable-pitch 1.1))
+        (4 . (background rainbow overline variable-pitch 1.0))
+        (t . (monochrome)))))
   (setq modus-themes-hl-line '(underline-accented))
   (setq modus-themes-links '(faint))
-  (setq modus-themes-mode-line 'accented-3d)
-  (setq modus-themes-mode-line '(padded accented))
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-mode-line '(padded accented 3d))
   (setq modus-themes-org-blocks '(gray-background))
   (setq modus-themes-paren-match '(intense-bold))
   (setq modus-themes-prompts '(intense-accented))
@@ -619,24 +631,26 @@ Command/Super plus =/- for zooming in/out.
   (setq modus-themes-slanted-constructs t) ; use slanted text (italics) unless it is absolutely necessary, strings and code comments
   (setq modus-themes-subtle-line-numbers t)
   (setq x-underline-at-descent-line t) ; to make the underline not break bottom part of letters, like g
-  (setq modus-themes-syntax '(faint green-strings yellow-comments alt-syntax))
+  (setq-default text-scale-remap-header-line t) ; And this is for Emacs28.
+
+  (setq modus-themes-syntax '(yellow-comments alt-syntax))
   (setq modus-themes-tabs-accented nil)
   (setq modus-themes-vivendi-color-overrides '((fg-main . "#c2c2c2"))) ; default white is too bright
 
-     (defun diego--improve-tabs-color ()
-       (require 'tab-line)
-       (set-face-attribute 'tab-bar-tab nil :background "#0030b4" :foreground "lightgray")
-       (set-face-attribute 'tab-line-tab-modified nil :foreground "#7f002f" :weight 'normal))
+  (defun diego--improve-tabs-color ()
+    (set-face-attribute 'tab-bar-tab nil :background "#0030b4" :foreground "lightgray")
+    (with-eval-after-load 'vertico
+    (set-face-attribute 'vertico-current nil :inherit 'lin-yellow)))
 
-     ;; Load the theme files before enabling a theme
-     (modus-themes-load-themes)
-     :config
-     ;; Load the theme of your choice:
-     ;; (modus-themes-load-operandi)
-     (modus-themes-load-vivendi)
-     (diego--improve-tabs-color)
-     :bind ("<f5>" . #'modus-themes-toggle)
-     :hook (modus-themes-after-load-theme-hook . diego--improve-tabs-color))
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; Load the theme of your choice:
+  ;; (modus-themes-load-operandi)
+  (modus-themes-load-vivendi)
+  (diego--improve-tabs-color)
+  :bind ("<f5>" . #'modus-themes-toggle)
+  :hook (modus-themes-after-load-theme-hook . diego--improve-tabs-color))
 #+end_src
 
 ** Maximize the Emacs Frame on Startup
@@ -662,10 +676,19 @@ Command/Super plus =/- for zooming in/out.
   (emacs-lock-mode 'kill))
 #+end_src
 
+*** Fix initial buffer tab s/*scratch*/|scratch|
+
+#+begin_src elisp
+(defun diego--fix-initial-tab ()
+  (tab-bar-rename-tab-by-name "*scratch*" "|scratch|"))
+
+(add-hook 'after-init-hook #'diego--fix-initial-tab)
+#+end_src
+
 *** Initial major mode
 
 #+begin_src elisp
-(setq initial-major-mode 'org-mode)
+(setq initial-major-mode 'fundamental-mode)
 #+end_src
 
 *** Persistent scratch across sessions
@@ -872,6 +895,7 @@ You can also start by calling ace-window and then decide to switch the action to
   :after embark
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-dispatch-always t)
 
   ;; copied from https://karthinks.com/software/fifteen-ways-to-use-embark/
   (eval-when-compile
@@ -1004,21 +1028,30 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
         ;; right side window
         ("\\*\\(compilation\\|Go Test\\)\\*"
          (display-buffer-in-side-window)
-         (side . right)
-         (window-width . 0.50)
+         (side . bottom)
+         (window-height . 0.30)
          (slot . -2))
+        ("\\*Minimap.*"
+         (display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.10)
+         (window-parameters . ((no-other-window . t)
+                               (tab-line-format . none)
+                               (header-line-format . none)
+                               (mode-line-format . none))))
         ;; ("\\*vterm\\*"
-         ;; (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           ;; (display-buffer-reuse-mode-window display-buffer-below-selected))
-         ;; (side . right)
-         ;; (window-width . 0.50)
-         ;; (slot . 1))
+        ;; (display-buffer-reuse-mode-window display-buffer-in-side-window)
+        ;; (display-buffer-reuse-mode-window display-buffer-below-selected))
+        ;; (side . right)
+        ;; (window-width . 0.50)
+        ;; (slot . 1))
         ;; ("\\*\\(vterm\\|vterm-project\\).*"
-           ;; (display-buffer-reuse-mode-window display-buffer-below-selected))
-         ;; (display-buffer-in-side-window)
-         ;; (side . right)
-         ;; (window-width . 0.50)
-         ;; (slot . 0))
+        ;; (display-buffer-reuse-mode-window display-buffer-below-selected))
+        ;; (display-buffer-in-side-window)
+        ;; (side . right)
+        ;; (window-width . 0.50)
+        ;; (slot . 0))
         ("\\*Ilist\\*"
          (display-buffer-in-side-window)
          (side . right)
@@ -1100,9 +1133,12 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
 (setq even-window-sizes 'height-only)
 ;; (setq even-window-sizes nil)     ; avoid resizing
 (setq window-sides-vertical nil)
-;; TEST
 (setq switch-to-buffer-in-dedicated-window 'pop)
 (setq switch-to-buffer-obey-display-actions t)
+;; (setq switch-to-prev-buffer-skip t)
+(setq switch-to-prev-buffer-skip nil)
+
+(setq split-height-threshold nil)
 (setq split-width-threshold nil)
 
 ;; it has issues with magit diff, as buffer opens in the same window
@@ -1165,7 +1201,6 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
                                (windmove-up ?k)
                                (windmove-down ?j))))
 #+end_src
-
 
 * Workspaces/tabs (tab-bar.el)
 
@@ -1236,8 +1271,9 @@ Winner is a built-in tool that keeps a record of buffer and window layout change
                                                  (if (string-prefix-p (diego/current-project-name) buffer-file-truename)
                                                      (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
                                                    buffer-file-truename) "] ")
-                                       (unless (string-prefix-p "*kubel" (buffer-name))
-                                         (concat " Buffer: [" (buffer-name) "] ")))
+                                       ;; (unless (string-prefix-p "*kubel" (buffer-name))
+                                         (concat " Buffer: [" (buffer-name) "] "))
+                                                ;; )
                                      'face '(:background "#c4ede0" :foreground "#184034" :height 0.9)) ignore)))
 
   (defun diego-tab-format-keycast ()
@@ -1371,7 +1407,7 @@ visited the same file.
   (save-place-mode 1))
 #+end_src
 
-** Save Some Buffers default to root project
+** Save Some Buffers default to project root
 
 #+begin_src elisp
 (setq save-some-buffers-default-predicate 'save-some-buffers-root)
@@ -1511,6 +1547,8 @@ https://github.com/noctuid/evil-guide
   ;; (setq evil-undo-system 'undo-redo) ; default to natively Emacs 28
   (setq evil-undo-system 'undo-fu)
   (setq evil-want-fine-undo t)
+  ;; search for the symbol instead of the word when using `*`
+  (setq evil-symbol-word-search t)
   :config
   ;; set up some basic equivalents for vim mapping functions. This creates
   ;; global key definition functions for the evil states.
@@ -1529,6 +1567,19 @@ https://github.com/noctuid/evil-guide
   (defun diego--my-save-position-line (fn &rest args)
     (save-excursion (apply fn args)))
   (advice-add #'evil-join :around #'diego--my-save-position-line)
+
+  ;; from: https://macs.stackexchange.com/a/48721
+  (defun my/evil-shift-right ()
+    (interactive)
+    (evil-shift-right evil-visual-beginning evil-visual-end)
+    (evil-normal-state)
+    (evil-visual-restore))
+
+  (defun my/evil-shift-left ()
+    (interactive)
+    (evil-shift-left evil-visual-beginning evil-visual-end)
+    (evil-normal-state)
+    (evil-visual-restore))
 
   (evil-mode 1))
 #+end_src
@@ -1664,7 +1715,10 @@ second use, define the second {motion} and perform the exchange.
 (use-package evil-goggles
   :after evil
   :config
-  (setq evil-goggles-duration 0.1)
+  (setq evil-goggles-pulse t)
+  (custom-set-faces
+   '(evil-goggles-default-face ((t (:inherit 'modus-themes-active-yellow)))))
+  (setq evil-goggles-duration 0.3)
   (evil-goggles-mode))
 #+end_src
 ** evil-snipe.el
@@ -1866,40 +1920,6 @@ TODO remove use package as it's now part of Emacs
                                   (diego--open-readme-and-vterm "Vterm project" ?v))))
 #+end_src
 
-** treemacs.el
-
-Treemacs - a tree layout file explorer for Emacs.
-https://github.com/Alexander-Miller/treemacs
-
-=oaa= open window with ace
-For navigation use j/k, M-n/M-p to move to same-height neighbour u to go to parent.
-
-#+begin_src elisp
-(use-package treemacs
-  :config
-  (setq treemacs-git-mode 'simple)
-  (setq treemacs-recenter-after-file-follow t)
-  (setq treemacs-text-scale -1)
-  ;; (treemacs-follow-mode -1) ; don't follow cursor
-  (treemacs-resize-icons 12))
-
-(define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
-
-(use-package treemacs-evil
-  :after (treemacs evil))
-
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :after lsp-mode
-  :config
-  (setq lsp-treemacs-detailed-outline nil))
-
-(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-  :config (treemacs-set-scope-type 'Perspectives))
-
-#+end_src
-
 * Completion
 
 ** Preserve history with savehist-mode
@@ -1917,6 +1937,14 @@ from previous history files.
   (setq history-delete-duplicates t)
   (setq history-length 1000)
   (setq savehist-additional-variables '(compile-command kill-ring regexp-search-ring)))
+#+end_src
+
+** Recursive Editing
+
+#+begin_src elisp
+;; When in the minibuffer allow using commands that uses the minibuffer
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode 1) ;; display the recursion level in the minibuffer
 #+end_src
 
 ** Completion framework (corfu.el)
@@ -1941,6 +1969,15 @@ from previous history files.
     (let ((completion-extra-properties corfu--extra)
           completion-cycle-threshold completion-cycling)
       (apply #'consult-completion-in-region completion-in-region--data)))
+
+  (defun corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+    (unless (or (bound-and-true-p mct--active)
+                (bound-and-true-p vertico--input))
+      ;; (setq-local corfu-auto nil) Enable/disable auto completion
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
+
   :bind
   ;; Configure SPC for separator insertion
   (:map corfu-map
@@ -1984,6 +2021,7 @@ from previous history files.
 #+end_src
 
 ***  Dabbrev
+
 #+begin_src elisp
 (use-package dabbrev
   :config
@@ -2032,7 +2070,7 @@ Provides the vertical completion user interface.
                                          #'completion--in-region))))
   (vertico-mode)
   :config
-  (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
+  ;; (set-face-attribute 'vertico-current nil :background (modus-themes-color 'cyan-intense-bg))
   (setq vertico-resize nil)
   (setq vertico-cycle t)
   (setq vertico-count 20)
@@ -2040,6 +2078,13 @@ Provides the vertical completion user interface.
   ;; vertico repeat
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 
+  (defun diego--set-vertico-current-color ()
+    (set-face-attribute 'vertico-current nil :inherit 'lin-yellow))
+
+  (advice-add #'ffap-menu-ask :around (lambda (&rest args)
+                                        (cl-letf (((symbol-function #'minibuffer-completion-help)
+                                                   #'ignore))
+                                          (apply args))))
   :bind (:map
          vertico-map
          ("\C-tab" . #'vertico-quick-insert)
@@ -2065,7 +2110,6 @@ Provides the vertical completion user interface.
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
-  (setq enable-recursive-minibuffers t)
   :hook
   (minibuffer-setup-hook . cursor-intangible-mode))
 #+end_src
@@ -2106,10 +2150,11 @@ M-w copy
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
    consult-line consult-ripgrep consult-git-grep consult-grep
-   :preview-key '(:debounce 0.5 any)
    consult-bookmark consult-recent-file consult-xref
+   consult--source-project-recent-file
    consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
-   :preview-key (list (kbd "C-SPC") (kbd "C-M-j") (kbd "C-M-k")))
+   :preview-key '(:debounce 0.2 any))
+   ;; :preview-key (list (kbd "C-SPC") (kbd "C-M-j") (kbd "C-M-k")))
 
 
   (setq consult-narrow-key ">")
@@ -2121,7 +2166,7 @@ M-w copy
   ;; disable fd for now until https://github.com/minad/consult/wiki#find-files-using-fd
   ;; (setq consult-find-args "fd --color=never --full-path ARG OPTS")
   ;; add --hidden
-  (setq consult-ripgrep-args "rg --hidden --glob=!.git/ --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
+  (setq consult-ripgrep-args "rg --hidden --glob=!.git/ --null --line-buffered --color=never --max-columns=1000 --path-separator=/ --smart-case --no-heading --line-number .")
 
   (setq consult-fontify-preserve t)
   (setq consult-preview-key nil)
@@ -2175,6 +2220,11 @@ M-w copy
     (setq unread-command-events (append unread-command-events (list ?p 32)))
     (consult-buffer))
 
+  (defun my/consult-line-forward ()
+    "Search for a matching line forward."
+    (interactive)
+    (consult-line))
+
   :bind (
          ([remap apropos]                       . #'consult-apropos)
          ([remap bookmark-jump]                 . #'consult-bookmark)
@@ -2189,6 +2239,7 @@ M-w copy
          ([remap switch-to-buffer-other-frame]  . #'consult-buffer-other-frame)
          ([remap yank-pop]                      . #'consult-yank-pop)
          ([remap recentf-open-files]            . #'consult-recent-file)
+         ("C-s" . #'my/consult-line-forward)
          :map minibuffer-local-map
          ("C-r" . consult-history)))
 
@@ -2271,7 +2322,11 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
    ([remap describe-bindings] . #'embark-bindings)
    (:map minibuffer-local-map
          (("C-o" . embark-export)
-          ("C-c C-e" . diego/embark-export-write)))))
+          (("C-c C-o" . embark-collect-live)
+           ("C-c C-e" . diego/embark-export-write)))
+         :map embark-collect-mode-map
+         (("a" . embark-act)
+          ("E" . embark-export)))))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -2322,11 +2377,12 @@ Orderless is a completion-style to allow convenient filters.
 #+begin_src elisp
 (use-package orderless
   :init
-  ;; (setq completion-styles '(orderless basic))
-  (setq completion-styles '(orderless))
+  ;; The =basic= completion style is specified as fallback in addition to =orderless= in order to
+  ;; ensure that completion commands which rely on dynamic completion tables,
+  (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
   ;; Enable `partial-completion' for files to allow path expansion.
-  ;; (setq completion-category-overrides '((file (styles . (orderless partial-completion)))))
+  (setq completion-category-overrides '((file (styles basic partial-completion))))
   (setq completion-category-overrides nil)
   (setq completions-format 'one-column)
   (setq completions-detailed t)
@@ -2402,31 +2458,6 @@ If t, open the *scratch* buffer.
 #+end_src
 
 * Search And Replace
-
-** Ctrlf (Isearch replacement)
-
-Package `ctrlf' provides a replacement for `isearch' that is more similar to the tried-and-true text
-search interfaces in web browsers and other programs (think of what happens when you type ctrl+F).
-
-| Keymap | Command                                           |
-|--------+---------------------------------------------------|
-| C-s    | search forward literal string                     |
-| C-r    | search backward literal string
-| C-M-s  | search forward regex                              |
-| C-M-r  | search backward regex                             |
-
-#+begin_src elisp
-(use-package ctrlf
-  :straight (:host github :repo "raxod502/ctrlf")
-  :init
-  (ctrlf-mode 1)
-  :config
-  (setq ctrlf-auto-recenter t)
-  (setq ctrlf-go-to-end-of-match nil)
-  :bind
-  (("C-s" . #'ctrlf-forward-literal)
-   ("C-r" . #'ctrlf-backward-literal)))
-#+end_src
 
 ** Jumping with (avy.el)
 
@@ -2539,29 +2570,8 @@ https://github.com/emacs-lsp/lsp-treemacs
 (use-package lsp-mode
   :after (corfu orderless)
   :commands lsp-deferred
-  :config
-  (setq lsp-completion-provider :none) ;; we use Corfu!
-  (lsp-enable-which-key-integration t)
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
-
-  ;; Project errors on modeline
-  (setq lsp-modeline-diagnostics-enable t)
-  (setq lsp-modeline-diagnostics-scope :workspace)
-
-  ;; For a UI feedback on headerline of the document
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-
-  (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
-  (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
-
-  (evil-add-command-properties #'lsp-find-definition :jump t)
-  (evil-add-command-properties #'lsp-goto-type-definition :jump t)
-
-  (advice-add 'lsp-goto-type-definition :before #'evil-set-jump)
-  (advice-add 'lsp-find-definition :before #'evil-set-jump)
-
-
   :init
+  (setq lsp-keymap-prefix "C-l")
   ;; corfu + orderless
   (defun my/orderless-dispatch-flex-first (_pattern index _total)
     (and (eq index 0) 'orderless-flex))
@@ -2575,12 +2585,38 @@ https://github.com/emacs-lsp/lsp-treemacs
 
   ;; Optionally configure the cape-capf-buster.
   (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
-  ;; (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
+  :config
+  (setq lsp-completion-provider :none) ;; we use Corfu!
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
+
+  ;; Project errors on modeline
+  (setq lsp-modeline-diagnostics-enable t)
+  (setq lsp-modeline-diagnostics-scope :workspace)
+
+  ;; For a UI feedback on headerline of the document
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project))
+
+  (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definitions)
+  (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
+
+  (evil-add-command-properties #'lsp-find-definition :jump t)
+  (evil-add-command-properties #'lsp-goto-type-definition :jump t)
+  (advice-add 'lsp-goto-type-definition :before #'evil-set-jump)
+  (advice-add 'lsp-find-definition :before #'evil-set-jump)
+
+;;test
+  (setq lsp-auto-guess-root t)
+  (setq lsp-enable-symbol-highlighting nil)
+  (setq lsp-enable-on-type-formatting nil)
+  (setq lsp-ui-doc-header t)
+  (setq lsp-ui-doc-include-signature t)
+  (setq lsp-ui-doc-border (face-foreground 'default))
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-sideline-delay 0.05)
+
   :hook
-  ((lsp-completion-mode-hook . my/lsp-mode-setup-completion)))
-;; :bind (:map
-;;        lsp-mode-map
-;;        ("TAB" . #'completion-at-point)))
+  ((lsp-completion-mode-hook . my/lsp-mode-setup-completion)
+   (lsp-mode-hook . lsp-enable-which-key-integration)))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -2619,6 +2655,15 @@ go install golang.org/x/tools/gopls@latest
 #+begin_src sh
 go install golang.org/x/tools/cmd/goimports@latest
 #+end_src
+*** configure local variables for a project
+
+Call =add-dir-local-variable=, result:
+#+begin_example elisp file: .dir-locals.el
+;;; Directory Local Variables
+;;; For more information see (info "(emacs) Directory Variables")
+((go-mode . ((lsp-go-goimports-local . "github.com/Shopify/cloudbuddies")
+             (gofmt-args . ("-local" "github.com/Shopify/cloudbuddies")))))
+#+end_example
 
 *** go-mode.el
 
@@ -2629,16 +2674,20 @@ go install golang.org/x/tools/cmd/goimports@latest
   (setq godef-command "godef") ; original godef
   ;; (setq godef-command "go doc") ; original godef
   (setq gofmt-command "goimports") ; original gofmt
+  (setq gofmt-args nil)
+  ;; (setq gofmt-args '("-local" "github.com/Shopify/"))
 
   (defun outline-go-mode-hook ()
-     (set (make-local-variable 'outline-regexp) "\\(func \\|\\(.*struct {\\)\\|\\(type \\)\\)"))
+    (set (make-local-variable 'outline-regexp) "\\(func \\|\\(.*struct {\\)\\|\\(type \\)\\)"))
 
   (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer 0 t)
-    (add-hook 'before-save-hook #'lsp-organize-imports 0 t))
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
-  :hook (
-         (go-mode-hook . outline-go-mode-hook)
+
+  (lsp-enable-which-key-integration t)
+
+  :hook ((go-mode-hook . outline-go-mode-hook)
          (go-mode-hook . lsp-deferred)
          (go-mode-hook . lsp-go-install-save-hooks)))
 #+end_src
@@ -2665,9 +2714,22 @@ https://github.com/pope/ob-go
  "a" #'go-tag-add
  "i" #'go-goto-imports
  "." #'godoc-at-point
- "t"   '(:ignore t :which-key "test")
- "tt" #'diego/go-run-test-current-function
- "tg" #'go-gen-test-exported)
+ "t" '(:ignore t :which-key "test")
+ ;; "tt" #'diego/go-run-test-current-function
+ "tt" #'go-test-current-test
+ "tf" #'go-test-current-file
+ "tg" #'go-gen-test-exported
+ ;; help a bit lsp + which-key to get the right names, lsp-enable-which-key-integration doesn't seem to always work
+ "l" '(:ignore t :which-key "LSP")
+ "lw" '(:ignore t :which-key  "workspaces")
+ "lF" '(:ignore t :which-key  "folders")
+ "l=" '(:ignore t :which-key  "formatting")
+ "lT" '(:ignore t :which-key  "toggle")
+ "lg" '(:ignore t :which-key  "goto")
+ "lh" '(:ignore t :which-key  "help")
+ "lr" '(:ignore t :which-key  "refactor")
+ "la" '(:ignore t :which-key  "code actions")
+ "lG" '(:ignore t :which-key  "peek"))
 #+end_src
 *** flycheck-golangci
 
@@ -2798,6 +2860,7 @@ go-impl generates method stubs for implementing an interface.
 (use-package yaml-mode
   :mode (("\\.yml\\'"       . #'yaml-mode)
          ("\\.yaml\\'"      . #'yaml-mode)
+         ("\\.yml.erb\\'"      . #'yaml-mode)
          ("\\.yaml.lock\\'" . #'yaml-mode)))
 #+end_src
 ** Kubernetes
@@ -2838,7 +2901,8 @@ On the kubel screen, place your cursor on the resource:
 
 #+begin_src elisp
 (use-package kubel
-  :straight (kubel :host github :repo "d1egoaz/kubel" :branch "origin/master")
+  ;; :straight (kubel :host github :repo "d1egoaz/kubel" :branch "diego/multiple-kubel-buffers")
+  :straight (kubel :host github :repo "d1egoaz/kubel" :branch "test")
   :config
   (evil-define-key 'normal 'kubel-yaml-editing-mode "q" #'kill-current-buffer)
 
@@ -2846,7 +2910,7 @@ On the kubel screen, place your cursor on the resource:
   ;; (setq kubel-use-namespace-list 'on)
   ;; list namespaces automatically
   (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
-  (setq-default kube-namespace "cloudbuddies")
+  (setq-default kubel-namespace "cloudbuddies")
 
   (defun diego--kubel-hook ()
     (require 'f)
@@ -2956,7 +3020,40 @@ display portions of a program, which are referred to as blocks.
 #+end_src
 
 * Productivity
-** dired.el
+
+** keyfreq.el
+
+#+begin_src elisp
+(use-package keyfreq
+  :config
+  (setq keyfreq-excluded-commands
+        '(self-insert-command
+          backward-char
+          evil-backward-char
+          evil-forward-char
+          evil-forward-word-begin
+          evil-mouse-drag-region
+          evil-next-line
+          evil-next-visual-line
+          evil-normal-state
+          evil-previous-line
+          forward-char
+          ignore
+          lsp-ui-doc--handle-mouse-movement
+          mouse-set-point
+          mwheel-scroll
+          next-line
+          previous-line
+          vertico-exit
+          ))
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
+#+end_src
+
+** dired
+
+*** dired.el
+
 #+begin_src elisp
 (use-package dired
   :straight (:type built-in)
@@ -2968,8 +3065,24 @@ display portions of a program, which are referred to as blocks.
    :non-normal-prefix "M-SPC m"
    "w"  #'wdired-change-to-wdired-mode)
   :config
-  ;; reuse buffer when opening directories
-  (setq dired-kill-when-opening-new-dired-buffer t))
+  ;; only one dired buffer when opening directories
+  (setq dired-kill-when-opening-new-dired-buffer t)
+  (setq dired-auto-revert-buffer t))
+#+end_src
+
+*** dired-sidebar.el
+
+#+begin_src elisp
+(use-package dired-sidebar
+  :general
+  (general-nvmap :keymaps 'dired-sidebar-mode-map
+        "<mouse-2>" #'dired-sidebar-mouse-subtree-cycle-or-find-file)
+  :config
+  (setq dired-sidebar-subtree-line-prefix "  ")
+  (setq dired-sidebar-theme 'icons)
+  (setq dired-sidebar-use-custom-font t)
+  (setq dired-sidebar-should-follow-file nil)
+  (set-face-attribute 'dired-sidebar-face nil :height 0.8))
 #+end_src
 
 ** ediff.el
@@ -3077,7 +3190,14 @@ of learning a different Emacs package and formatting command for each language.
          ("<f5>" . nil)
          ("<f6>" . nil)
          ("M-h"  . nil)
-         ("M-l"  . nil))
+         ("M-j"  . nil)
+         ("M-k"  . nil)
+         ("M-l"  . nil)
+         ("C-M-h"  . nil)
+         ("C-M-j"  . nil)
+         ("C-M-k"  . nil)
+         ("C-M-l"  . nil)
+)
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 500000)
@@ -3259,7 +3379,32 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   (setq highlight-indent-guides-method 'character)
   :hook ((prog-mode-hook . highlight-indent-guides-mode)))
 #+end_src
+
+** lin.el
+
+#+begin_src elisp
+(use-package lin
+  :straight (:host github :repo "protesilaos/lin")
+  :init
+  (setq lin-mode-hooks
+        '(
+          dired-mode-hook
+          elfeed-search-mode-hook
+          git-rebase-mode-hook
+          ibuffer-mode-hook
+          ilist-mode-hook
+          kubel-mode-hook
+          log-view-mode-hook
+          magit-log-mode-hook
+          occur-mode-hook
+          tabulated-list-mode-hook))
+  :config
+  (setq lin-face 'lin-yellow)
+  (lin-setup))
+#+end_src
+
 ** blamer.el
+
 #+begin_src elisp
 (use-package blamer
   :straight (:type git :host github :repo "artawower/blamer.el")
@@ -3270,26 +3415,73 @@ Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-
   ;; (global-blamer-mode 1))
 #+end_src
 
-** pulse.el
+** pulsar.el (based on pulse.el)
 
 Never lose the cursor again.
 
 #+begin_src elisp
-(use-package pulse
-  :straight (:type built-in)
+(use-package pulsar
+  :straight (:host github :repo "protesilaos/pulsar")
+  :init
+  (setq pulsar-pulse-functions
+        '(
+          backward-page
+          bookmark-jump
+          delete-other-windows
+          delete-window
+          evil-avy-goto-line
+          evil-goto-definition
+          evil-scroll-down
+          evil-scroll-line-to-bottom
+          evil-scroll-line-to-center
+          evil-scroll-line-to-top
+          evil-scroll-up
+          evil-window-left
+          evil-window-right
+          evil-window-split
+          forward-page
+          kill-current-buffer
+          lsp-find-references
+          lsp-find-definition
+          lsp-find-implementation
+          move-to-window-line-top-bottom
+          other-window
+          recenter-top-bottom
+          reposition-window
+          scroll-down
+          scroll-down-command
+          scroll-up
+          scroll-up-command
+          tab-close
+          tab-new
+          tab-next
+          windmove-down
+          windmove-left
+          windmove-right
+          windmove-swap-states-down
+          windmove-swap-states-left
+          windmove-swap-states-right
+          windmove-swap-states-up
+          windmove-up
+          xref-find-references
+          xref-find-definitions))
+
   :config
-  (set-face-attribute 'pulse-highlight-start-face nil :background (modus-themes-color 'cyan-intense-bg))
+  (setq pulsar-pulse t)
+  (setq pulsar-delay 0.2)
+  (setq pulsar-iterations 6)
+  (setq pulsar-face 'pulsar-yellow)
+  (setq pulsar-highlight-face 'pulsar-magenta)
 
-  (defun pulse-line (&rest _)
-    "Pulse the current line."
-    (pulse-momentary-highlight-one-line (point)))
+  (defun diego--pulsar-setup ()
+    (pulsar-global-mode 1))
 
-  (dolist (command '(
-                     evil-scroll-line-to-top evil-scroll-line-to-bottom evil-scroll-line-to-center scroll-up scroll-down
-                     recenter-top-bottom other-window evil-scroll-down evil-scroll-up evil-window-left evil-window-right
-                     evil-avy-goto-line evil-window-split windmove-up windmove-down windmove-left windmove-right
-                     delete-window kill-current-buffer))
-    (advice-add command :after #'pulse-line)))
+  :hook (
+         ;; (consult-after-jump-hook . pulsar-recenter-middle)
+         ;; (consult-after-jump-hook . pulsar-reveal-entry)
+         ;; (imenu-after-jump-hook . pulsar-recenter-middle)
+         ;; (imenu-after-jump-hook . pulsar-reveal-entry)
+         (after-init-hook . diego--pulsar-setup)))
 #+end_src
 
 ** string-inflection.el
@@ -3356,12 +3548,12 @@ Never lose the cursor again.
    "q" #'org-set-tags-command
    "t" #'org-todo
    "x" #'org-toggle-checkbox
-   "a"   '(:ignore t :which-key "attachments")
+   "a"  '(:ignore t :which-key "attachments")
    "aa" #'org-attach
    "ar" #'org-attach-reveal
    "au" #'org-attach-url
    "ac" #'org-download-screenshot
-   "l"   '(:ignore t :which-key "link")
+   "l"  '(:ignore t :which-key "link")
    "li" #'org-id-store-link
    "ll" 'org-insert-link
    "ls" 'org-store-link
@@ -3457,22 +3649,25 @@ vae	select an element
 
 all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/doc/keythemes.org
 
-#+begin_src elisp
 (use-package evil-org
   :after (evil org)
   :straight (:host github :repo "hlissner/evil-org-mode")
-  :general
+  :config
+  ;; enable bindings, remove `additional` as I want to use M-hjkl for different things
+  (setq evil-org-key-theme '(heading insert navigation textobjects))
+  (evil-org-set-key-theme)
+
   (general-nmap :keymaps 'evil-org-mode-map
     "M-h" nil
+    "M-j" nil
+    "M-k" nil
     "M-l" nil)
-  :config
-  ;; enable all bindings
-  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading calendar))
 
   (defun diego--org-set-key-theme ()
     (evil-org-set-key-theme))
   :hook ((org-mode-hook . evil-org-mode)
          (evil-org-mode-hook . diego--org-set-key-theme)))
+#+begin_src elisp
 #+end_src
 
 ** evil-org-agenda.el
@@ -3777,6 +3972,9 @@ Emacs Everywhere from, just press C-c C-c.
 (define-key evil-insert-state-map (kbd "C-n") nil)
 (define-key evil-insert-state-map (kbd "C-p") nil)
 
+(evil-define-key 'visual global-map (kbd ">") 'my/evil-shift-right)
+(evil-define-key 'visual global-map (kbd "<") 'my/evil-shift-left)
+
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
 (global-set-key (kbd "M-o") #'other-window)
@@ -3816,6 +4014,8 @@ This command does not push text to `kill-ring'."
 (general-nvmap
   "g-r" #'xref-find-references
   "g-i" #'lsp-find-implementation)
+;;::// TODO: @d1egoaz 2022-04-05: move this
+(setq xref-search-program 'ripgrep)
 
 (general-define-key
  :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
@@ -3824,7 +4024,8 @@ This command does not push text to `kill-ring'."
  :non-normal-prefix "C-M-x"
  "" nil ; to fix evil in some buffers, like *Messages*
  "SPC"     #'(execute-extended-command :which-key "M-x")
- "'"       #'(vertico-repeat :which-key "Resume last search")
+ "'"       #'(vertico-repeat-last :which-key "Resume last search")
+ "\""       #'(vertico-repeat-select :which-key "Resume last session")
  ">"       #'(er/expand-region :which-key "Expand region")
  "u"       #'(universal-argument :which-key "Universal argument")
  "U"       #'(universal-argument-more :which-key "Universal argument more")
@@ -3847,10 +4048,11 @@ This command does not push text to `kill-ring'."
  "ad"      #'(dired-jump :which-key "Dired current dir")
  "ae"      #'(elfeed :which-key "Elfeed - RSS")
  "ak"      #'(kubel :which-key "Kubel")
+ "am"      #'(diego/project-minimap :which-key "Project minimap")
  "ap"      #'(list-processes :which-key "List process")
  "aP"      #'(list-processes :which-key "Kill process")
- "at"      #'(treemacs-display-current-project-exclusively :which-key "Treemacs project")
- "aT"      #'(treemacs :which-key "Toggle Treemacs")
+ "at"      #'dired-sidebar-show-sidebar
+ "aT"      #'dired-sidebar-toggle-sidebar
  "av"       #'((lambda () (interactive) (diego/vterm "*vterm*")) :which-key "Vterm in side window")
  "aV"      #'(diego/vterm :which-key "Vterm in full window")
  ;; Buffers
@@ -3869,7 +4071,7 @@ This command does not push text to `kill-ring'."
  "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
  "bK"      #'(kill-buffer :which-key "Kill selected buffer")
  "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
- "br"      #'revert-buffer
+ "br"      #'revert-buffer-quick
 
  "bm"      '(:ignore t :which-key "move buffer")
  "bmk"     #'(buf-move-up :which-key "Move up")
@@ -3906,6 +4108,7 @@ This command does not push text to `kill-ring'."
  "fD"      #'(diego/delete-file :which-key "Delete file")
  "ff"      #'(find-file :which-key "Find file")
  "fj"      #'((lambda () (interactive) (find-file "~/Documents/deft/journal.org")) :which-key "Journal file")
+ "fl"      #'((lambda () (interactive) (dired-sidebar-follow-file)) :which-key "Follow file in sidebar")
  "fp"      #'((lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory))) :which-key "Edit private config")
  "fr"      #'(consult-recent-file :which-key "Recent files")
  "fR"      #'(rename-file :which-key "Rename file")
@@ -3935,6 +4138,8 @@ This command does not push text to `kill-ring'."
  "hf"      #'describe-function
  "hF"      #'describe-face
  "hk"      #'(helpful-key :which-key "Describe key")
+ "hK"      #'(describe-keymap :which-key "Describe keymap")
+ "hi"      #'info-display-manual
  "hl"      #'(find-library :which-key "Describe library")
  "hm"      #'describe-mode
  "hp"      #'(helpful-at-point :which-key "Describe at point")
@@ -3950,6 +4155,11 @@ This command does not push text to `kill-ring'."
  "hwd"      #'define-word-at-point
  "hws"      #'dictionary-search
  "hwl"      #'langtool-check
+ ;; Help Profiler
+ "hP"       '(:ignore t :which-key "profiler")
+ "hPs"      #'(profiler-start :which-key "Profiler start")
+ "hPk"      #'(profiler-stop :which-key "Profiler stop")
+ "hPr"      #'(profiler-report :which-key "Profiler report")
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
  "iu"      #'(insert-char :which-key "Unicode char")
@@ -3997,7 +4207,7 @@ This command does not push text to `kill-ring'."
  "lt"      #'lsp-goto-type-definition
  "lX"      #'lsp-execute-code-action
  "ls"       #'(lsp-signature-activate :which-key "show signature")
- "lh"       #'(highlight-symbol-at-point :which-key "highliht symbol at point")
+ "lh"       #'(lsp-describe-thing-at-point :which-key "describe symbol")
  ;; local mode/leader
  "m"       '(:ignore t :which-key "local mode")
  ;; Narrow
@@ -4017,6 +4227,12 @@ This command does not push text to `kill-ring'."
 
  "oO"      '(:ignore t :which-key "other")
  "oOd"     #'(diego/delete-last-char-eol :which-key "Delete last char EOL")
+
+ "os"     #'outline-show-entry
+ "oS"     #'outline-show-all
+ "oh"     #'outline-hide-entry
+ "oH"     #'outline-hide-body
+
  ;; Project
  "p"       '(:ignore t :which-key "project")
  "!"       #'(project-shell-command :which-key "Run cmd in project root")
@@ -4026,16 +4242,11 @@ This command does not push text to `kill-ring'."
  "pp"      #'(project-switch-project :which-key "Switch project")
  "pr"     #'(diego/consult-buffer-for-project :which-key "Project recent")
  "pv"      #'(diego/vterm-project :which-key "Project vterm")
- ;; Profiler
- "P"       '(:ignore t :which-key "profiler")
- "Ps"      #'(profiler-start :which-key "Profiler start")
- "Pk"      #'(profiler-stop :which-key "Profiler stop")
- "Pr"      #'(profiler-report :which-key "Profiler report")
  ;; Search
  "s"       '(:ignore t :which-key "search")
- "sd"      #'(consult-find :which-key "Search")
- "sg"      #'(consult-grep :which-key "Search")
- "ss"      #'(consult-line :which-key "Search")
+ "sd"      #'(consult-find :which-key "Search file names")
+ "sg"      #'(consult-grep :which-key "Search with rg")
+ "ss"      #'(consult-line :which-key "Search lines")
  "sS"      #'(diego/search-symbol-at-point :which-key "Search at point")
  "sp"      #'(consult-ripgrep :which-key "Search in project")
  ;; Toggle
@@ -4104,13 +4315,44 @@ This command does not push text to `kill-ring'."
 
 * Test In Progress
 
+** codereview
+
 #+begin_src elisp
 #+end_src
 (use-package code-review)
 
+** demap
 #+begin_src elisp
+(use-package demap
+  :straight (demap :type git :host gitlab :repo "sawyerjgardner/demap.el"))
+#+end_src
+
+** dtache
+
 (use-package dtache
   :straight (dtache :type git :host gitlab :repo "niklaseklund/dtache"))
+
+** org-modern
+
+#+begin_src elisp
+(use-package org-modern
+  :straight (org-modern :host github :repo "minad/org-modern")
+  :config
+(setq
+ ;; Edit settings
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-special-ctrl-a/e t
+ org-insert-heading-respect-content t
+
+ ;; Org styling, hide markup etc.
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+ org-ellipsis "…")
+
+  (add-hook 'org-mode-hook #'org-modern-mode)
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
 #+end_src
 
 * Inspiration
@@ -4126,7 +4368,7 @@ Some parts of my configuration were copied and inspired from:
 - [[https://config.daviwil.com/emacs][Daviwil]]
 - [[https://emacs.nasy.moe/][Nasy]]
 
-* Pending tasks [8/13]
+* Pending tasks [11/14]
 ** DONE Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark
 ** DONE Replace persp-mode by tab-bar
 ** DONE Replace doom-mode-line by normal mode-line
@@ -4140,8 +4382,9 @@ Some parts of my configuration were copied and inspired from:
 :LOGBOOK:
 - State "DONE"       from "TODO"       [2021-06-04 Fri 13:37]
 :END:
-** TODO Fix org toc
+** DONE Fix org toc
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2022-04-06 Wed 09:07]
 - State "TODO"       from              [2021-05-28 Fri 16:49]
 :END:
 ** DONE Make elfeed entry buffer show below elfeed search
@@ -4169,19 +4412,15 @@ https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Bmisc/multiple-curso
 - State "DONE"       from "TODO"       [2021-06-22 Tue 09:15]
 - State "TODO"       from              [2021-06-17 Thu 15:20]
 :END:
-** TODO fix evil jump C-o, C-i
+** DONE fix evil jump C-o, C-i
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2022-03-31 Thu 12:37]
 - State "TODO"       from              [2021-06-22 Tue 09:19]
 :END:
-** Configure path?
-
-Configure PATH on macOS
-#+begin_example elisp
-(use-package exec-path-from-shell
-  :config (when (memq window-system '(mac ns x))
-            (exec-path-from-shell-initialize)))
-#+end_example
-
+** DONE Configure path?
+   :LOGBOOK:
+   - State "DONE"       from              [2022-03-31 Thu 12:36]
+   :END:
 ** TODO custom imenu for mode
 :LOGBOOK:
 - State "TODO"       from              [2021-09-17 Fri 15:50]
@@ -4194,3 +4433,11 @@ Configure PATH on macOS
 
 (add-hook 'Custom-mode-hook #'configure-imenu-Custom)
 #+end_example
+
+** Try MCT
+
+https://protesilaos.com/emacs/mct
+
+** is undo-fu really working?
+
+I've noticed issues while undo/redo ing stuff.

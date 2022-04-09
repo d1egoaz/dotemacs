@@ -54,7 +54,10 @@
 (defun diego/open-project-readme ()
   "Open the README.md file in a project."
   (interactive)
-  (find-file (expand-file-name "README.md" (diego/current-project-name))))
+  (find-file (expand-file-name "README.md" (diego/current-project-name)))
+  (dired-sidebar-show-sidebar)
+  (delete-window (get-buffer-window (diego/project-minimap)))
+  (diego/project-minimap))
 
 ;;;###autoload
 (defun diego/project-compile-dwim (command)
@@ -111,6 +114,16 @@ It has been modified to always run on comint mode."
                 (name (diego/project-short-name root-dir))) ; get only dir name
           (format "|%s|" name)
         "|general|"))))
+
+(defun diego/tab-name-for-kubel-buffer (b _a)
+  (format "|kubel: %s|" kubel-context))
+
+(defun diego/project-minimap ()
+  (interactive)
+  (let ((demap-minimap-default-name (format "*Minimap %s*" (diego/current-project-name))))
+    (demap-open)
+    demap-minimap-default-name))
+;; (switch-to-buffer name)
 
 (provide 'diego-project)
 ;;; diego-project.el ends here
