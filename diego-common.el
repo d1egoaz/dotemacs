@@ -290,9 +290,11 @@ exist after each headings's drawers."
   (append
    diego--shopify-lookup-provider-alist
    '(("Github Search" "https://github.com/search?q=%s")
-     ("Github Shopify Repository" "https://github.com/Shopify/%s")
-     ("Github Shopify Repository .dev (code)" "https://github.dev/Shopify/%s")
-     ("Github Shopify Search" "https://github.com/search?q=org%%3AShopify+%s")
+     ("Github NEW Search" "https://cs.github.com/?scopeName=All+repos&scope=&q=%s")
+     ("Github open Shopify Repository" "https://github.com/Shopify/%s")
+     ("Github open Shopify Repository .dev (code)" "https://github.dev/Shopify/%s")
+     ("Github Shopify Search" "https://github.com/search?q=org:Shopify+%s")
+     ("Github Shopify NEW Search" "https://cs.github.com/?scope=org:Shopify&scopeName=Shopify&q=%s")
      ("Google" "https://google.com/search?q=%s"))))
 
 ;;;###autoload

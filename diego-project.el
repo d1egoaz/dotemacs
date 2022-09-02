@@ -55,9 +55,7 @@
   "Open the README.md file in a project."
   (interactive)
   (find-file (expand-file-name "README.md" (diego/current-project-name)))
-  (dired-sidebar-show-sidebar)
-  (delete-window (get-buffer-window (diego/project-minimap)))
-  (diego/project-minimap))
+  (dired-sidebar-show-sidebar))
 
 ;;;###autoload
 (defun diego/project-compile-dwim (command)
@@ -94,36 +92,17 @@ It has been modified to always run on comint mode."
 
 ;;;###autoload
 (defun diego/current-project-name ()
-  (when-let ((proj (project-current)))
-    (project-root proj)))
+  (if-let ((proj (project-current)))
+      (project-root proj)
+    ("/tmp")))
 
 ;;;###autoload
-(defun diego/project-short-name (root-dir)
-  (if (or (string-prefix-p "~/src/github.com/Shopify" root-dir)
-          (string-prefix-p "/Volumes/GoogleDrive/My Drive" root-dir))
-      (file-name-nondirectory (directory-file-name root-dir)) ;; remove last / and get only dir name
-    root-dir))
-
-;;;###autoload
-(defun diego/tab-name-for-buffer (b _a)
-  (let ((bufname (buffer-file-name b)))
-    (if (and buffer-file-truename bufname (file-remote-p bufname))
-        "|tramp|"
-      (if-let* ((project (project-current nil bufname)) ; project for file
-                (root-dir (project-root project)) ; get only root dir
-                (name (diego/project-short-name root-dir))) ; get only dir name
-          (format "|%s|" name)
-        "|general|"))))
-
-(defun diego/tab-name-for-kubel-buffer (b _a)
-  (format "|kubel: %s|" kubel-context))
-
-(defun diego/project-minimap ()
+(defun diego/project-generate-ctags ()
+  "Regenerate tags, when `prefix-arg' don't generate recursive."
   (interactive)
-  (let ((demap-minimap-default-name (format "*Minimap %s*" (diego/current-project-name))))
-    (demap-open)
-    demap-minimap-default-name))
-;; (switch-to-buffer name)
+  (let* ((recursive (if current-prefix-arg "" " -R "))
+         (cmd (format "ctags -e %s ." recursive)))
+    (compile cmd t)))
 
 (provide 'diego-project)
 ;;; diego-project.el ends here
