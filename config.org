@@ -525,7 +525,7 @@ Increase how much is read from processes in a single chunk (default is
    #+begin_src elisp
    (use-package exec-path-from-shell
      :config
-     (setq exec-path-from-shell-variables '("PATH" "MANPATH" "EMACS_ADDITIONAL_DIR"))
+     (setq exec-path-from-shell-variables '("PATH" "MANPATH" "EMACS_ADDITIONAL_DIR" "KUBECONFIG"))
      (when (memq window-system '(mac ns x))
        (exec-path-from-shell-initialize)))
    #+end_src
