@@ -1043,6 +1043,13 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
 #+begin_src elisp
 (load (expand-file-name "diego-workspaces.el" user-emacs-directory))
 
+
+;; read: https://www.masteringemacs.org/article/demystifying-emacs-window-manager
+;; Great for all those annoying popups where you only care about the contents when something goes wrong.
+;; (add-to-list 'buffer-display-alist
+;;      '("\\*compilation\\*" display-buffer-no-window
+;;         (allow-no-window . t)))
+
 (defun diego--debug-buffer-alist (b a)
   (message "b:%s" b)
   (print a)
@@ -1158,24 +1165,26 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (display-buffer-reuse-window display-buffer-below-selected)
          (window-height . fit-window-to-buffer))
 
-        ;; dedicated tabs - tabs for apps
+        ;; ***************************
+        ;; Workspaces (dedicated tabs
+        ;; ***************************
 
-        ;;;; Kubel
         ("\\*diego/vterm\\*"
          (display-buffer-in-tab)
          (tab-name . "|vterm|"))
+        ;;;; Kubel
         ("\\*kubel-process.*"
          (display-buffer-in-tab display-buffer-in-side-window)
          (tab-name . "|kubel|")
-         (window-height . 0.2)
          (side . bottom)
-         (slot . 0))
+         (window-height . 0.2)
+         (slot . 0)
+         (dedicated . t))
         ("\\*kubel resource.*"
          (display-buffer-in-tab display-buffer-in-side-window)
          (tab-name . "|kubel|")
-         (window-width . 0.5)
          (side . right)
-         (slot . 0))
+         (window-width . 0.5))
         ("\\*\\(kubectl\\|kubel\\).*"
          (display-buffer-in-tab)
          (tab-name . "|kubel|")
@@ -1185,7 +1194,8 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (display-buffer-in-tab)
          (tab-name . "|elfeed|"))
         ("\\*elfeed-entry\\*"
-         (display-buffer-in-side-window)
+         (display-buffer-in-tab display-buffer-in-side-window)
+         (tab-name . "|elfeed|")
          (side . bottom)
          (window-height . 0.7))
         ;;;; Scratch buffers
@@ -1928,6 +1938,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+;; (setq magit-display-buffer-function #'display-buffer) to use window rules
 
   (setq magit-repository-directories
         '(
@@ -1992,10 +2003,11 @@ TODO remove use package as it's now part of Emacs
                                   (diego/open-project-readme "README.md" ?.)
                                   (consult-ripgrep "Search" ?s)
                                   (project-dired "Dired" ?d)
-                                  (magit-status "Git status" ?g)
+                                  (diego/open-project-magit "Git status" ?g)
                                   (diego/consult-buffer-for-project "Recent project buffer" ?R)
                                   (project-shell-command "Shell command" ?!)
                                   (diego--open-readme-and-vterm "Vterm project" ?v))))
+
 #+end_src
 
 * Completion

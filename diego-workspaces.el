@@ -22,6 +22,8 @@
 
 ;; Usage example:
 
+;; IMPORTANT: enable `tab-bar-mode' first.
+
 ;; (push '(diego/workspaces-validate-buffer
 ;;         .
 ;;         (display-buffer-in-tab (tab-name . diego/workspaces-name-for-buffer)))
@@ -51,33 +53,42 @@
 (defun diego/workspaces-validate-buffer (buffer &rest _)
   "Check if workspaces per buffer is enabled and that BUFFER is visiting a file."
   (and diego-workspaces-enabled
-       (buffer-local-value 'buffer-file-name (get-buffer buffer))))
+       (or (string-prefix-p "magit:" buffer) ; special case for when the first project buffer is magit
+           (buffer-local-value 'buffer-file-name (get-buffer buffer)))))
 
 (defun diego/workspaces-name-for-buffer (buffer _a)
   "Select an appropriate tab name given a buffer BUFFER."
   (if-let ((file-name (buffer-file-name buffer))) ; check if buffer is visiting a file
       (if (file-remote-p file-name)
           "|tramp|" ; I don't use remote files too much, when I use them just use a single workspace
-        (if-let* ((root-dir (diego--locate-project-root-dir file-name))
-                  (name (diego--root-dir-format-name root-dir)))
-            (format "|%s|" name)
-          "|general|"))))
+        (let* ((root-dir (diego--locate-project-root-dir file-name))
+               (name (diego--root-dir-format-name root-dir)))
+          name))
+    (diego--root-dir-format-name (buffer-local-value 'default-directory (get-buffer buffer)))))
 
 (defun diego--locate-project-root-dir (file-name)
   "Check if FILE-NAME is under a known project type.
 Known project types are Git or a directory having a .project file."
-  (when file-name
-    (or (locate-dominating-file file-name ".git")
-        (locate-dominating-file file-name ".project"))))
+  (or (locate-dominating-file file-name ".git")
+      (locate-dominating-file file-name ".project")))
 
 (defun diego--root-dir-format-name (root-dir)
   "Remove path prefixes for only known directories to keep the tab names short.
 If ROOT-DIR matches a list of known paths returns only the
 directory name, otherwise return the ROOT-DIR."
-  (if (or (string-prefix-p "~/src/github.com/Shopify" root-dir)
-          (string-prefix-p "/Volumes/GoogleDrive/My Drive" root-dir))
-      (file-name-nondirectory (directory-file-name root-dir)) ; example: /tmp/foo/bar -> bar
-    root-dir))
+  (message "root-dir: %s" root-dir)
+  (format "|%s|"
+          (if (or (string-prefix-p "~/src/github.com/Shopify" root-dir)
+                  (string-prefix-p (concat (getenv "HOME") "/src/github.com/Shopify") root-dir)
+                  (string-prefix-p "/Volumes/GoogleDrive/My Drive" root-dir))
+              (file-name-nondirectory (directory-file-name root-dir)) ; example: /tmp/foo/bar -> bar
+            root-dir)))
+
+(defun diego/reload-workspaces ()
+  "Reload workspaces."
+  (interactive)
+  (tab-bar-mode -1)
+  (tab-bar-mode 1))
 
 (provide 'diego-workspaces)
 ;;; diego-workspaces.el ends here

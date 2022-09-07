@@ -57,6 +57,14 @@
   (find-file (expand-file-name "README.md" (diego/current-project-name)))
   (dired-sidebar-show-sidebar))
 
+(defun diego/open-project-magit ()
+  "Open the README.md file in a project."
+  (interactive)
+  (diego/open-project-readme)
+  (with-current-buffer   (find-file (expand-file-name "README.md" (diego/current-project-name)))
+  (magit-status)))
+
+
 ;;;###autoload
 (defun diego/project-compile-dwim (command)
   "Run `compile' in the project root."
