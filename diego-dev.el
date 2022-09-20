@@ -38,7 +38,7 @@
 
 ;;;###autoload
 (defun diego/dev-project ()
-  "Runs a dev command from the project defined commands."
+  "Run a dev command from the project defined commands."
   (declare (interactive-only compile))
   (interactive)
   (let* ((prefix "/opt/dev/bin/dev ")
