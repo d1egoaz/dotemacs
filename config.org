@@ -105,6 +105,7 @@
   - [[#go][Go]]
   - [[#markdown][Markdown]]
   - [[#misc][Misc]]
+  - [[#yaml][yaml]]
   - [[#kubernetes][Kubernetes]]
   - [[#hideshowel][hideshow.el]]
   - [[#compilation-mode][Compilation mode]]
@@ -2937,12 +2938,36 @@ go-impl generates method stubs for implementing an interface.
 (use-package protobuf-mode)
 (use-package terraform-mode)
 (use-package web-mode)
+#+end_src
+** yaml
+#+begin_src elisp
 (use-package yaml-mode
   :mode (("\\.yml\\'"       . #'yaml-mode)
          ("\\.yaml\\'"      . #'yaml-mode)
          ("\\.yml.erb\\'"      . #'yaml-mode)
          ("\\.yaml.lock\\'" . #'yaml-mode)))
-#+end_src
+
+(use-package yaml
+  :straight (:host github :repo "zkry/yaml.el"))
+
+(use-package yaml-pro
+  :after yaml
+  :straight (:host github :repo "zkry/yaml-pro")
+  :general
+  (general-nvmap
+    :keymaps 'yaml-mode-map
+    :prefix ","
+    "j" #'yaml-pro-consult-jump
+    "ff" #'yaml-pro-fold-at-point
+    "fu" #'yaml-pro-unfold-at-point
+    ">" #'yaml-pro-indent-subtree
+    "<" #'yaml-pro-unindent-subtree
+    "K" #'yaml-pro-move-subtree-up
+    "J" #'yaml-pro-move-subtree-down
+    "'" #'yaml-pro-edit-scalar)
+  :hook
+  (yaml-mode-hook  . yaml-pro-mode))
+    #+end_src
 ** Kubernetes
 
 *** kubel.el
