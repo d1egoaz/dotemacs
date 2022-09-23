@@ -1919,19 +1919,17 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
     "zb" #'evil-scroll-line-to-bottom
     "gr" #'magit-refresh)
 
-  (general-define-key
-   :keymaps 'magit-status-mode-map
-   :states '(normal visual emacs motion)
-   :prefix ","
-   :non-normal-prefix "M-SPC m"
-   "b"  '(:ignore t :which-key "branch")
-   "bb" #'(diego/git-create-branch-from-origin-master :which-key "branch of origin/master")
-   "bm" #'(diego/git-create-branch-from-origin-main :which-key "branch of origin/main")
-   "p" '(:ignore t :which-key "pr")
-   "pc"  #'forge-create-pullreq
-   "pC" #'diego/checkout-gh-pr
-   "o" #'diego/fetch-and-rebase-onto-origin-master
-   "v" #'diego/visit-pull-request-url)
+  (general-nvmap
+    :keymaps 'magit-status-mode-map
+    :prefix ","
+    "b"  '(:ignore t :which-key "branch")
+    "bb" #'(diego/git-create-branch-from-origin-master :which-key "branch of origin/master")
+    "bm" #'(diego/git-create-branch-from-origin-main :which-key "branch of origin/main")
+    "p" '(:ignore t :which-key "pr")
+    "pc"  #'forge-create-pullreq
+    "pC" #'diego/checkout-gh-pr
+    "o" #'diego/fetch-and-rebase-onto-origin-master
+    "v" #'diego/visit-pull-request-url)
 
   :config
   (setq magit-diff-refine-hunk t) ; show granular diffs in selected hunk
@@ -1941,7 +1939,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
-;; (setq magit-display-buffer-function #'display-buffer) to use window rules
+  ;; (setq magit-display-buffer-function #'display-buffer) to use window rules
 
   (setq magit-repository-directories
         '(
@@ -1949,7 +1947,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-colle
           ("~/code/" . 2)
           ("~/dotfiles/" . 1)))
 
-(setq magit-bury-buffer-function 'magit-restore-window-configuration)
+  (setq magit-bury-buffer-function 'magit-restore-window-configuration)
 
   (transient-append-suffix 'magit-fetch "-p"
     '("-t" "Fetch all tags" ("-t" "--tags")))
@@ -2787,30 +2785,28 @@ https://github.com/pope/ob-go
 *** Custom bindings
 
 #+begin_src elisp
-(general-define-key
- :states '(normal visual emacs motion)
- :prefix ","
- :non-normal-prefix "M-SPC m"
- :keymaps 'go-mode-map
- "a" #'go-tag-add
- "i" #'go-goto-imports
- "." #'godoc-at-point
- "t" '(:ignore t :which-key "test")
- ;; "tt" #'diego/go-run-test-current-function
- "tt" #'go-test-current-test
- "tf" #'go-test-current-file
- "tg" #'go-gen-test-exported
- ;; help a bit lsp + which-key to get the right names, lsp-enable-which-key-integration doesn't seem to always work
- "l" '(:ignore t :which-key "LSP")
- "lw" '(:ignore t :which-key  "workspaces")
- "lF" '(:ignore t :which-key  "folders")
- "l=" '(:ignore t :which-key  "formatting")
- "lT" '(:ignore t :which-key  "toggle")
- "lg" '(:ignore t :which-key  "goto")
- "lh" '(:ignore t :which-key  "help")
- "lr" '(:ignore t :which-key  "refactor")
- "la" '(:ignore t :which-key  "code actions")
- "lG" '(:ignore t :which-key  "peek"))
+(general-nvmap
+  :keymaps 'go-mode-map
+  :prefix ","
+  "a" #'go-tag-add
+  "i" #'go-goto-imports
+  "." #'godoc-at-point
+  "t" '(:ignore t :which-key "test")
+  ;; "tt" #'diego/go-run-test-current-function
+  "tt" #'go-test-current-test
+  "tf" #'go-test-current-file
+  "tg" #'go-gen-test-exported
+  ;; help a bit lsp + which-key to get the right names, lsp-enable-which-key-integration doesn't seem to always work
+  "l" '(:ignore t :which-key "LSP")
+  "lw" '(:ignore t :which-key  "workspaces")
+  "lF" '(:ignore t :which-key  "folders")
+  "l=" '(:ignore t :which-key  "formatting")
+  "lT" '(:ignore t :which-key  "toggle")
+  "lg" '(:ignore t :which-key  "goto")
+  "lh" '(:ignore t :which-key  "help")
+  "lr" '(:ignore t :which-key  "refactor")
+  "la" '(:ignore t :which-key  "code actions")
+  "lG" '(:ignore t :which-key  "peek"))
 #+end_src
 *** flycheck-golangci
 
@@ -3170,18 +3166,16 @@ display portions of a program, which are referred to as blocks.
 (use-package dired
   :straight (:type built-in)
   :general
-  (general-define-key
-   :keymaps 'dired-mode-map
-   :states '(normal visual emacs motion)
-   :prefix ","
-   :non-normal-prefix "M-SPC m"
-   "w"  #'wdired-change-to-wdired-mode)
+  (general-nvmap
+    :keymaps 'dired-mode-map
+    :prefix ","
+    "w"  #'wdired-change-to-wdired-mode)
   :config
   ;; only one dired buffer when opening directories
   (setq dired-kill-when-opening-new-dired-buffer t)
   (setq dired-auto-revert-buffer t))
 #+end_src
-      (setq dired-use-ls-dired nil)
+(setq dired-use-ls-dired nil)
 
 *** dired-sidebar.el
 
@@ -3654,40 +3648,38 @@ Never lose the cursor again.
    "M-h" nil
    "M-l" nil)
   ;; local leader
-  (general-define-key
-   :keymaps 'org-mode-map
-   :states '(normal visual emacs motion)
-   :prefix ","
-   :non-normal-prefix "M-SPC m"
-   "'" #'org-edit-special
-   "e" #'org-export-dispatch
-   "h" #'org-toggle-heading
-   "i" #'org-toggle-item
-   "q" #'org-set-tags-command
-   "t" #'org-todo
-   "x" #'org-toggle-checkbox
-   "a"  '(:ignore t :which-key "attachments")
-   "aa" #'org-attach
-   "ar" #'org-attach-reveal
-   "au" #'org-attach-url
-   "ac" #'org-download-screenshot
-   "l"  '(:ignore t :which-key "link")
-   "li" #'org-id-store-link
-   "ll" 'org-insert-link
-   "ls" 'org-store-link
-   "d"   '(:ignore t :which-key "date/deadline")
-   "dd" #'org-deadline
-   "ds" #'org-schedule
-   "dt" #'org-time-stamp)
+  (general-nvmap
+    :keymaps 'org-mode-map
+    :prefix ","
+    "'" #'org-edit-special
+    "e" #'org-export-dispatch
+    "h" #'org-toggle-heading
+    "i" #'org-toggle-item
+    "q" #'org-set-tags-command
+    "t" #'org-todo
+    "x" #'org-toggle-checkbox
+    "a"  '(:ignore t :which-key "attachments")
+    "aa" #'org-attach
+    "ar" #'org-attach-reveal
+    "au" #'org-attach-url
+    "ac" #'org-download-screenshot
+    "l"  '(:ignore t :which-key "link")
+    "li" #'org-id-store-link
+    "ll" 'org-insert-link
+    "ls" 'org-store-link
+    "d"   '(:ignore t :which-key "date/deadline")
+    "dd" #'org-deadline
+    "ds" #'org-schedule
+    "dt" #'org-time-stamp)
   :init
   (setq org-directory "~/Documents/deft")
   (setq org-agenda-files (list "~/Documents/deft/journal.org" "~/Documents/deft/gtd-inbox.org" "~/Documents/deft/gtd-personal.org" "~/Documents/deft/gtd-work.org" ))
   (setq org-agenda-window-setup 'reorganize-frame)
   (setq org-agenda-deadline-faces
-         '((1.001 . error)
-           (1.0 . org-warning)
-           (0.5 . org-upcoming-deadline)
-           (0.0 . org-upcoming-distant-deadline)))
+        '((1.001 . error)
+          (1.0 . org-warning)
+          (0.5 . org-upcoming-deadline)
+          (0.0 . org-upcoming-distant-deadline)))
   (setq org-agenda-span 'month); or 'week
   (setq org-attach-id-dir (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
   (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
@@ -3796,15 +3788,13 @@ all keybindings https://raw.githubusercontent.com/hlissner/evil-org-mode/master/
   :straight (:host github :repo "hlissner/evil-org-mode" :files ("evil-org-agenda.el"))
   :commands evil-org-agenda-set-keys
   :general
-  (general-define-key
-   :keymaps 'org-agenda-mode-map
-   :states '(normal visual emacs motion)
-   :prefix ","
-   :non-normal-prefix "M-SPC m"
-   "d" #'org-agenda-deadline
-   "s" #'org-agenda-schedule
-   "t" #'org-agenda-todo
-   "q" #'org-agenda-set-tags)
+  (general-nvmap
+    :keymaps 'org-agenda-mode-map
+    :prefix ","
+    "d" #'org-agenda-deadline
+    "s" #'org-agenda-schedule
+    "t" #'org-agenda-todo
+    "q" #'org-agenda-set-tags)
   :config
   (evil-org-agenda-set-keys)
   :hook ((org-agenda-mode-hook . evil-org-agenda-mode)))
