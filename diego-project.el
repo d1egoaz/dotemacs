@@ -108,8 +108,8 @@ It has been modified to always run on comint mode."
 (defun diego/project-generate-ctags ()
   "Regenerate tags, when `prefix-arg' don't generate recursive."
   (interactive)
-  (let* ((recursive (if current-prefix-arg "" " -R "))
-         (cmd (format "ctags -e %s ." recursive)))
+  (let* ((opts (if current-prefix-arg "" " -R --exclude=.git --exclude=node_modules"))
+         (cmd (format "ctags -e %s ." opts)))
     (compile cmd t)))
 
 (provide 'diego-project)
