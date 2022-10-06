@@ -40,7 +40,7 @@
   - [[#theme-modus-themesel][Theme (modus-themes.el)]]
   - [[#maximize-the-emacs-frame-on-startup][Maximize the Emacs Frame on Startup]]
 - [[#buffers][Buffers]]
-  - [[#scratch-buffer---persistent][Scratch buffer - persistent]]
+  - [[#persistent-scratch-buffers][Persistent Scratch buffers]]
 - [[#mode-line][Mode line]]
   - [[#make-it-compact][Make it compact]]
   - [[#format][Format]]
@@ -102,6 +102,7 @@
   - [[#visual-regex][Visual regex]]
 - [[#development][Development]]
   - [[#language-server-support-lsp][Language Server Support (LSP)]]
+  - [[#eglot][eglot]]
   - [[#go][Go]]
   - [[#markdown][Markdown]]
   - [[#misc][Misc]]
@@ -167,6 +168,7 @@
   - [[#demap][demap]]
   - [[#dtache][dtache]]
   - [[#org-modern][org-modern]]
+  - [[#tree-sitter][tree-sitter]]
 - [[#inspiration][Inspiration]]
 - [[#pending-tasks-1114][Pending tasks]]
   - [[#replace-ivycounselswiper-by-selectrumconsultmarginaliaembark][Replace ivy/counsel/swiper by selectrum/consult/marginalia/embark]]
@@ -781,18 +783,18 @@ Command/Super plus =/- for zooming in/out.
 
 * Buffers
 
-** Scratch buffer - persistent
+** Persistent Scratch buffers
 
-*** Disable opening the ephemeral buffer
+*** Always start with a custom scratch buffer
     #+begin_src elisp
     (setq initial-buffer-choice "~/scratch/*scratch*")
     #+end_src
 
-*** Config
+*** Open the scratch buffers when opening emacs.
+
     #+begin_src elisp
     (defun diego--setup-scratch-buffers ()
-      (kill-buffer "*scratch*")
-      ;; (tab-bar-rename-tab-by-name "*scratch*" "|scratch|")
+      (kill-buffer "*scratch*") ;; in case that for some reason it opened the emacs scratch buffer and not my version
       (find-file "~/scratch/*scratch*" t)
       (with-current-buffer "*scratch*" ; Protect scratch buffer against accidental kill
         (emacs-lock-mode 'kill)))
@@ -829,6 +831,7 @@ Command/Super plus =/- for zooming in/out.
           (forward-line 2))))
 
     (defun diego/make-new-scratch-buffer-go-babel ()
+
       "New temporary scratch buffer with a random name with go-babel enabled."
       (interactive)
       (diego/make-scratch ".org")
@@ -1149,7 +1152,11 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (side . right)
          (window-width . 0.20)
          (slot . 1))
-
+        ("\\*VC-history\\*"
+         (display-buffer-in-side-window)
+         (side . right)
+         (window-width . 0.40)
+         (slot . 1))
         ;; bottom buffer (NOT side window)
         ("\\*Embark Actions\\*"
          (display-buffer-reuse-window display-buffer-at-bottom)
@@ -1181,8 +1188,13 @@ The =display-buffer-alist= is a rule-set for controlling the placement of window
          (tab-name . "|kubel|")
          (side . bottom)
          (window-height . 0.2)
-         (slot . 0)
-         (dedicated . t))
+         (slot . 0))
+        ("\\*kubel stderr\\*"
+         (display-buffer-in-tab display-buffer-in-side-window)
+         (tab-name . "|kubel|")
+         (side . bottom)
+         (window-height . 0.2)
+         (slot . 1))
         ("\\*kubel resource.*"
          (display-buffer-in-tab display-buffer-in-side-window)
          (tab-name . "|kubel|")
@@ -1698,7 +1710,7 @@ Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
   (evil-collection-init '(
                           calendar comint company compile consult
                           diff-mode dired docview
-                          ediff elfeed elisp-mode elisp-refs eshell
+                          ediff eglot elfeed elisp-mode elisp-refs eshell
                           flycheck flymake
                           go-mode
                           help helpful
@@ -1742,7 +1754,18 @@ function(|arg2, arg3)
 (use-package evil-args
   :after evil
   :config
-  (setq evil-args-delimiters '("," ";" " ")); include space to use in lisp
+  ;; bind evil-args text objects
+  (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+  (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+  ;; bind evil-forward/backward-args
+  (define-key evil-normal-state-map "L" 'evil-forward-arg)
+  (define-key evil-normal-state-map "H" 'evil-backward-arg)
+  (define-key evil-motion-state-map "L" 'evil-forward-arg)
+  (define-key evil-motion-state-map "H" 'evil-backward-arg)
+  ;; bind evil-jump-out-args
+  ;; (define-key evil-normal-state-map "K" 'evil-jump-out-args)
+
+  (setq evil-args-delimiters '("," ";" " " ", ")); include space to use in lisp
   :bind (:map
          evil-inner-text-objects-map
          ("a" . #'evil-inner-arg)
@@ -2334,16 +2357,11 @@ M-w copy
          :map minibuffer-local-map
          ("C-r" . consult-history)))
 
-;; https://github.com/gagbo/consult-lsp
-(use-package consult-lsp
-  :after (consult lsp-mode)
-  :bind
-  (:map
-   lsp-mode-map
-   ([remap xref-find-apropos] . #'consult-lsp-symbols)))
-
 (use-package consult-flycheck
   :after (consult flycheck))
+
+(use-package consult-yasnippet
+  :after consult)
 
 (use-package consult-dir
   :after (vertico consult bookmark marginalia)
@@ -2724,6 +2742,23 @@ https://github.com/emacs-lsp/lsp-treemacs
   :hook ((lsp-mode-hook . lsp-ui-mode)))
 #+end_src
 
+** eglot
+
+#+begin_src elisp
+
+(use-package eglot
+  :commands eglot eglot-ensure
+  :config
+  (setq eglot-autoshutdown t))
+
+(use-package consult-eglot
+  :after eglot
+  :bind (:map eglot-mode-map
+              ([remap xref-find-apropos] . #'consult-eglot-symbols)))
+
+#+end_src
+
+
 ** Go
 
 *** Get latest gopls
@@ -2767,8 +2802,8 @@ Call =add-dir-local-variable=, result:
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
   :hook ((go-mode-hook . outline-go-mode-hook)
-         (go-mode-hook . lsp-deferred)
-         (go-mode-hook . lsp-go-install-save-hooks)))
+         (go-mode-hook .  eglot-ensure)))
+         ;; (go-mode-hook . lsp-go-install-save-hooks)))
 #+end_src
 
 *** ob-go.el
@@ -2795,18 +2830,7 @@ https://github.com/pope/ob-go
   ;; "tt" #'diego/go-run-test-current-function
   "tt" #'go-test-current-test
   "tf" #'go-test-current-file
-  "tg" #'go-gen-test-exported
-  ;; help a bit lsp + which-key to get the right names, lsp-enable-which-key-integration doesn't seem to always work
-  "l" '(:ignore t :which-key "LSP")
-  "lw" '(:ignore t :which-key  "workspaces")
-  "lF" '(:ignore t :which-key  "folders")
-  "l=" '(:ignore t :which-key  "formatting")
-  "lT" '(:ignore t :which-key  "toggle")
-  "lg" '(:ignore t :which-key  "goto")
-  "lh" '(:ignore t :which-key  "help")
-  "lr" '(:ignore t :which-key  "refactor")
-  "la" '(:ignore t :which-key  "code actions")
-  "lG" '(:ignore t :which-key  "peek"))
+  "tg" #'go-gen-test-exported)
 #+end_src
 *** flycheck-golangci
 
@@ -2931,7 +2955,7 @@ go-impl generates method stubs for implementing an interface.
 (use-package graphql-mode :mode "\\.g\\(?:raph\\)?ql$")
 (use-package json-mode)
 (use-package nix-mode)
-(use-package protobuf-mode)
+;; (use-package protobuf-mode)
 (use-package terraform-mode)
 (use-package web-mode)
 #+end_src
@@ -3347,8 +3371,12 @@ of learning a different Emacs package and formatting command for each language.
 ** Define word
 
 Use directly this server instead of trying localhost.
+dict.org uses Webster 1913 dictionary.
 #+begin_src elisp
-(setq dictionary-server "dict.org")
+(use-package dictionary
+  :straight (:type built-in)
+  :config
+  (setq dictionary-server "dict.org"))
 #+end_src
 
 #+begin_src elisp
@@ -4140,11 +4168,11 @@ This command does not push text to `kill-ring'."
  "x"       #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
  ;; Tabs
  "TAB"     '(:ignore t :which-key "workspaces")
- "TAB l" #'(tab-switch :which-key "Switch workspace")
- "TAB d"   #'(tab-bar-close-tab :which-key "Close workspace")
- "TAB D"   #'(tab-bar-close-tab-by-name :which-key "Close workspace by name")
- "TAB p"   #'(tab-previous :which-key "Previous workspace")
- "TAB n"   #'(tab-next :which-key "Next workspace")
+ "TAB s" #'(tab-switch :which-key "Switch workspace")
+ "TAB k"   #'(tab-bar-close-tab :which-key "Close workspace")
+ "TAB K"   #'(tab-bar-close-tab-by-name :which-key "Close workspace by name")
+ "TAB h"   #'(tab-previous :which-key "Previous workspace")
+ "TAB l"   #'(tab-next :which-key "Next workspace")
  "TAB TAB"   #'(tab-recent :which-key "Recent workspace")
  "TAB t"   #'(diego/toggle-workspaces-enabled :which-key "Toggle tabs as workspaces")
  ;; Apps
@@ -4171,13 +4199,14 @@ This command does not push text to `kill-ring'."
  "bB"      #'(ibuffer-list-buffers :which-key "Ibuffer list buffers")
  "bc"      #'(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
  "bC"      #'((lambda () (interactive) (switch-to-buffer "*compilation*")) :which-key "Compilation buffer")
- "bd"      #'(kill-current-buffer :which-key "Kill current buffer")
+ "bd"      #'((lambda () (interactive) (diff-buffer-with-file (current-buffer))) :which-key "diff-buffer-with-file")
+ "bg"      #'vc-diff
  "bw"      #'(kill-buffer-and-window :which-key "Kill current buffer and window")
  "be"      #'(diego/safe-erase-buffer :which-key "Erase buffer")
  "bE"      #'(view-echo-area-messages :which-key "Echo area buffer")
  "bf"      #'(format-all-buffer :which-key "Format buffer")
  "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
- "bK"      #'(kill-buffer :which-key "Kill selected buffer")
+ "bk"      #'(kill-buffer :which-key "Kill selected buffer")
  "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
  "br"      #'revert-buffer-quick
 
@@ -4237,6 +4266,7 @@ This command does not push text to `kill-ring'."
  "glm"     #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link in master")
 
  "gL"      #'magit-log
+ "gr"      #'vc-region-history ;; same as a 'magit-log-buffer-file if a region is sele
  "gv"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
  ;; Help/Highlight
  "h"       '(:ignore t :which-key "help/highlight")
@@ -4271,7 +4301,7 @@ This command does not push text to `kill-ring'."
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
  "iu"      #'(insert-char :which-key "Unicode char")
- "is"      #'(yas-insert-snippet :which-key "Snippet")
+ "is"      #'(consult-yasnippet :which-key "Snippet")
  "ik"      #'(diego/evil-insert-line-above :which-key "Line above")
  "ij"      #'(diego/evil-insert-line-below :which-key "Line below")
  "iy"      #'(consult-yank-pop :which-key "Insert Yank")
@@ -4302,18 +4332,18 @@ This command does not push text to `kill-ring'."
  "k TAB"    #'(tab-bar-close-tab :which-key "Kill workspace tab")
  "kw"      #'(kill-buffer-and-window :which-key "Kill current buffer and window")
  ;; LSP
- "l"       '(:ignore t :which-key "lsp")
- "lc"      #'lsp-treemacs-call-hierarchy
- "ld"      #'xref-find-definitions
+ "l"       '(:ignore t :which-key "lsp with eglot")
+ "ll"       '(:ignore t :which-key "find/locate")
+ "lla"      #'xref-find-apropos
+ "lld"      #'xref-find-definitions
+ "lli"      #'eglot-find-implementation
+ "llr"      #'xref-find-references
+ "llt"      #'eglot-find-typeDefinition
+ ;; "lc"      #'lsp-treemacs-call-hierarchy
  "le"      #'flycheck-list-errors
- "li"      #'lsp-find-implementation
  "lk"      #'lsp-describe-thing-at-point
- "ln"      #'lsp-ui-find-next-reference
- "lp"      #'lsp-ui-find-prev-reference
- "lr"      #'xref-find-references
- "lR"      #'lsp-rename
- "lt"      #'lsp-goto-type-definition
- "lX"      #'lsp-execute-code-action
+ "lr"      #'eglot-rename
+ "lx"      #'eglot-code-actions
  "ls"       #'(lsp-signature-activate :which-key "show signature")
  "lh"       #'(lsp-describe-thing-at-point :which-key "describe symbol")
  ;; local mode/leader
@@ -4484,6 +4514,20 @@ https://emacstil.com/til/2022/03/05/setting-up-vale-prose-linter-on-emacs/
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
 #+end_src
 
+** tree-sitter
+
+#+begin_src elisp
+(use-package tree-sitter
+  :straight (tree-sitter :host github :repo "emacs-tree-sitter/elisp-tree-sitter")
+  :config
+  (global-tree-sitter-mode)
+  :hook
+  (tree-sitter-after-on-hook . tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs
+  :straight (tree-sitter-langs :host github :repo "emacs-tree-sitter/tree-sitter-langs")
+  :after tree-sitter)
+#+end_src
 
 * Inspiration
 
