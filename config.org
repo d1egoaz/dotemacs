@@ -1765,7 +1765,12 @@ function(|arg2, arg3)
   ;; bind evil-jump-out-args
   ;; (define-key evil-normal-state-map "K" 'evil-jump-out-args)
 
-  (setq evil-args-delimiters '("," ";" " " ", ")); include space to use in lisp
+  (setq evil-args-delimiters '("," ";")); include space to use in lisp
+
+  (defun diego--fix-evil-args-lisp ()
+    (make-local-variable 'evil-args-delimiters)
+    (setq evil-args-delimiters " "))
+
   :bind (:map
          evil-inner-text-objects-map
          ("a" . #'evil-inner-arg)
@@ -1779,8 +1784,10 @@ function(|arg2, arg3)
          :map
          evil-motion-state-map
          ("H" . #'evil-backward-arg)
-         ("L" . #'evil-forward-arg)))
-#+end_src
+         ("L" . #'evil-forward-arg))
+  :hook ((emacs-lisp-mode-hook . diego--fix-evil-args-lisp)
+         (org-mode-hook . diego--fix-evil-args-lisp)))
+    #+end_src
 
 ** evil-commentary.el
 
@@ -3217,7 +3224,6 @@ display portions of a program, which are referred to as blocks.
 #+end_src
       (setq dired-sidebar-should-follow-file t)
       (setq dired-sidebar-recenter-cursor-on-follow-file nil)
-
 
 ** ediff.el
 
