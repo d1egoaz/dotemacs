@@ -104,6 +104,7 @@
   - [[#language-server-support-lsp][Language Server Support (LSP)]]
   - [[#eglot][eglot]]
   - [[#go][Go]]
+  - [[#rust][Rust]]
   - [[#markdown][Markdown]]
   - [[#misc][Misc]]
   - [[#yaml][yaml]]
@@ -2765,7 +2766,6 @@ https://github.com/emacs-lsp/lsp-treemacs
 
 #+end_src
 
-
 ** Go
 
 *** Get latest gopls
@@ -2906,6 +2906,58 @@ go-impl generates method stubs for implementing an interface.
 
 (advice-add 'command-which-should-not-use-orderless
             :around #'without-orderless)
+
+** Rust
+https://github.com/brotzeit/rustic
+#+begin_example
+rustup component add rust-src
+rustup component add rustfmt
+cargo install cargo-script # to make it work in org mode babel
+rustup toolchain install nightly # to use expand
+cargo install cargo-expand
+#+end_example
+
+#+begin_src elisp
+;; https://github.com/brotzeit/rustic#eglot
+(use-package rustic
+  :mode ("\\.rs$" . rustic-mode)
+  :general
+  (general-nvmap
+    :keymaps 'rust-mode-map
+    :prefix ","
+    "b" #'rustic-cargo-build
+    "c" '(:ignore t :which-key "cargo")
+    "ca" #'rustic-cargo-add
+    "cc" #'rustic-cargo-clippy
+    "ci" #'rustic-cargo-add-missing-dependencies
+    "cu" #'rustic-cargo-upgrade
+    "co" #'rustic-cargo-outdated
+    "d"  #'rustic-doc-search
+    "e" #'rustic-cargo-expand
+    "f" #'rustic-cargo-fmt
+    "t" '(:ignore t :which-key "test")
+    ;; "tt" #'diego/go-run-test-current-function
+    "tt" #'rustic-cargo-current-test
+    "tf" #'rustic-cargo-test
+    "r" #'rustic-cargo-run)
+
+  :config
+  (setq rustic-lsp-client 'eglot)
+  (setq rustic-format-on-save t)
+
+  (defun diego--rustic-mode-auto-save-hook ()
+    "Enable auto-saving in rustic-mode buffers."
+    (when buffer-file-name
+      (setq-local compilation-ask-about-save nil)))
+
+  ;; https://github.com/brotzeit/rustic#eglot
+  (defun diego--eglot-turn-off-flymake ()
+    (flymake-mode -1))
+
+  :hook ((rust-mode-hook .  eglot-ensure)
+         (rustic-mode-hook . diego--rustic-mode-auto-save-hook)
+         (eglot--managed-mode-hook . diego--eglot-turn-off-flymake)))
+#+end_src
 
 ** Markdown
 
