@@ -33,11 +33,14 @@
 (setq gc-cons-threshold most-positive-fixnum)
 (setq garbage-collection-messages t)    ; indicator of GC activity
 
-;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
-;; packages are compiled ahead-of-time when they are installed and site files
-;; are compiled when gccemacs is installed.
-(setq native-comp-deferred-compilation t) ; has to be t to have straight package native compiled
+(setq inhibit-automatic-native-compilation nil)
+(setq native-comp-always-compile t)
+(setq native-comp-async-jobs-number 4)
+(setq native-comp-async-query-on-exit t)
 (setq native-comp-async-report-warnings-errors 'silent)
+(setq native-comp-deferred-compilation-deny-list nil)
+(setq native-comp-verbose 0)
+(setq package-native-compile t)
 
 ;; Disable `package' in favor of `straight'.
 (setq package-enable-at-startup nil)
@@ -66,9 +69,6 @@
 ;; Default value is '(find-at-startup find-when-checking)
 (setq straight-check-for-modifications '(find-at-startup find-when-checking))
 
-;; Default is 'full which means to clone complete history.
-(setq straight-vc-git-default-clone-depth 1)
-
 ;; 'https is the default
 (setq straight-vc-git-default-protocol 'https)
 
@@ -88,11 +88,9 @@
 
 ;; Install use-package first and setup so that use-package will use straight.el rather than
 ;; package.el by default.
-(straight-use-package 'org)
 (straight-use-package 'use-package)
 (straight-use-package 'general)
 
-(require 'org)
 (require 'use-package)
 (require 'general)
 

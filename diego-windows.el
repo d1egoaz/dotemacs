@@ -44,7 +44,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   (let ((evil-vsplit-window-right (not evil-vsplit-window-right)))
     (call-interactively #'evil-window-vsplit)))
 
-(define-minor-mode diego/dedicated-mode
+(define-minor-mode diego/toggle-window-dedication
   "Minor mode for dedicating windows.
 This minor mode dedicates the current window to the current buffer.
 The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp/extras.el"
@@ -56,7 +56,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     (message "Window %sdedicated to %s"
              (if dedicated "no longer " "")
              (buffer-name))))
-
 
 ;; from https://www.reddit.com/r/emacs/comments/pka1sm/my_first_package_aside_for_easier_configuration/hc3g1z7
 (cl-defun diego/display-buffer-in-side-window (&optional (buffer (current-buffer)))
@@ -87,6 +86,11 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
            (set-window-buffer w2 b1)
            (set-window-start w1 s2)
            (set-window-start w2 s1)))))
+
+
+(defun diego/window-remove-side-parameter ()
+  (interactive)
+  (set-window-parameter nil 'window-side nil))
 
 (provide 'diego-windows)
 ;;; diego-windows.el ends here

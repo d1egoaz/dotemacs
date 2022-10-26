@@ -53,7 +53,7 @@
 (defun diego/workspaces-validate-buffer (buffer &rest _)
   "Check if workspaces per buffer is enabled and that BUFFER is visiting a file."
   (and diego-workspaces-enabled
-       (or (string-prefix-p "magit:" buffer) ; special case for when the first project buffer is magit
+       (or (string-prefix-p "magit:" (buffer-name buffer)) ; special case for when the first project buffer is magit
            (buffer-local-value 'buffer-file-name (get-buffer buffer)))))
 
 (defun diego/workspaces-name-for-buffer (buffer _a)

@@ -56,6 +56,7 @@
 (defun diego/fetch-and-rebase-onto-origin-master ()
   (interactive)
   (magit-fetch-branch "origin" "master" nil)
+  ;; (magit-git-rebase "origin/master" "--keep-base"))
   (magit-git-rebase "origin/master" nil))
 
 ;;;###autoload
