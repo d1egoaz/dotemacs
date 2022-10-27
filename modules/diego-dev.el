@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-;;;###autoload
 (defun diego/dev ()
   "Runs a common dev command. Or run the passed command if no command was selected"
   (declare (interactive-only compile))
@@ -36,7 +35,6 @@
         (cmd (completing-read "dev command: " list  nil nil prefix 'compile-history)))
     (compile cmd t)))
 
-;;;###autoload
 (defun diego/dev-project ()
   "Run a dev command from the project defined commands."
   (declare (interactive-only compile))

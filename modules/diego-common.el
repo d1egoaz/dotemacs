@@ -24,17 +24,12 @@
 
 ;;; Code:
 
-(defgroup diego-common ()
-  "Auxiliary functions for my dotemacs."
-  :group 'editing)
 
-;;;###autoload
 (defun diego/indent-buffer ()
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)))
 
-;;;###autoload
 (defun diego/delete-last-char-eol ()
   "Delete last character in line."
   (interactive)
@@ -48,12 +43,11 @@
                         "(╯°□°）╯︵ ┻━┻"
                         "(⌐■_■)"
                         "¯\\(°_°)/¯"))
-;;;###autoload
+
 (defun diego/emoji-insert ()
   (interactive)
   (insert (completing-read "Emoji to insert: " diego--emojis)))
 
-;;;###autoload
 (defun diego/copy-buffer-name ()
   "copy buffer name"
   (interactive)
@@ -61,7 +55,6 @@
     (message b)
     (kill-new b)))
 
-;;;###autoload
 (defun diego/copy-file-name ()
   "copy buffer name"
   (interactive)
@@ -69,21 +62,18 @@
     (message path)
     (kill-new path)))
 
-;;;###autoload
 (defun diego/copy-buffer-dir-path ()
   "copy buffer path to clipboard"
   (interactive)
   (message default-directory)
   (kill-new default-directory))
 
-;;;###autoload
 (defun diego/url-to-markdown-image ()
   "Copy URL from clipboard and creates and image tag to use in markdown"
   (interactive)
   (kill-new
    (format "<img src=\"%s\" width=\"50%%\" />" (current-kill 0))))
 
-;;;###autoload
 (defun diego/today-UTC-date ()
   "copy the full UTC time to clipboard"
   (interactive)
@@ -91,7 +81,6 @@
   ;; nil to use current date, t to use UTC
   (insert (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t)))
 
-;;;###autoload
 (defun diego/now ()
   "Inserts the current time in the buffer"
   (interactive)
@@ -110,38 +99,32 @@
    command
    (current-buffer) t "*diego/error-buffer*" t))
 
-;;;###autoload
 (defun diego/prettify-json ()
   "prettify json current region"
   (interactive)
   (diego--exec-command-replace-region "jq -SM ."))
 
-;;;###autoload
 (defun diego/resize-image ()
   (interactive)
   (let ((str (concat "convert \"" buffer-file-name "\" -geometry x300 \"" buffer-file-name "\"")))
     (message str)
     (shell-command-to-string str)))
 
-;;;###autoload
 (defun diego/prettify-jsonv-with-prettier ()
   "prettify json current region"
   (interactive)
   (diego--exec-command-replace-region "prettier --parser json"))
 
-;;;###autoload
 (defun diego/prettify-markdown ()
   "prettify markdown current region"
   (interactive)
   (diego--exec-command-replace-region "prettier --parser markdown"))
 
-;;;###autoload
 (defun diego/prettify-yaml ()
   "prettify yaml current region"
   (interactive)
   (diego--exec-command-replace-region "prettier --parser yaml"))
 
-;;;###autoload
 (defun diego/kill-close-all-buffers ()
   (interactive)
   (let ((keep '("*scratch* *Messages*")))
@@ -153,35 +136,30 @@
          (kill-buffer b)))
      (buffer-list))))
 
-;;;###autoload
 (defun diego/safe-erase-buffer ()
   "Prompt before erasing the content of the file."
   (interactive)
   (if (y-or-n-p (format "Erase content of buffer %s ? " (current-buffer)))
       (erase-buffer)))
 
-;;;###autoload
 (defun diego/copy-whole-buffer-to-clipboard ()
   "Copy entire buffer to clipboard"
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max))
   (message "buffer '%s' copied to kill ring" (buffer-name)))
 
-;;;###autoload
 (defun diego/evil-insert-line-above (count)
   "Insert one or several lines above the current point's line without changing
     the current state and point position."
   (interactive "p")
   (dotimes (_ count) (save-excursion (evil-insert-newline-above))))
 
-;;;###autoload
 (defun diego/evil-insert-line-below (count)
   "Insert one or several lines below the current point's line without changing
     the current state and point position."
   (interactive "p")
   (dotimes (_ count) (save-excursion (evil-insert-newline-below))))
 
-;;;###autoload
 (defun diego/autocapitalize-org-headings ()
   "Find org headings and capitalize first word"
   (interactive)
@@ -194,31 +172,26 @@
         (forward-to-word 1))
       (upcase-char 1))))
 
-;;;###autoload
 (defun diego/insert-uuid ()
   (interactive)
   (insert (shell-command-to-string "uuidgen")))
 
-;;;###autoload
 (defun diego/insert-filename ()
   "Insert a filename at point."
   (interactive)
   (insert (read-file-name "File:")))
 
-;;;###autoload
 (defun diego/insert-relative-filename ()
   "Insert a relative filename at point."
   (interactive)
   (insert (file-relative-name (read-file-name "File: "))))
 
-;;;###autoload
 (defun diego/browse-current-file ()
   "Open the current file as a URL using `browse-url'."
   (interactive)
   (let ((file-name (buffer-file-name)))
     (browse-url (concat "file://" file-name))))
 
-;;;###autoload
 (defun diego/what-the-commit ()
   (interactive)
   (insert
@@ -227,7 +200,6 @@
      (re-search-backward "<p>\\([^<]+\\)\n<\/p>")
      (match-string 1))))
 
-;;;###autoload
 (defun diego/make-orgcapture-frame ()
   "Create a new frame and run org-capture."
   (interactive)
@@ -236,12 +208,10 @@
   (select-frame-by-name "alfredoc")
   (org-capture))
 
-;;;###autoload
 (defun diego/consult-line-symbol-at-point ()
   (interactive)
   (consult-line (thing-at-point 'symbol)))
 
-;;;###autoload
 (defun diego/go-run-test-current-function ()
   (interactive)
   (if (string-match "_test\\.go" buffer-file-name)
@@ -252,7 +222,6 @@
     (message "Must be in a _test.go file to run go-run-test-current-function")))
 
 ;; from https://github.com/alphapapa/unpackaged.el
-;;;###autoload
 (defun diego/org-fix-blank-lines (&optional prefix)
   "Ensure that blank lines exist between headings and between headings and their contents.
 With prefix, operate on whole buffer. Ensures that blank lines
@@ -297,7 +266,6 @@ exist after each headings's drawers."
      ("Github Shopify NEW Search" "https://cs.github.com/?scope=org:Shopify&scopeName=Shopify&q=%s")
      ("Google" "https://google.com/search?q=%s"))))
 
-;;;###autoload
 (defun diego/open-url ()
   "Open an URL given a provider and a query."
   (interactive)

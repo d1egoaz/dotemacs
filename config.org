@@ -1,4 +1,4 @@
-#+TITLE: d1egoaz "dotemacs -- not using litera config anymore"
+#+TITLE: d1egoaz "dotemacs -- not using litera config an"
 #+AUTHOR: Diego Alvarez
 #+EMAIL: diego.canada@icloud.com
 #+DESCRIPTION: d1egoaz Personal Emacs Configuration
