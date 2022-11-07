@@ -41,7 +41,9 @@
   ;; helpful and only add to runtime costs.
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
-  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  ;; (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+
   ;; (setq magit-display-buffer-function #'display-buffer) to use window rules
 
   (setq magit-repository-directories
@@ -117,6 +119,7 @@ Uses gh and magit"
 
 ;;*** forge.el
 (use-package forge
+  :demand t
   :commands forge-create-pullreq)
 
 (provide 'diego-git)

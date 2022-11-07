@@ -19,7 +19,7 @@
   (setq recentf-max-menu-items 1000)
   (setq recentf-max-saved-items 1000)
   (setq recentf-auto-cleanup nil)
-  (recentf-mode 1))
+  (add-hook 'after-init-hook #'recentf-mode))
 
 ;;** Completion framework (corfu.el)
 ;;*** corfu
@@ -145,6 +145,7 @@
 ;;*** vertico.el
 ;; Provides the vertical completion user interface.
 (use-package vertico
+  :demand t
   :after orderless ; https://github.com/oantolin/orderless/issues/64#issuecomment-868989378
   :straight (:files (:defaults "extensions/*") :includes (vertico-repeat vertico-quick))
   :init
@@ -166,6 +167,13 @@
                                         (cl-letf (((symbol-function #'minibuffer-completion-help)
                                                    #'ignore))
                                           (apply args))))
+
+  (defun vertico--select-first (state)
+    (when (> (alist-get 'vertico--total state) 0)
+      (setf (alist-get 'vertico--index state) 0))
+    state)
+  (advice-add #'vertico--recompute :filter-return #'vertico--select-first)
+
   :bind (:map
          vertico-map
          ("<C-tab>" . #'vertico-quick-insert)
@@ -181,6 +189,7 @@
 ;; M-i quick insert
 ;; M-w copy
 (use-package consult
+  :demand t
   :after vertico
   :init
 

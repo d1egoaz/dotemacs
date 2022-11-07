@@ -93,6 +93,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 ;; Motion ([, ], {, }, (, ), gj, gk, C-j, C-k)
 (use-package evil-collection
   :after evil
+  :demand t
   :commands (evil-collection-dired-setup evil-collection-magit-setup)
   :init
   (setq evil-collection-company-use-tng nil) ; I don't want that completion experience

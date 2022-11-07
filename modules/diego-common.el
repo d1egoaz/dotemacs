@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-
 (defun diego/indent-buffer ()
   (interactive)
   (save-excursion
@@ -255,7 +254,7 @@ exist after each headings's drawers."
                          nil
                        'tree)))
 
-(defvar diego--lookup-provider-alist
+(defun diego--lookup-provider-alist ()
   (append
    diego--shopify-lookup-provider-alist
    '(("Github Search" "https://github.com/search?q=%s")
@@ -270,8 +269,8 @@ exist after each headings's drawers."
   "Open an URL given a provider and a query."
   (interactive)
   (let ((site (cadr (assoc
-                     (completing-read "Search on: " diego--lookup-provider-alist)
-                     diego--lookup-provider-alist))))
+                     (completing-read "Search on: " (diego--lookup-provider-alist))
+                     (diego--lookup-provider-alist)))))
     (browse-url
      (url-encode-url
       (format site (read-from-minibuffer "Query: "))))))

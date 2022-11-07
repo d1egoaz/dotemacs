@@ -65,7 +65,6 @@
       (olivetti-mode -1)
       (set-window-fringes (selected-window) nil))))
 
-
 ;;** RSS (elfeed.el)
 ;; The best RSS reader.
 (use-package elfeed
@@ -86,6 +85,8 @@
   (setq elfeed-search-title-max-width 120)
   (setq elfeed-show-truncate-long-urls t)
   (setq elfeed-sort-order 'ascending)
+
+  (set-face-attribute 'elfeed-search-unread-title-face nil :background "#001904" :foreground "#b8e2b8")
 
   (defun diego/elfeed-filter-do ()
     (interactive)
@@ -118,7 +119,6 @@
   :config
   (setq rmh-elfeed-org-files (list "~/Documents/deft/elfeed.org"))
   (elfeed-org))
-
 
 ;;** emacs-everywhere.el
 ;; By default, emacs-everywhere-insert-selection is a hook in

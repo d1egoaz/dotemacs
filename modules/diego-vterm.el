@@ -1,5 +1,6 @@
 ;;** vterm.el
 (use-package vterm
+  :demand t
   :bind (:map
          vterm-mode-map
          ("<f5>" . nil)

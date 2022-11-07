@@ -33,7 +33,7 @@
   (setq modus-themes-syntax '(yellow-comments alt-syntax))
   (setq modus-themes-tabs-accented nil)
   ;; default white is too bright
-  (setq modus-themes-vivendi-color-overrides '((fg-main . "#c2c2c2")))
+  (setq modus-themes-vivendi-color-overrides '((bg-main . "#212121")(fg-main . "#c2c2c2")))
   (with-eval-after-load 'vertico (set-face-attribute 'vertico-current nil
                                                      :inherit 'pulsar-yellow))
   (defun diego--improve-tabs-color ()

@@ -9,7 +9,7 @@
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-tab-select 'recent)
   (setq tab-bar-new-tab-choice nil)
-  (setq tab-bar-separator "/")
+  (setq tab-bar-separator "|")
   (setq tab-bar-show t)
   (setq tab-bar-tab-hints nil) ; don't show numbers
 

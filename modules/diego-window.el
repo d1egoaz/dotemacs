@@ -63,6 +63,11 @@
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
            (window-width . 0.50))
+          ((or . ((derived-mode . magit-diff-mode)
+                  (derived-mode . magit-rev-mode)))
+           (display-buffer-reuse-mode-window display-buffer-in-side-window)
+           (side . right)
+           (window-width . 0.50))
           ("\\*Ilist\\*"
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
@@ -71,6 +76,11 @@
           ("\\*\\(Calendar\\|Org todo\\)\\*"
            (display-buffer-reuse-window display-buffer-below-selected)
            (window-height . fit-window-to-buffer))
+          ("\\*Process List\\*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (window-height . 0.4)
+           (slot . 0))
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************
@@ -112,10 +122,10 @@
            ;;;; Scratch buffers
           ("\\*scratch.*"
            (display-buffer-in-tab)
-           (tab-name . "|scratch|"))
+           (tab-name . "scratch"))
           ("\\*\\(straight-process\\|Async-native-compile-log\\)\\*"
            (display-buffer-in-tab)
-           (tab-name . "|general|"))
+           (tab-name . "general"))
           ;;; Automatic workspaces-tabs management
           ;; Every buffer visiting a file goes automatically to a tab given by the root project.
           ;; idea from https://emacs.stackexchange.com/a/64486

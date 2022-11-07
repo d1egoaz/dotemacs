@@ -8,7 +8,7 @@
 
   ;; *** Open the scratch buffers when opening emacs.
   (defun diego--init-scratch-buffers ()
-    (tab-bar-rename-tab "|scratch|") ;; create initial tab
+    (tab-bar-rename-tab "scratch") ;; create initial tab
     (kill-buffer "*scratch*") ;; in case that for some reason it opened the emacs scratch buffer and not my version
     (find-file "~/scratch/*scratch*" t)
     (with-current-buffer "*scratch*" ; Protect scratch buffer against accidental kill

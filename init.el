@@ -171,7 +171,6 @@
 ;; #+end_example
 
 
-(setq diego--shopify-lookup-provider-alist nil)
 ;; basic settings
 (setq user-full-name "Diego Alvarez")
 (setq user-mail-address "diego.canada@icloud.com")
@@ -231,12 +230,23 @@
 ;; #+end_example
 (setq epg-pinentry-mode 'loopback)
 
+;; ** Configure PATH on macOS
+(use-package exec-path-from-shell
+  :config
+  (setq exec-path-from-shell-variables '("EMACS_ADDITIONAL_DIR"
+                                         "FZF_CTRL_T_COMMAND"
+                                         "FZF_DEFAULT_COMMAND"
+                                         "FZF_DEFAULT_OPTS"
+                                         "KUBECONFIG"
+                                         "MANPATH"
+                                         "PATH"))
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 ;;;; Packages
 
 (add-to-list 'load-path (locate-user-emacs-file "modules"))
-(add-to-list 'load-path (substitute-in-file-name "$EMACS_ADDITIONAL_DIR/shopify-emacs.el"))
-
-;(require 'shopify-emacs)
+(add-to-list 'load-path (substitute-in-file-name "$EMACS_ADDITIONAL_DIR"))
 (require 'diego-common)
 (require 'diego-ui)
 (require 'diego-ui-font)
@@ -260,5 +270,6 @@
 (require 'diego-org)
 (require 'diego-misc)
 (require 'diego-keybindings)
+(require 'shopify-emacs)
 
 ;;; init.el ends here
