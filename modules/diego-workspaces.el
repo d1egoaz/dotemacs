@@ -77,12 +77,11 @@ Known project types are Git or a directory having a .project file."
 If ROOT-DIR matches a list of known paths returns only the
 directory name, otherwise return the ROOT-DIR."
   (message "root-dir: %s" root-dir)
-  (format "%s"
-          (if (or (string-prefix-p "~/src/github.com/Shopify" root-dir)
-                  (string-prefix-p (concat (getenv "HOME") "/src/github.com/Shopify") root-dir)
-                  (string-prefix-p "/Volumes/GoogleDrive/My Drive" root-dir))
-              (file-name-nondirectory (directory-file-name root-dir)) ; example: /tmp/foo/bar -> bar
-            root-dir)))
+  (if (or (string-prefix-p "~/src/github.com/Shopify" root-dir)
+          (string-prefix-p (concat (getenv "HOME") "/src/github.com/Shopify") root-dir)
+          (string-prefix-p "/Volumes/GoogleDrive/My Drive" root-dir))
+      (file-name-nondirectory (directory-file-name root-dir)) ; example: /tmp/foo/bar -> bar
+    root-dir))
 
 (defun diego/reload-workspaces ()
   "Reload workspaces."

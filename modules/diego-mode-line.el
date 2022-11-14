@@ -44,8 +44,6 @@
 
 (use-package keycast
   :after moody
-  :init
-  (setq keycast-insert-after 'mode-line-misc-info)
   :config
   (setq keycast-window-predicate 'moody-window-active-p)
   (setq keycast-remove-tail-elements nil) ; leave mode line alone
@@ -73,7 +71,8 @@
   ;; (add-to-list 'global-mode-string '("" mode-line-keycast " "))
   (set-face-attribute 'keycast-key nil :height 1.0)
   (set-face-attribute 'keycast-command nil :height 0.5)
-  (keycast-mode 1))
+  ;; (keycast-mode 1)
+  )
 
 ;;** Show date and time
 (use-package time

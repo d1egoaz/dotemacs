@@ -81,12 +81,13 @@
 
   (lsp-enable-which-key-integration t)
 
-  (defun diego--lsp-go-install-save-hooks ()
+  (defun diego--lsp-save-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
   :hook
   ((lsp-completion-mode-hook . my/lsp-mode-setup-completion)
+   (go-mode-hook . diego--lsp-save-hooks)
    (lsp-mode-hook . lsp-enable-which-key-integration)))
 
 (use-package lsp-ui
@@ -166,8 +167,8 @@
     (set (make-local-variable 'outline-regexp) "\\(func \\|\\(.*struct {\\)\\|\\(type \\)\\)"))
 
   :hook ((go-mode-hook . outline-go-mode-hook)
-         (go-mode-hook . lsp-deferred)
-         (go-mode-hook . diego--lsp-go-install-save-hooks)))
+         (go-mode-hook . lsp-deferred)))
+
 ;; (go-mode-hook .  eglot-ensure)))
 
 ;;*** ob-go.el
@@ -270,7 +271,6 @@
       (setq-local compilation-ask-about-save nil)))
 
   :hook ((rustic-mode-hook . lsp-deferred)
-         (rustic-mode-hook . diego--lsp-go-install-save-hooks)
          (rustic-mode-hook . diego--rustic-mode-auto-save-hook)))
 ;;(rust-mode-hook .  eglot-ensure)
 

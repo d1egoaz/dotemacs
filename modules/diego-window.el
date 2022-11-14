@@ -90,25 +90,25 @@
            ;;;; Kubel
           ("\\*kubel-process.*"
            (display-buffer-in-tab display-buffer-in-side-window)
-           (tab-name . "|kubel|")
+           (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.2)
            (slot . 0))
           ("\\*kubel stderr\\*"
            (display-buffer-in-tab display-buffer-in-side-window)
-           (tab-name . "|kubel|")
+           (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.2)
            (slot . 1)
            (window-parameters . ((no-other-window . t))))
           ("\\*kubel resource.*"
            (display-buffer-in-tab display-buffer-in-side-window)
-           (tab-name . "|kubel|")
+           (tab-name . "kubel")
            (side . right)
            (window-width . 0.5))
-          ("\\*\\(kubectl\\|kubel\\).*"
+          ("\\*kubel manager.*"
            (display-buffer-in-tab)
-           (tab-name . "|kubel|")
+           (tab-name . "kubel")
            (dedicated . t))
            ;;;; Elfeed
           ("\\*elfeed-search\\*"

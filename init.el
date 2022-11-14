@@ -248,6 +248,7 @@
 (add-to-list 'load-path (locate-user-emacs-file "modules"))
 (add-to-list 'load-path (substitute-in-file-name "$EMACS_ADDITIONAL_DIR"))
 (require 'diego-common)
+(require 'shopify-emacs)
 (require 'diego-ui)
 (require 'diego-ui-font)
 (require 'diego-ui-theme)
@@ -270,6 +271,5 @@
 (require 'diego-org)
 (require 'diego-misc)
 (require 'diego-keybindings)
-(require 'shopify-emacs)
 
 ;;; init.el ends here

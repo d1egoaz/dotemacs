@@ -8,6 +8,8 @@
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-tab-select 'recent)
+  (setq tab-bar-auto-width nil) ; I don't like the width of the tabs
+
   (setq tab-bar-new-tab-choice nil)
   (setq tab-bar-separator "|")
   (setq tab-bar-show t)
@@ -68,7 +70,7 @@ It needs an space before to stop any colour to follow at the end of the row."
           diego-tab-format-line-break
           diego-tab-format-vc
           diego-tab-format-buffer-id
-          diego-tab-format-keycast
+          ;; diego-tab-format-keycast
           tab-bar-format-align-right
           tab-bar-format-global))
 
