@@ -214,10 +214,14 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 ;;** evil-snipe.el
 (use-package evil-snipe
   :after evil
+  :general
+  (general-nmap :keymaps 'evil-snipe-local-mode-map
+    "s" 'evil-snipe-s
+    "S" 'evil-snipe-S)
   :config
-  (setq evil-snipe-scope 'whole-visible)
-  (evil-snipe-mode)
-  (evil-snipe-override-mode)
+  (setq evil-snipe-scope 'line)
+  (evil-snipe-mode 1)
+  (evil-snipe-override-mode 1)
   :hook ((magit-mode-hook . turn-off-evil-snipe-override-mode)))
 
 ;;** evil-surround.el
