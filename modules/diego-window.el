@@ -212,6 +212,19 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
   :bind ("<f6>" . #'window-toggle-side-windows))
 
+;; adapted from https://www.omarpolo.com/post/emacs-side-window.html
+(defun diego/buffer-to-side-window ()
+  (interactive)
+  "Place the current buffer in the right side window."
+  (interactive)
+  (let ((buf (current-buffer)))
+    (display-buffer-in-side-window
+     buf '((window-width . 0.50)
+           (side . right)
+           (slot . -1)
+           (window-parameters . (no-delete-other-windows . t))))
+    (delete-window)))
+
 (use-package windmove
   :straight (:type built-in)
   :config
