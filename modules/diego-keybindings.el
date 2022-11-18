@@ -10,27 +10,27 @@
 ;;** Bindings
 ;; ** Global Keybindings
 ;; repeat last macro with Q, use macro and then Q to repeat it
-(define-key evil-normal-state-map "Q" (kbd "@@"))
+(keymap-set evil-normal-state-map "Q" #'evil-execute-last-recorded-macro)
 
 ;; unset "C-k" in evil insert, fixes binding for corfu
-(define-key evil-insert-state-map (kbd "C-n") nil)
-(define-key evil-insert-state-map (kbd "C-p") nil)
+;; (keymap-set evil-insert-state-map "C-n" nil)
+;; (keymap-set evil-insert-state-map "C-p" nil)
 
 (evil-define-key 'visual global-map (kbd ">") 'my/evil-shift-right)
 (evil-define-key 'visual global-map (kbd "<") 'my/evil-shift-left)
 
 ;; ESC Cancels All
 (define-key global-map [escape] #'keyboard-escape-quit)
-(global-set-key (kbd "M-o") #'other-window)
-(global-set-key (kbd "C-M-o") #'ace-window)
+(keymap-global-set "M-o" #'other-window)
+(keymap-global-set "C-M-o" #'ace-window)
 
-(global-set-key (kbd "s-b") #'consult-buffer)
-(global-set-key (kbd "s-r") #'consult-recent-file)
-(global-set-key (kbd "s-w") #'delete-window)
-(global-set-key (kbd "M-c") #'evil-commentary-line)
+(keymap-global-set "s-b" #'consult-buffer)
+(keymap-global-set "s-r" #'consult-recent-file)
+(keymap-global-set "s-w" #'delete-window)
+(keymap-global-set "M-c" #'evil-commentary-line)
 
-(global-set-key (kbd "C-M-h") #'previous-buffer)
-(global-set-key (kbd "C-M-l") #'next-buffer)
+(keymap-global-set "C-M-h" #'previous-buffer)
+(keymap-global-set "C-M-l" #'next-buffer)
 
 ;; Https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
 (defun my-delete-word (arg)
@@ -50,7 +50,8 @@
    This command does not push text to `kill-ring'."
   (interactive "p")
   (my-delete-word (- arg)))
-(global-set-key (kbd "<M-backspace>") 'my-backward-delete-word)
+
+(keymap-global-set "M-<backspace>" #'my-backward-delete-word)
 
 (general-nvmap
   "g-r" #'xref-find-references

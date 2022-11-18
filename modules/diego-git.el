@@ -109,7 +109,7 @@ Uses gh and magit"
   ;; for discussion.
   (transient-bind-q-to-quit)
   ;; Close transient with ESC
-  (define-key transient-map [escape] #'transient-quit-one))
+  (keymap-set transient-map "ESC" #'transient-quit-one))
 
 ;;*** git-link.el
 (use-package git-link

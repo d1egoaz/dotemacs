@@ -20,8 +20,8 @@
   (set-fontset-font t 'emoji '("Apple Color Emoji" . "iso10646-1") nil 'prepend)
 
   ;; *** Zooming In and Out
-  (global-set-key (kbd "s-=") #'text-scale-increase)
-  (global-set-key (kbd "s--") #'text-scale-decrease)
+  (keymap-global-set "s-=" #'text-scale-increase)
+  (keymap-global-set "s--" #'text-scale-decrease)
 
   ;; Helps when scrolling images, as Emacs treats pictures as a single characters.
   (pixel-scroll-precision-mode 1))

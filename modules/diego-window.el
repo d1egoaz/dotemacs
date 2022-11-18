@@ -149,8 +149,6 @@
   (setq split-height-threshold nil)
   (setq split-width-threshold nil)
 
-  (define-key global-map (kbd "<f6>") #'window-toggle-side-windows)
-
   (defun diego/split-window-horizontally-3 ()
     (interactive)
     (delete-other-windows)
@@ -207,7 +205,9 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (defun diego/window-remove-side-parameter ()
   (interactive)
-  (set-window-parameter nil 'window-side nil)))
+  (set-window-parameter nil 'window-side nil))
+
+  :bind ("<f6>" . #'window-toggle-side-windows))
 
 (use-package windmove
   :straight (:type built-in)
