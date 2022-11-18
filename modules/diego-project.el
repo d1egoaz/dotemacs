@@ -41,6 +41,7 @@
     "Open the README.md file in a project."
     (interactive)
     (find-file (expand-file-name "README.md" (diego/current-project-name)))
+    ;; (dirvish-side))
     (dired-sidebar-show-sidebar))
 
   (defun diego/open-project-magit ()

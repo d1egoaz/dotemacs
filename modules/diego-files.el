@@ -85,6 +85,9 @@
     "w"  #'wdired-change-to-wdired-mode)
   :config
   (evil-collection-dired-setup)
+  (setq dired-mouse-drag-files t)                   ; added in Emacs 29
+  (setq mouse-drag-and-drop-region-cross-program t) ; added in Emacs 29
+  (setq insert-directory-program "gls")
   ;; only one dired buffer when opening directories
   (setq dired-kill-when-opening-new-dired-buffer t)
   (setq dired-use-ls-dired nil)
@@ -101,9 +104,32 @@
   (setq dired-sidebar-use-custom-font t)
   (setq dired-sidebar-should-follow-file t)
   (setq  dired-sidebar-follow-file-at-point-on-toggle-open t)
-  (set-face-attribute 'dired-sidebar-face nil :height 0.8))
+  (set-face-attribute 'dired-sidebar-face nil :height 0.8)
+  (setq dired-sidebar-should-follow-file t)
+  (setq dired-sidebar-recenter-cursor-on-follow-file nil))
 
-(setq dired-sidebar-should-follow-file t)
-(setq dired-sidebar-recenter-cursor-on-follow-file nil)
+(use-package dirvish
+  :init
+  (dirvish-override-dired-mode)
+  :config
+
+  (setq dirvish-attributes '(all-the-icons))
+  (setq dirvish-preview-dispatchers nil)
+  (setq delete-by-moving-to-trash t)
+  (setq dirvish-use-header-line nil)
+  (setq dirvish-use-mode-line nil)
+  (setq dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group")
+  (setq dirvish-libraries
+        '((dirvish-widgets  path symlink sort omit index free-space file-link-number
+                            file-user file-group file-time file-size file-modes
+                            file-inode-number file-device-number
+                            audio image gif video epub pdf pdf-preface archive)
+          ;; (dirvish-vc       vc-state git-msg vc-diff vc-blame vc-log vc-info)
+          (dirvish-icons    all-the-icons vscode-icon)
+          (dirvish-collapse collapse)
+          (dirvish-subtree  subtree-state)
+          (dirvish-yank     yank)))
+
+  (dirvish-side-follow-mode 1))
 
 (provide 'diego-files)
