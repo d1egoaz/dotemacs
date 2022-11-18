@@ -59,7 +59,7 @@
            (side . left)
            (window-width . 0.40))
           ;; → right side window
-          ("\\*\\(vterm\\|vterm-project\\|VC-history\\).*"
+          ("\\*\\(vterm-project\\|VC-history\\).*"
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
            (window-width . 0.50))
@@ -84,9 +84,12 @@
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************
+          ("\\*vterm\\*.*"
+           (display-buffer-in-tab)
+           (tab-name . "vterm"))
           ("\\*diego/vterm\\*"
            (display-buffer-in-tab)
-           (tab-name . "|vterm|"))
+           (tab-name . "vterm"))
            ;;;; Kubel
           ("\\*kubel-process.*"
            (display-buffer-in-tab display-buffer-in-side-window)
