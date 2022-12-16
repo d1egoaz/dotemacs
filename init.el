@@ -130,7 +130,6 @@
 
 ;; Update packages (pull in changes, then freeze), this creates
 ;; =~/.config/emacs/straight/versions/default.el=, this lockfile should be checked in.
-
 ;; #+begin_example elisp
 ;; (straight-pull-all)
 ;; (straight-freeze-versions)
@@ -239,7 +238,8 @@
                                          "FZF_DEFAULT_OPTS"
                                          "KUBECONFIG"
                                          "MANPATH"
-                                         "PATH"))
+                                         "PATH"
+                                         "USE_GKE_GCLOUD_AUTH_PLUGIN"))
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
@@ -247,6 +247,7 @@
 
 (add-to-list 'load-path (locate-user-emacs-file "modules"))
 (add-to-list 'load-path (substitute-in-file-name "$EMACS_ADDITIONAL_DIR"))
+
 (require 'diego-common)
 (require 'shopify-emacs)
 (require 'diego-ui)
