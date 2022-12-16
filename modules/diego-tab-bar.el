@@ -14,16 +14,7 @@
   (setq tab-bar-separator "|")
   (setq tab-bar-show t)
   (setq tab-bar-tab-hints nil) ; don't show numbers
-
-  ;; close tab and project
-  (defun diego--close-tab-for-project (tab _bool)
-    (let ((name (alist-get 'name tab)))
-      (if (string= "*kubel*" name)
-          (kill-matching-buffers "\\*kubel" nil t)
-        (when (project-current)
-          (project-kill-buffers t)))
-      (message "Project %s closed." name)))
-  (setq tab-bar-tab-pre-close-functions '(diego--close-tab-for-project))
+  (setq tab-bar-tab-pre-close-functions '(diego--close-workspace))
 
   (defun prot-tab-format-evil ()
     "Format `evil-mode-line-tag for the tab bar."
@@ -45,10 +36,10 @@
     (ignore-errors
       `((global menu-item ,(propertize
                             (concat " " (all-the-icons-icon-for-buffer)
-                                    (if (and buffer-file-truename (not (file-remote-p buffer-file-truename)) (diego/current-project-name))
+                                    (if (and buffer-file-truename (not (file-remote-p buffer-file-truename)) (diego/current-project-root))
                                         (concat " File: ["
-                                                (if (string-prefix-p (diego/current-project-name) buffer-file-truename)
-                                                    (car (split-string  buffer-file-truename (diego/current-project-name) t nil))
+                                                (if (string-prefix-p (diego/current-project-root) buffer-file-truename)
+                                                    (car (split-string  buffer-file-truename (diego/current-project-root) t nil))
                                                   buffer-file-truename) "] ")
                                       (concat " Buffer: [" (buffer-name) "] ")))
                             'face 'modus-themes-subtle-blue) ignore))))
