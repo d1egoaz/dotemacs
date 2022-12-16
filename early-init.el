@@ -88,10 +88,8 @@
 
 ;; Install use-package first and setup so that use-package will use straight.el rather than
 ;; package.el by default.
-(straight-use-package 'use-package)
+(require 'use-package) ;; it's now part of emacs
 (straight-use-package 'general)
-
-(require 'use-package)
 (require 'general)
 
 ;;; early-init.el ends here
