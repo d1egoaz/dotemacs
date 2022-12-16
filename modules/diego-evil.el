@@ -220,9 +220,11 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
     "S" 'evil-snipe-S)
   :config
   (setq evil-snipe-scope 'line)
+  (setq evil-snipe-smart-case t)
   (evil-snipe-mode 1)
   (evil-snipe-override-mode 1)
-  :hook ((magit-mode-hook . turn-off-evil-snipe-override-mode)))
+  :hook ((magit-mode-hook . turn-off-evil-snipe-override-mode)
+         (after-init-hook . evil-snipe-mode)))
 
 ;;** evil-surround.el
 ;; Add/change surrounding to text objects.
