@@ -24,6 +24,7 @@
 ;;** Completion framework (corfu.el)
 ;;*** corfu
 (use-package corfu
+  :straight (:files (:defaults "extensions/*") :includes (corfu-info corfu-history corfu-popupinfo))
   :config
   (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (setq corfu-auto t)                 ;; Enable auto completion
@@ -34,6 +35,8 @@
   (setq corfu-count 15)
   (setq corfu-scroll-margin 4)
   (setq corfu-echo-documentation nil)
+  (setq corfu-popupinfo-max-height 100)
+  (setq corfu-popupinfo-delay 0.3)
 
   (defun corfu-move-to-minibuffer ()
     (interactive)
@@ -49,13 +52,17 @@
       (corfu-mode 1)))
   (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
+  (add-to-list 'savehist-additional-variables 'corfu-history)
+
   :bind
   ;; Configure SPC for separator insertion
   (:map corfu-map
         ("SPC" . corfu-insert-separator)
         ("M-m" . corfu-move-to-minibuffer))
   :init
-  (global-corfu-mode 1))
+  (global-corfu-mode 1)
+  (corfu-history-mode 1)
+  (corfu-popupinfo-mode))
 
 ;;*** kind-icon
 (use-package kind-icon
@@ -217,6 +224,7 @@
    ;; consult--source-recent-file
    consult--source-project-recent-file consult--source-bookmark
    :preview-key '(:debounce 0.2 any))
+  (consult-customize consult-theme :preview-key '(:debounce 0.5 any))
   ;; :preview-key (list (kbd "M-SPC") (kbd "C-M-j") (kbd "C-M-k")))
 
 
@@ -235,7 +243,7 @@
   (setq consult-fontify-preserve t)
   (setq consult-preview-key nil)
   ;; (setq consult-project-root-function #'vc-root-dir)
-  (setq consult-project-root-function #'diego/current-project-name)
+  (setq consult-project-root-function #'diego/current-project-root)
 
   (defun diego/search-symbol-at-point ()
     (interactive)
