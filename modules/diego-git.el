@@ -10,6 +10,7 @@
   :after evil-collection
   :general
   (general-nvmap :keymaps 'magit-status-mode-map
+    "S" #'magit-stash
     "zt" #'evil-scroll-line-to-top
     "zz" #'evil-scroll-line-to-center
     "zb" #'evil-scroll-line-to-bottom
