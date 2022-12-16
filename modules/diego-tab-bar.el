@@ -1,10 +1,6 @@
 ;;* Workspaces/tabs (tab-bar.el)
 
 (use-package tab-bar
-  :general
-  (general-nmap
-    "gt"  #'tab-next
-    "gT"  #'tab-recent)
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-tab-select 'recent)

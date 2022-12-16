@@ -53,10 +53,6 @@
 
 (keymap-global-set "M-<backspace>" #'my-backward-delete-word)
 
-(general-nvmap
-  "g-r" #'xref-find-references
-  "g-i" #'lsp-find-implementation)
-
 (general-define-key
  :states '(normal visual emacs motion) ; some modes for some reason start in motion mode
  :keymaps 'override
@@ -70,6 +66,7 @@
  "u"       #'(universal-argument :which-key "Universal argument")
  "U"       #'(universal-argument-more :which-key "Universal argument more")
  "x"       #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")
+ "X"       #'diego/make-scratch
  ;; Tabs
  "TAB"     '(:ignore t :which-key "workspaces")
  "TAB s" #'(tab-switch :which-key "Switch workspace")
@@ -111,7 +108,7 @@
  "bf"      #'(format-all-buffer :which-key "Format buffer")
  "bi"      #'(diego/indent-buffer :which-key "Indent buffer")
  "bk"      #'(kill-buffer :which-key "Kill selected buffer")
- "bl"      #'(evil-switch-to-windows-last-buffer :which-key "Switch to last buffer")
+ "bl"      #'(mode-line-other-buffer :which-key "Switch to last buffer")
  "br"      #'revert-buffer-quick
 
  "bm"      '(:ignore t :which-key "move buffer")
@@ -204,6 +201,7 @@
  "hPr"      #'(profiler-report :which-key "Profiler report")
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
+ "ie"      #'emoji-search
  "iu"      #'(insert-char :which-key "Unicode char")
  "is"      #'(consult-yasnippet :which-key "Snippet")
  "ik"      #'(diego/evil-insert-line-above :which-key "Line above")
@@ -217,6 +215,7 @@
  "jL"      #'imenu-list
  "jb"      #'(bookmark-jump :which-key "Jump to bookmark")
  "jB"      #'(bookmark-set :which-key "Set bookmark")
+ "jc"      #'browser-hist-search
  "jh"      #'consult-history
  "jj"      #'(avy-goto-char-timer :which-key "Jump to char")
  "jl"      #'(avy-goto-line :which-key "Jump to line")
@@ -231,6 +230,7 @@
  "js"      #'(avy-goto-symbol-1 :which-key "Jump to begginning of word")
  ;; Kill
  "kk"      #'(kill-current-buffer :which-key "Kill current buffer")
+ "kK"      #'(diego/kill-buffer :which-key "Kill current buffer")
  "kh"      #'((lambda () (interactive) (kill-matching-buffers "\\*helpful" nil t)) :which-key "Kill help buffers")
  "kv"      #'((lambda () (interactive) (kill-matching-buffers "\\*vterm" nil t)) :which-key "Kill vterm buffers")
  "k TAB"    #'(tab-bar-close-tab :which-key "Kill workspace tab")
@@ -238,20 +238,8 @@
  ;; LSP
  "l"       '(:ignore t :which-key "lsp")
  "la"      #'xref-find-apropos
- "ld"      #'xref-find-definitions
- ;; "lli"      #'eglot-find-implementation
- "li"      #'lsp-find-implementation
- "lr"      #'xref-find-references
- ;; "llt"      #'eglot-find-typeDefinition
- "lt"      #'lsp-goto-type-definition
- ;; "lc"      #'lsp-treemacs-call-hierarchy
  "le"      #'flycheck-list-errors
- "lE"      #'lsp-rust-analyzer-expand-macro
- "lk"      #'lsp-describe-thing-at-point
- ;; "lr"      #'eglot-rename
- "lR"      #'lsp-rename
- ;; "lx"      #'eglot-code-actions
- "lx"      #'lsp-execute-code-action
+ "lk"      #'eldoc-print-current-symbol-info
  "ls"       #'(lsp-signature-activate :which-key "show signature")
  "lh"       #'(lsp-describe-thing-at-point :which-key "describe symbol")
  ;; local mode/leader
@@ -343,7 +331,7 @@
  "wl"      #'(evil-window-right :which-key "Window right")
  "wm"      #'(delete-other-windows :which-key "Maximize window")
  "wx"      #'diego/window-remove-side-parameter
- "wz"      #'tab-bar-history-back
- "wr"      #'tab-bar-history-forward))
+ "wz"      #'winner-undo
+ "wr"      #'winner-redo))
 
 (provide 'diego-keybindings)

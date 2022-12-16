@@ -34,9 +34,22 @@
 
 (use-package lsp-mode
   :after (corfu orderless)
+  :general
+  (general-nvmap
+    :keymaps 'lsp-mode-map
+    "K"   #'eldoc-print-current-symbol-info
+    "gd" #'xref-find-definitions
+    "gD" #'lsp-find-implementation
+    "gr" #'xref-find-references
+    "gt" #'lsp-goto-type-definition
+    ",a" #'lsp-execute-code-action
+    ",e" #'lsp-rust-analyzer-expand-macro
+    ",f" #'lsp-format-buffer
+    ",k" #'lsp-describe-thing-at-point
+    ",r" #'lsp-rename
+    ",x" #'lsp-execute-code-action)
   :commands lsp-deferred
   :init
-  (setq lsp-keymap-prefix "C-l")
   ;; corfu + orderless
   (defun my/orderless-dispatch-flex-first (_pattern index _total)
     (and (eq index 0) 'orderless-flex))
@@ -50,6 +63,7 @@
 
   ;; Optionally configure the cape-capf-buster.
   (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
+  (setq lsp-keymap-prefix "C-l")
   :config
   (setq lsp-completion-provider :none) ;; we use Corfu!
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]vendor\\'")
@@ -73,11 +87,16 @@
   (setq lsp-auto-guess-root t)
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-on-type-formatting nil)
-  (setq lsp-ui-doc-header t)
+  (setq lsp-enable-text-document-color nil)
   (setq lsp-ui-doc-include-signature t)
-  (setq lsp-ui-doc-border (face-foreground 'default))
   (setq lsp-ui-sideline-show-code-actions t)
   (setq lsp-ui-sideline-delay 0.05)
+  (setq lsp-modeline-code-actions-enable nil)
+  (setq lsp-signature-auto-activate t)
+  (setq lsp-signature-render-documentation t)
+  (setq lsp-completion-show-detail t)
+  (setq lsp-completion-show-kind t)
+  (setq lsp-semantic-tokens-enable nil)
 
   (lsp-enable-which-key-integration t)
 
@@ -115,9 +134,26 @@
 
 ;;** eglot
 (use-package eglot
+  :straight (:type built-in)
+  :general
+  (general-nvmap
+    :keymaps 'eglot-mode-map
+    "K"   #'eldoc-print-current-symbol-info
+    "gd" #'xref-find-definitions
+    "gD" #'eglot-find-implementation
+    "gr" #'xref-find-references
+    "gt" #'eglot-find-typeDefinition
+    ",a" #'eglot-code-actions
+    ",f" #'eglot-format-buffer
+    ",k" #'eldoc-print-current-symbol-info
+    ",r" #'eglot-rename
+    ",x" #'eglot-code-actions)
   :commands eglot eglot-ensure
   :config
-  (setq eglot-autoshutdown t))
+  ;; evil collection in go-mode was remapping them
+  (setq eglot-autoshutdown t)
+  (setq eldoc-documentation-strategy #'eldoc-documentation-default))
+;; :hook (((go-mode-hook rustic-mode-hook) . eglot-ensure)))
 
 (use-package consult-eglot
   :after eglot
