@@ -179,6 +179,7 @@
 ;; #+end_example
 ;;*** go-mode.el
 (use-package go-mode
+  :after (eglot lsp-mode)
   :general
   (general-nvmap
     :keymaps 'go-mode-map
@@ -192,6 +193,8 @@
     "tf" #'go-test-current-file
     "tg" #'go-gen-test-exported)
   :config
+  ;; disable built in regex font lock builder to use treesit
+  (defun go--build-font-lock-keywords ())
   ;; (setq-default lsp-go-goimports-local "github.com/Shopify/")
   (setq godef-command "godef") ; original godef
   ;; (setq godef-command "go doc") ; original godef
@@ -203,9 +206,8 @@
     (set (make-local-variable 'outline-regexp) "\\(func \\|\\(.*struct {\\)\\|\\(type \\)\\)"))
 
   :hook ((go-mode-hook . outline-go-mode-hook)
-         (go-mode-hook . lsp-deferred)))
-
-;; (go-mode-hook .  eglot-ensure)))
+         (go-mode-hook . lsp-deferred)
+         (before-save-hook . gofmt-before-save)))
 
 ;;*** ob-go.el
 ;; Org-Babel support for evaluating go code.
@@ -298,7 +300,7 @@
 
   :config
   (setq rustic-lsp-client 'eglot)
-  (setq rustic-format-on-save t)
+  (setq rustic-format-on-save nil)
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
 
   (defun diego--rustic-mode-auto-save-hook ()
@@ -359,7 +361,6 @@
 ;;** Misc
 (use-package dockerfile-mode)
 (use-package graphql-mode :mode "\\.g\\(?:raph\\)?ql$")
-(use-package json-mode)
 (use-package nix-mode)
 (use-package terraform-mode)
 (use-package web-mode
@@ -399,6 +400,9 @@
 (use-package kubel
   ;; :straight (kubel :host github :repo "d1egoaz/kubel" :branch "diego/multiple-kubel-buffers")
   :straight (kubel :host github :repo "d1egoaz/kubel" :branch "test")
+  :general
+  (general-mmap :keymaps 'kubel-evil-mode-map
+    "," #'diego/kubel-filter)
   :config
   (evil-define-key 'normal 'kubel-yaml-editing-mode "q" #'kill-current-buffer)
 
@@ -408,14 +412,13 @@
   (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
   (setq-default kubel-namespace "cloudbuddies")
 
-  (defun diego--kubel-hook ()
-    (require 'f)
-    (f-mkdir "/tmp/kubel") ; unset default directory
-    (f-touch "/tmp/kubel/.project")
-    (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
-    (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
-    (add-to-list 'savehist-additional-variables 'kubel--kubernetes-resources-list-cached))
-  :hook ((kubel-mode-hook . diego--kubel-hook)))
+  (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
+  (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
+  (add-to-list 'savehist-additional-variables 'kubel--kubernetes-resources-list-cached)
+
+  (require 'f)
+  (f-mkdir "/tmp/kubel") ; unset default directory
+  (f-touch "/tmp/kubel/.project"))
 
 (use-package kubel-evil
   ;; :load-path "/Users/diegoalvarez/code/oss/kubel2"
@@ -509,15 +512,83 @@
     "c"  #'restclient-copy-curl-command))
 
 ;;** tree-sitter
+
 (use-package tree-sitter
-  :straight (tree-sitter :host github :repo "emacs-tree-sitter/elisp-tree-sitter")
   :config
   (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (add-hook 'rustic-mode-hook #'tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+  (setq tree-sitter-debug-jump-buttons t))
 
 (use-package tree-sitter-langs
-  :straight (tree-sitter-langs :host github :repo "emacs-tree-sitter/tree-sitter-langs")
-  :after tree-sitter)
+  :after tree-sitter
+  :config
+  (push '(markdown-mode . markdown) tree-sitter-major-mode-language-alist)
+  (push '(gfm-mode . markdown) tree-sitter-major-mode-language-alist))
+
+(use-package evil-textobj-tree-sitter
+  :after (evil tree-sitter)
+  :straight (evil-textobj-tree-sitter :type git
+                                      :host github
+                                      :repo "meain/evil-textobj-tree-sitter"
+                                      :files (:defaults "queries"))
+  :config
+  ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+
+  (define-key evil-outer-text-objects-map "l" (cons "evil-outer-loop" (evil-textobj-tree-sitter-get-textobj "loop.outer")))
+  (define-key evil-inner-text-objects-map "l" (cons "evil-inner-loop" (evil-textobj-tree-sitter-get-textobj "loop.inner")))
+
+  (define-key evil-outer-text-objects-map "v" (cons "evil-outer-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.outer")))
+  (define-key evil-inner-text-objects-map "v" (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner")))
+
+  )
+
+(use-package ts-fold
+  :after (tree-sitter)
+  :commands (ts-fold-mode)
+  :straight (ts-fold :host github :repo "jcs090218/ts-fold")
+  :general
+  (general-nmap "za" #'ts-fold-toggle)
+  :config
+  (add-hook 'tree-sitter-after-on-hook #'ts-fold-mode))
+
+
+;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
+(use-package treesit
+  :straight (:type built-in)
+  :config
+
+  (setq-default treesit-font-lock-level 4)
+  (push '(c-mode . c-ts-mode) major-mode-remap-alist)
+  (push '(c++-mode . c++-ts-mode) major-mode-remap-alist)
+  (push '(css-mode . css-ts-mode) major-mode-remap-alist)
+  (push '(javascript-mode . javascript-ts-mode) major-mode-remap-alist)
+  (push '(js-json-mode . json-ts-mode) major-mode-remap-alist)
+  (push '(python-mode . python-ts-mode) major-mode-remap-alist)
+  ;; git clone https://github.com/emacs-tree-sitter/tree-sitter-langs.git
+  ;; cask install
+  ;; ./script/compile json
+  ;; ./script/test json # this will download all binaries in ./bin
+  ;; then go to the bin directory and run:
+  ;; for c in $(ls *.dylib); do echo "renaming $c" && mv $c "libtree-sitter-$c" ; done
+  (setq treesit-extra-load-path '("~/code/oss/tree-sitter-langs/bin"))
+  ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
+  )
+
+;; from https://github.com/casouri/lunarymacs/commit/a8590327ccb891b5e2693811284ba45a9d7392cc
+
+;; (use-package tree-sitter
+;;   :straight (tree-sitter :host github :repo "emacs-tree-sitter/elisp-tree-sitter")
+;;   :config
+;;   (global-tree-sitter-mode)
+;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+;; (use-package tree-sitter-langs
+;;   :straight (tree-sitter-langs :host github :repo "emacs-tree-sitter/tree-sitter-langs")
+;;   :after tree-sitter)
 
 ;; #+begin_example elisp
 ;; (defun configure-imenu-Custom ()

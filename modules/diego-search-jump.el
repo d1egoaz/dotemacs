@@ -13,6 +13,7 @@
 (use-package imenu-list
   :config
   (setq imenu-list-focus-after-activation t)
+  (setq imenu-list-after-jump-hook nil)
   (setq imenu-list-auto-resize t)
   (set-face-attribute 'imenu-list-entry-face nil :height 0.7)
   (set-face-attribute 'imenu-list-entry-face-0 nil :height 0.7)
