@@ -26,19 +26,19 @@
   (setq display-buffer-alist
         `(
           ;; ↑ top side window
-          ("\\*\\(Messages\\|world-clock\\|Backtrace\\|Warnings\\|Compile-Log\\|Flymake log\\)\\*"
+          (,(rx "*" (or "Messages" "world-clock" "Backtrace" "Warnings") "*")
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . top)
            (window-height . 0.3)
            (dedicated . t)
            (preserve-size . (t . t)))
           ;;️↓ bottom side window
-          ("\\*Embark Actions\\*"
+          (,(rx "*Embark Actions*")
            (display-buffer-reuse-mode-window display-buffer-at-bottom)
            (window-height . fit-window-to-buffer)
            (window-parameters . ((no-other-window . t)
                                  (mode-line-format . none))))
-          ("\\*Flycheck errors\\*"
+          (,(rx "*Flycheck errors*")
            (display-buffer-reuse-window display-buffer-in-side-window)
            (side . bottom)
            (window-height . 0.3))
@@ -47,10 +47,14 @@
            (window-height . 4) ; note this is literal lines, not relative
            (dedicated . t)
            (preserve-size . (t . t)))
-          ((derived-mode . compilation-mode)
+          ((or . ((derived-mode . compilation-mode)
+                  (derived-mode . comint-mode)
+                  (derived-mode . magit-diff-mode)
+                  (derived-mode . magit-rev-mode)
+                  (derived-mode . flymake-diagnostics-buffer-mode)))
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.3))
+           (side . right)
+           (window-width . 0.6))
           ;; ← left side window
           ((or . ((derived-mode . help-mode)
                   (derived-mode . apropos-mode)
@@ -59,24 +63,23 @@
            (side . left)
            (window-width . 0.40))
           ;; → right side window
-          ("\\*\\(vterm-project\\|VC-history\\).*"
+          (,(rx "*" (or "vterm-project" "VC-history" "eldoc") (* any) "*")
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
            (window-width . 0.50))
-          ((or . ((derived-mode . magit-diff-mode)
-                  (derived-mode . magit-rev-mode)))
-           (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           (side . right)
-           (window-width . 0.50))
-          ("\\*Ilist\\*"
-           (display-buffer-reuse-mode-window display-buffer-in-side-window)
+          (,(rx "*Ilist*")
+           (display-buffer-in-side-window)
            (side . right)
            (window-width . 0.20))
+          (,(rx "*Org MD Export*")
+           (display-buffer-reuse-mode-window display-buffer-in-side-window)
+           (side . right)
+           (window-width . 0.50))
           ;; below current window
-          ("\\*\\(Calendar\\|Org todo\\)\\*"
+          (,(rx "*" (or "Calendar" "Org todo") "*")
            (display-buffer-reuse-window display-buffer-below-selected)
            (window-height . fit-window-to-buffer))
-          ("\\*Process List\\*"
+          (,(rx "*Process List*")
            (display-buffer-in-side-window)
            (side . bottom)
            (window-height . 0.4)
@@ -84,49 +87,54 @@
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************
-          ("\\*vterm\\*.*"
+          (,(rx "*vterm*)" (* any))
            (display-buffer-in-tab)
            (tab-name . "vterm"))
-          ("\\*diego/vterm\\*"
+          (,(rx "*diego/vterm*")
            (display-buffer-in-tab)
            (tab-name . "vterm"))
            ;;;; Kubel
-          ("\\*kubel-process.*"
+          (,(rx "*kubel-process" (* any))
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.2)
            (slot . 0))
-          ("\\*kubel stderr\\*"
+          (,(rx "*kubel stderr*")
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.2)
            (slot . 1)
            (window-parameters . ((no-other-window . t))))
-          ("\\*kubel resource.*"
+          (,(rx "*kubel resource" (* any) "logs" (* any) "tail" (* any))
+           (display-buffer-in-tab display-buffer-in-side-window)
+           (tab-name . "kubel")
+           (side . bottom)
+           (window-height . 0.4))
+          (,(rx "*kubel resource" (* any))
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . right)
            (window-width . 0.5))
-          ("\\*kubel manager.*"
+          (,(rx "*kubel manager" (* any))
            (display-buffer-in-tab)
            (tab-name . "kubel")
            (dedicated . t))
            ;;;; Elfeed
-          ("\\*elfeed-search\\*"
+          (,(rx "*elfeed-search*")
            (display-buffer-in-tab)
            (tab-name . "|elfeed|"))
-          ("\\*elfeed-entry\\*"
+          (,(rx "*elfeed-entry*")
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "|elfeed|")
            (side . bottom)
            (window-height . 0.7))
            ;;;; Scratch buffers
-          ("\\*scratch.*"
+          (,(rx "*scratch" (* any))
            (display-buffer-in-tab)
            (tab-name . "scratch"))
-          ("\\*\\(straight-process\\|Async-native-compile-log\\)\\*"
+          (,(rx "*" (or "straight-process" "Async-native-compile-log") "*")
            (display-buffer-in-tab)
            (tab-name . "general"))
           ;;; Automatic workspaces-tabs management
@@ -189,26 +197,26 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
                                         (no-delete-other-windows . t))))))
 
   ;; Swap windows if there are two of them
-;; copied from https://github.com/karthink/.emacs.d/blob/master/lisp/better-buffers.el
-(defun diego/swap-windows ()
-  "If you have 2 windows, it swaps them."
-  (interactive)
-  (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
-        (t
-         (let* ((w1 (cl-first (window-list)))
-                (w2 (cl-second (window-list)))
-                (b1 (window-buffer w1))
-                (b2 (window-buffer w2))
-                (s1 (window-start w1))
-                (s2 (window-start w2)))
-           (set-window-buffer w1 b2)
-           (set-window-buffer w2 b1)
-           (set-window-start w1 s2)
-           (set-window-start w2 s1)))))
+  ;; copied from https://github.com/karthink/.emacs.d/blob/master/lisp/better-buffers.el
+  (defun diego/swap-windows ()
+    "If you have 2 windows, it swaps them."
+    (interactive)
+    (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+          (t
+           (let* ((w1 (cl-first (window-list)))
+                  (w2 (cl-second (window-list)))
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+                  (s1 (window-start w1))
+                  (s2 (window-start w2)))
+             (set-window-buffer w1 b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)))))
 
-(defun diego/window-remove-side-parameter ()
-  (interactive)
-  (set-window-parameter nil 'window-side nil))
+  (defun diego/window-remove-side-parameter ()
+    (interactive)
+    (set-window-parameter nil 'window-side nil))
 
   :bind ("<f6>" . #'window-toggle-side-windows))
 
