@@ -12,9 +12,9 @@
 ;; repeat last macro with Q, use macro and then Q to repeat it
 (keymap-set evil-normal-state-map "Q" #'evil-execute-last-recorded-macro)
 
-;; unset "C-k" in evil insert, fixes binding for corfu
-;; (keymap-set evil-insert-state-map "C-n" nil)
-;; (keymap-set evil-insert-state-map "C-p" nil)
+;; fixes binding for corfu
+(keymap-set evil-insert-state-map "C-n" nil)
+(keymap-set evil-insert-state-map "C-p" nil)
 
 (evil-define-key 'visual global-map (kbd ">") 'my/evil-shift-right)
 (evil-define-key 'visual global-map (kbd "<") 'my/evil-shift-left)
