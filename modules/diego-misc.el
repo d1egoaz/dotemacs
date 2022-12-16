@@ -12,7 +12,7 @@
   (general-nmap :keymaps 'helpful-mode-map
     "q" #'kill-buffer-and-window)
   :config
-(setq help-window-select t))
+  (setq help-window-select t))
 
 
 ;;** all-the-icons.el
@@ -21,8 +21,8 @@
   :config
   (setq all-the-icons-scale-factor 0.9))
 
-;; (use-package all-the-icons-dired
-;;   :hook (dired-mode-hook . all-the-icons-dired-mode))
+(use-package all-the-icons-dired
+  :hook (dired-mode-hook . all-the-icons-dired-mode))
 
 (use-package all-the-icons-completion
   :after (marginalia all-the-icons)
