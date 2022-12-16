@@ -54,7 +54,7 @@ Receives an optional BUFFERNAME to be used."
     (interactive)
     (let* ((proj (project-current))
            (default-directory (if proj (project-root proj) "/tmp"))
-           (name (diego/current-project-name))
+           (name (diego/current-project-root))
            (buffername (format "*vterm-project: %s*" name)))
       (diego/vterm buffername)))
 

@@ -40,7 +40,7 @@
   (defun diego/open-project-readme ()
     "Open the README.md file in a project."
     (interactive)
-    (find-file (expand-file-name "README.md" (diego/current-project-name)))
+    (find-file (expand-file-name "README.md" (diego/current-project-root)))
     ;; (dirvish-side))
     (dired-sidebar-show-sidebar))
 
@@ -48,7 +48,7 @@
     "Open the README.md file in a project."
     (interactive)
     (diego/open-project-readme)
-    (with-current-buffer   (find-file (expand-file-name "README.md" (diego/current-project-name)))
+    (with-current-buffer   (find-file (expand-file-name "README.md" (diego/current-project-root)))
       (magit-status)))
 
 
@@ -56,7 +56,7 @@
     "Run `compile' in the project root."
     (declare (interactive-only compile))
     (interactive)
-    (let ((default-directory (diego/current-project-name))
+    (let ((default-directory (diego/current-project-root))
           (compilation-buffer-name-function
            (or project-compilation-buffer-name-function
                compilation-buffer-name-function)))
@@ -66,11 +66,11 @@
     "Run `compile' in the project root."
     (declare (interactive-only compile))
     (interactive)
-    (let ((default-directory (diego/current-project-name))
+    (let ((default-directory (diego/current-project-root))
           (compilation-buffer-name-function
            (or project-compilation-buffer-name-function
                compilation-buffer-name-function)))
-      (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
+      (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) nil)))
 
   (defun diego/recompile ()
     "Function has been almost copied from the original recompile.
@@ -82,10 +82,10 @@ It has been modified to always run on comint mode."
           (command (eval compile-command)))
       (apply #'compilation-start (list command t nil nil)))) ; make sure to always use comint mode
 
-  (defun diego/current-project-name ()
-    (if-let ((proj (project-current)))
-        (project-root proj)
-      ("/tmp")))
+  (defun diego/current-project-root ()
+    "Return the current project root."
+    (when-let ((proj (project-current)))
+      (project-root proj)))
 
   (defun diego/project-generate-ctags ()
     "Regenerate tags, when `prefix-arg' don't generate recursive."
