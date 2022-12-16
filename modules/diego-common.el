@@ -135,6 +135,16 @@
          (kill-buffer b)))
      (buffer-list))))
 
+(defun diego/kill-buffer ()
+  "Kill a buffer and return to previous recent buffer."
+  (interactive)
+  (let ((b (current-buffer)))
+    (if (not (project-current))
+        (tab-bar-close-tab)
+      ;; Switch to the most recently selected buffer other than the current one.
+      (mode-line-other-buffer)) ;; move to recent buffer first
+    (kill-buffer b)))
+
 (defun diego/safe-erase-buffer ()
   "Prompt before erasing the content of the file."
   (interactive)
