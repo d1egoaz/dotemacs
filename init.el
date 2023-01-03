@@ -273,4 +273,6 @@
 (require 'diego-misc)
 (require 'diego-keybindings)
 
+(modus-themes-select 'modus-vivendi)
+
 ;;; init.el ends here

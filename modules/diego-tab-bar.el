@@ -1,6 +1,7 @@
 ;;* Workspaces/tabs (tab-bar.el)
 
 (use-package tab-bar
+  :after  modus-themes
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-tab-select 'recent)
@@ -20,12 +21,9 @@
     "Format `mode-line-modified' for the tab bar."
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-modified)) ignore)))
 
-  (defun diego--tab-insert-icon (name)
-    `((global menu-item ,(propertize (all-the-icons-octicon name) 'face 'modus-themes-refine-yellow) ignore)))
-
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
-    `((global menu-item ,(propertize (concat " " (all-the-icons-octicon "git-branch") vc-mode " ") 'face 'modus-themes-refine-yellow) ignore)))
+    `((global menu-item ,(propertize (concat " " (all-the-icons-octicon "git-branch") vc-mode " ") 'face 'modus-themes-fg-cyan-warmer) ignore)))
 
   (defun diego-tab-format-buffer-id ()  ;
     "Buffer true name for files or just the buffer name."
@@ -38,7 +36,7 @@
                                                     (car (split-string  buffer-file-truename (diego/current-project-root) t nil))
                                                   buffer-file-truename) "] ")
                                       (concat " Buffer: [" (buffer-name) "] ")))
-                            'face 'modus-themes-subtle-blue) ignore))))
+                            'face 'modus-themes-fg-cyan-intense) ignore))))
 
   (defun diego-tab-format-keycast ()
     "Format `mode-line-modified' for the tab bar."
