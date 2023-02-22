@@ -105,16 +105,16 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   :config
   ;; https://github.com/emacs-evil/evil-collection/blob/master/modes/
   (evil-collection-init '(
-                          calendar comint company compile consult
+                          calendar comint company compile consult corfu
                           diff-mode dired docview
-                          ediff eglot elfeed elisp-mode elisp-refs eshell
+                          embark ediff eglot elfeed elisp-mode elisp-refs eshell
                           flycheck flymake
                           go-mode
                           help helpful
                           ibuffer info imenu imenu-list
                           magit ocurr popup
                           vc-annotate vc-dir vc-git
-                          vterm wgrep which-key xref)))
+                          vertico vterm wgrep which-key xref)))
 
 ;;** goto-chg.el
 ;; | Keymap | Command                  |
