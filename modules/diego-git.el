@@ -7,7 +7,7 @@
 ;; Keys:
 ;; https://github.com/emacs-evil/evil-collection/blob/master/modes/magit/evil-collection-magit.el#L280-L309
 (use-package magit
-  :after evil-collection
+  :after (evil-collection compat)
   :general
   (general-nvmap :keymaps 'magit-status-mode-map
     "S" #'magit-stash
