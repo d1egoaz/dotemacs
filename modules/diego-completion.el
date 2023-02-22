@@ -383,6 +383,8 @@
 
   (add-hook 'embark-collect-mode-hook #'+embark-collect-hook)
 
+  (add-hook 'occur-mode-hook #'evil-normal-state)
+
   :bind
   (("M-a"                     . #'embark-act)
    ("M-d"                     . #'embark-dwim)
@@ -430,41 +432,16 @@
   (setq completions-detailed t)
   :config
 
-  ;; adapted from https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
-  (defvar +orderless-dispatch-alist
-    '((?! . orderless-without-literal)
-      (?, . orderless-initialism)
-      (?= . orderless-literal)))
-
-  ;; Recognizes the following patterns:
+  ;; orderless-affix-dispatch-alist Recognizes the following patterns:
   ;; * =literal literal=
   ;; * ,initialism initialism,
   ;; * !without-literal without-literal!
   ;; * .ext (file extension)
   ;; * regexp$ (regexp matching at end)
-  (defun +orderless-dispatch (pattern index _total)
-    (cond
-     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-     ((string-suffix-p "$" pattern)
-      `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
-     ;; File extensions
-     ((and
-       ;; Completing filename or eshell
-       (or minibuffer-completing-file-name
-           (derived-mode-p 'eshell-mode))
-       ;; File extension
-       (string-match-p "\\`\\.." pattern))
-      `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
-     ;; Ignore single !
-     ((string= "!" pattern) `(orderless-literal . ""))
-     ;; Prefix and suffix
-     ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
-          (cons (cdr x) (substring pattern 1))
-        (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
-          (cons (cdr x) (substring pattern 0 -1)))))))
 
-  (setq orderless-component-separator #'orderless-escapable-split-on-space) ;; allow escaping space with backslash
-  (setq orderless-style-dispatchers '(+orderless-dispatch)))
+  ;; allow escaping space with backslash
+  (setq orderless-component-separator #'orderless-escapable-split-on-space))
+
 
 ;;** Key bindings hints (which-key.el)
 ;; [[https://github.com/justbur/emacs-which-key][which-key.el]] is a minor mode for Emacs that displays the key bindings following your currently
