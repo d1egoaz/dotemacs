@@ -513,18 +513,23 @@
 
 ;;** tree-sitter
 
-(use-package tree-sitter
-  :config
-  (global-tree-sitter-mode)
-  (add-hook 'rustic-mode-hook #'tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-  (setq tree-sitter-debug-jump-buttons t))
+;; (use-package tree-sitter
+;;   :config
+;;   (global-tree-sitter-mode)
+;;   (add-hook 'rustic-mode-hook #'tree-sitter-mode)
+;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;   (setq tree-sitter-debug-jump-buttons t))
 
-(use-package tree-sitter-langs
-  :after tree-sitter
+;; (use-package tree-sitter-langs
+;;   :after tree-sitter
+;;   :config
+;;   (push '(markdown-mode . markdown) tree-sitter-major-mode-language-alist)
+;;   (push '(gfm-mode . markdown) tree-sitter-major-mode-language-alist))
+
+(use-package treesit-auto
   :config
-  (push '(markdown-mode . markdown) tree-sitter-major-mode-language-alist)
-  (push '(gfm-mode . markdown) tree-sitter-major-mode-language-alist))
+  (setq treesit-auto-install 'prompt)
+  (global-treesit-auto-mode))
 
 (use-package evil-textobj-tree-sitter
   :after (evil tree-sitter)
@@ -568,12 +573,8 @@
   (push '(javascript-mode . javascript-ts-mode) major-mode-remap-alist)
   (push '(js-json-mode . json-ts-mode) major-mode-remap-alist)
   (push '(python-mode . python-ts-mode) major-mode-remap-alist)
-  ;; git clone https://github.com/emacs-tree-sitter/tree-sitter-langs.git
-  ;; cask install
-  ;; ./script/compile json
-  ;; ./script/test json # this will download all binaries in ./bin
-  ;; then go to the bin directory and run:
-  ;; for c in $(ls *.dylib); do echo "renaming $c" && mv $c "libtree-sitter-$c" ; done
+  (push '(go-mod-mode . go-mod-ts-mode) major-mode-remap-alist)
+  (push '(go-mode . go-ts-mode) major-mode-remap-alist)
   (setq treesit-extra-load-path '("~/code/oss/tree-sitter-langs/bin"))
   ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
   )

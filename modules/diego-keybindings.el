@@ -201,6 +201,7 @@
  "hPr"      #'(profiler-report :which-key "Profiler report")
  ;; Insert
  "i"       '(:ignore t :which-key "insert")
+ "ic"      #'cape-ispell
  "ie"      #'emoji-search
  "iu"      #'(insert-char :which-key "Unicode char")
  "is"      #'(consult-yasnippet :which-key "Snippet")
