@@ -285,7 +285,6 @@ exist after each headings's drawers."
      (url-encode-url
       (format site (read-from-minibuffer "Query: "))))))
 
-
 (defun diego/delete-file ()
   "Removes file and buffer."
   (interactive)
@@ -299,6 +298,16 @@ exist after each headings's drawers."
             (message "File '%s' successfully deleted" filename))
         (message "File '%s' doesn't exist" filename))
     (message "Buffer '%s' is not visiting a file" (buffer-name))))
+
+(defun diego/auth-source-get-password (host user)
+  "Get password for HOST and USER from .authinfo.gpg file."
+  (let* ((secret
+          (plist-get
+           (car (auth-source-search :max 1 :host host :user user))
+           :secret)))
+    (if (functionp secret)
+        (funcall secret)
+      secret)))
 
 (provide 'diego-common)
 ;;; diego-common.el ends here
