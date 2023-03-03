@@ -15,7 +15,7 @@
   ;; ** Increase fill column width
   (setq-default fill-column 100)
 
-  (add-to-list 'default-frame-alist '(undecorated . t))
+  ;; (add-to-list 'default-frame-alist '(undecorated . t))
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 (provide 'diego-ui)
