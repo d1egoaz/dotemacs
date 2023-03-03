@@ -138,7 +138,7 @@
   :general
   (general-nvmap
     :keymaps 'eglot-mode-map
-    "K"   #'eldoc-print-current-symbol-info
+    "K"  #'eldoc-print-current-symbol-info
     "gd" #'xref-find-definitions
     "gD" #'eglot-find-implementation
     "gr" #'xref-find-references
@@ -150,10 +150,10 @@
     ",x" #'eglot-code-actions)
   :commands eglot eglot-ensure
   :config
-  ;; evil collection in go-mode was remapping them
   (setq eglot-autoshutdown t)
-  (setq eldoc-documentation-strategy #'eldoc-documentation-default))
-;; :hook (((go-mode-hook rustic-mode-hook) . eglot-ensure)))
+  (setq eldoc-documentation-strategy #'eldoc-documentation-default)
+  :hook ((eglot-managed-mode-hook . eglot-inlay-hints-mode)
+         ((go-mode-hook rustic-mode-hook) . eglot-ensure)))
 
 (use-package consult-eglot
   :after eglot
@@ -206,7 +206,7 @@
     (set (make-local-variable 'outline-regexp) "\\(func \\|\\(.*struct {\\)\\|\\(type \\)\\)"))
 
   :hook ((go-mode-hook . outline-go-mode-hook)
-         (go-mode-hook . lsp-deferred)
+         (go-mode-hook . eglot-ensure)
          (before-save-hook . gofmt-before-save)))
 
 ;;*** ob-go.el
@@ -295,8 +295,8 @@
     ;; "tt" #'diego/go-run-test-current-function
     "tt" #'rustic-cargo-current-test
     "tf" #'rustic-cargo-test
-    "T"  #'lsp-rust-analyzer-related-tests
-    "r" #'rustic-cargo-run)
+    "T"  #'lsp-rust-analyzer-related-tests)
+    ;; "r" #'rustic-cargo-run)
 
   :config
   (setq rustic-lsp-client 'eglot)
@@ -308,9 +308,8 @@
     (when buffer-file-name
       (setq-local compilation-ask-about-save nil)))
 
-  :hook ((rustic-mode-hook . lsp-deferred)
+  :hook ((rustic-mode-hook . eglot-ensure)
          (rustic-mode-hook . diego--rustic-mode-auto-save-hook)))
-;;(rust-mode-hook .  eglot-ensure)
 
 ;;** Markdown
 (use-package markdown-mode
@@ -444,6 +443,7 @@
 
   ;; Global hide/show toggle
   (defvar diego--my-hs-hide nil "Current state of hideshow for toggling all.")
+
   (defun diego/toggle-hideshow-all ()
     "Toggle hideshow all."
     (interactive)
@@ -458,8 +458,11 @@
                  ,(rx (or "}" "]" "end"))                  ; Block end
                  ,(rx (or "#" "=begin"))                   ; Comment start
                  ruby-forward-sexp nil))
+
+  (add-hook 'hs-minor-mode-hook #'(lambda () (hs-hide-all)))
+
   :hook
-  (go-mode-hook . hs-minor-mode))
+  (prog-mode-hook . hs-minor-mode))
 
 ;;** Compilation mode
 ;;*** Basic configuration
@@ -577,7 +580,7 @@
   (push '(go-mode . go-ts-mode) major-mode-remap-alist)
   (setq treesit-extra-load-path '("~/code/oss/tree-sitter-langs/bin"))
   ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
-  )
+  :hook((go-ts-mode-hook . eglot-ensure)))
 
 ;; from https://github.com/casouri/lunarymacs/commit/a8590327ccb891b5e2693811284ba45a9d7392cc
 
