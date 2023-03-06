@@ -9,7 +9,7 @@
       (goto-char (point-max))
       (insert (concat "\n" str))
       (setq buffer-read-only t))
-    (pop-to-buffer buf))))
+    (pop-to-buffer buf)))
 
 (defun chatgpt-query (input)
   "Interact with the ChatGPT API with the INPUT and show the response."
