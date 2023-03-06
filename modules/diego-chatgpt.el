@@ -1,10 +1,13 @@
 (use-package request)
 (use-package json)
 
+(defvar chatgpt--must-use-markdown "response must use markdown, and code blocks must use the right language tag")
+
 (defun chatgpt-append-result (str)
   "Insert result STR of the chatgpt-query at the end of buffer *ChatGPT*."
   (let ((buf (get-buffer-create "*ChatGPT*")))
     (with-current-buffer buf
+      (gfm-mode)
       (setq buffer-read-only nil)
       (goto-char (point-max))
       (insert (concat "\n" str))
@@ -27,14 +30,41 @@
                      :parser 'json-read
                      :success (cl-function
                                (lambda (&key data &allow-other-keys)
-                                 (chatgpt-append-result (format "🤖%s" (let ((message-content (aref (cdr (assoc 'choices data)) 0)))
-                                                                         (cdr (assoc 'content (cdr (assoc 'message message-content))))))))))))
-    (chatgpt-append-result (format "-----\n❓%s: %s" (format-time-string "%H:%M:%S PT") input))))
+                                 (chatgpt-append-result (format "### 🤖Response %s\n" (let ((message-content (aref (cdr (assoc 'choices data)) 0)))
+                                                                                        (cdr (assoc 'content (cdr (assoc 'message message-content))))))))))))
+    (chatgpt-append-result (format "-----\n# %s\n## ❓%s" (format-time-string "%H:%M:%S PT") input))))
 
 (defun chatgpt ()
   "Interact with the ChatGPT API and display the response."
   (interactive)
   (let ((input (read-string "Enter your input: ")))
-    (chatgpt-query input)))
+    (chatgpt-query (format "%s, %s" input chatgpt--must-use-markdown))))
+
+(defun chatgpt-summarize ()
+  "Summarize the selected text or prompt for input and summarize."
+  (interactive)
+  (chatgpt--action-on-text "Summarize this text" "Enter text to summarize: "))
+
+(defun chatgpt-explain-code ()
+  "Summarize the selected text or prompt for input and summarize."
+  (interactive)
+  (chatgpt--action-on-text (format "Explain this code, %s" chatgpt--must-use-markdown) "Enter code to explain: "))
+
+(defun chatgpt-rewrite ()
+  "Summarize the selected text or prompt for input and summarize."
+  (interactive)
+  (chatgpt--action-on-text "Rewrite the following text" "Enter text to rewrite: "))
+
+(defun chatgpt-gen-test ()
+  "Summarize the selected text or prompt for input and summarize."
+  (interactive)
+  (chatgpt--action-on-text (format "Generate unit tests for the following code, %s" chatgpt--must-use-markdown) "Enter code to explain: "))
+
+(defun chatgpt--action-on-text (action action-query)
+  "Summarize the selected text or prompt for input and summarize."
+  (let ((text (if (use-region-p)
+                  (buffer-substring (region-beginning) (region-end))
+                (read-string action-query))))
+    (chatgpt-query (format "%s:\n%s" action text))))
 
 (provide 'diego-chatgpt)
