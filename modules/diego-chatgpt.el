@@ -54,9 +54,9 @@ Response MUST be concise.")
 (defun chatgpt--extract-content-response (_status callback &rest args)
   "Extract the last lines of a JSON string from a buffer.
 Call user's CALLBACK with the result and passes the aditional ARGS."
-  (goto-char 0)
-  (re-search-forward "^$") ; Skip http result headers
-  (let* ((json-string (buffer-substring (point) (point-max)))
+  ;; url-http sets a marker named url-http-end-of-headers after retrieving the web content, allowing
+  ;; us to skip the HTTP headers directly using this marker:
+  (let* ((json-string (buffer-substring-no-properties (1+ url-http-end-of-headers) (point-max)))
          (json-object (json-read-from-string json-string))
          (message-content (aref (cdr (assoc 'choices json-object)) 0))
          (content (cdr (assoc 'content (cdr (assoc 'message message-content))))))
