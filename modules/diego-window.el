@@ -75,11 +75,6 @@
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
            (window-width . 0.50))
-          (,(rx "*ChatGPT*")
-           (display-buffer-in-side-window)
-           (side . right)
-           (window-width . 0.4)
-           (slot . 0))
           ;; below current window
           (,(rx "*" (or "Calendar" "Org todo") "*")
            (display-buffer-reuse-window display-buffer-below-selected)
@@ -89,6 +84,9 @@
            (side . bottom)
            (window-height . 0.4)
            (slot . 0))
+          (,(rx "*ChatGPT*")
+           (display-buffer-in-tab)
+           (tab-name . "ChatGPT"))
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************
