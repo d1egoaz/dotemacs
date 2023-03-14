@@ -26,8 +26,14 @@
 (require 'json)
 (require 'markdown-mode)
 
-(defvar chatgpt--developer-role "You are a large language model living inside Emacs, and the perfect programmer Be concise. Use a role of a Software Developer and Architect. Response must use full and well written markdown, code blocks must use the right language tag.")
-(defvar chatgpt--writter-role "You are a large language model living inside Emacs, and the perfect writing assistance, your background is a Software Developer and Architect. Be concise.")
+(defvar chatgpt--developer-role "You are a large language model living inside Emacs, and the perfect programmer.
+Use a role of a Software Developer and Software Architect.
+Response MUST be concise.
+Response MUST use full and well written markdown, code blocks must use the right language tag.")
+
+(defvar chatgpt--writter-role "You are a large language model living inside Emacs, and the perfect writing assistance,
+your background is a Software Developer and Software Architect.
+Response MUST be concise.")
 
 (defun chatgpt-append-result (str)
   "Insert result STR of the chatgpt-query at the end of buffer *ChatGPT*."
@@ -65,11 +71,12 @@ Pass additional ARGS to the CALLBACK function."
          (url-request-method "POST")
          (url-request-extra-headers `(("Content-Type" . "application/json")
                                       ("Authorization" . ,(format "Bearer %s" api-key))))
-         (url-request-data (json-encode
-                            `(:model ,model
-                                     :messages [(:role "system" :content ,sys-content)
-                                                (:role "user" :content ,input)]
-                                     :temperature 0.7))))
+         ;; needed to use us-ascii, instead of utf-8 due to a multibyte text issue
+         (url-request-data (encode-coding-string (json-encode
+                                                  `(:model ,model
+                                                           :messages [(:role "system" :content ,sys-content)
+                                                                      (:role "user" :content ,input)]
+                                                           :temperature 0.7)) 'us-ascii)))
     (url-retrieve url
                   #'chatgpt--extract-content-response
                   (list callback args))))
@@ -151,7 +158,7 @@ Use the ROLE to tune the AI."
   (let ((text (if (use-region-p)
                   (buffer-substring (region-beginning) (region-end))
                 (read-string "Enter code to explain: "))))
-    (chatgpt-query (format "Explain the following code:\n```%s\n%s```" (chatgpt--get-buffer-role-as-tag) text) 'dev)))
+    (chatgpt-query (format "Explain the following code, be concise:\n```%s\n%s```" (chatgpt--get-buffer-role-as-tag) text) 'dev)))
 
 (provide 'diego-chatgpt)
 ;;; diego-chatgpt.el ends here
