@@ -127,13 +127,10 @@
 ;; Once you’ve finished and want to insert the text into the window you triggered
 ;; Emacs Everywhere from, just press C-c C-c.
 (use-package emacs-everywhere
-  :init
-  ;; use by default gfm-mode instead of using org-mode and pandoc
-  (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-major-mode-org-or-markdown)
-  (remove-hook 'emacs-everywhere-init-hooks #'org-mode)
+  :config
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-set-frame-position)
-  (add-hook 'emacs-everywhere-init-hooks #'gfm-mode)
-
+  (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-init-spell-check)
+  (setq emacs-everywhere-major-mode-function #'gfm-mode)
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
           (width . 150)
