@@ -272,7 +272,6 @@
 (require 'diego-org)
 (require 'diego-misc)
 (require 'diego-keybindings)
-(require 'diego-chatgpt)
 
 (modus-themes-select 'modus-vivendi)
 

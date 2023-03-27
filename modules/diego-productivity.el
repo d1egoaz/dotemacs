@@ -200,5 +200,11 @@
          (org-mode-hook        . undo-fu-session-mode)
          (text-mode-hook       . undo-fu-session-mode)))
 
+(use-package c3po
+  :straight (:host github :repo "d1egoaz/c3po.el")
+  :config
+  (defun diego/setup-c3po ()
+    (interactive)
+    (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "apikey"))))
 
 (provide 'diego-productivity)
