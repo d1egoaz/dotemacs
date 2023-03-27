@@ -127,14 +127,29 @@
 ;; Once you’ve finished and want to insert the text into the window you triggered
 ;; Emacs Everywhere from, just press C-c C-c.
 (use-package emacs-everywhere
+  :after c3po
+  :general
+  (general-nmap :keymaps 'emacs-everywhere-mode-map
+    "," #'diego/emacs-everywhere-filter)
   :config
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-set-frame-position)
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-init-spell-check)
+  (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-remove-trailing-whitespace)
+
+  (add-hook 'emacs-everywhere-mode-hook #'evil-normal-state)
+  (add-hook 'emacs-everywhere-init-hooks #'mark-whole-buffer)
+
   (setq emacs-everywhere-major-mode-function #'gfm-mode)
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
           (width . 150)
-          (height . 20))))
+          (height . 20)))
+
+  (transient-define-prefix diego/emacs-everywhere-filter ()
+    [
+     ["Actions"
+      ("g" "fix grammar" c3po-correct-grammar-and-replace)
+      ("r" "rewrite" c3po-rewrite-and-replace)]]))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
 ;; currently not used as I'm always using gfm-mode
