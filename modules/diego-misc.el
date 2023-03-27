@@ -86,7 +86,7 @@
   (setq elfeed-show-truncate-long-urls t)
   (setq elfeed-sort-order 'ascending)
 
-  (set-face-attribute 'elfeed-search-unread-title-face nil :background "#001904" :foreground "#b8e2b8")
+  (set-face-attribute 'elfeed-search-unread-title-face nil :background "#001904" :foreground "#b8e2b8" :weight 'normal)
 
   (defun diego/elfeed-filter-do ()
     (interactive)
