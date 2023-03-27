@@ -94,6 +94,7 @@ It has been modified to always run on comint mode."
            (cmd (format "ctags -e %s ." opts)))
       (compile cmd t)))
 
+  (setq project-vc-extra-root-markers '(".git" ".project"))
   (setq project-switch-commands '((project-find-file "Find file" ?f)
                                   (diego/open-project-readme "README.md" ?.)
                                   (consult-ripgrep "Search" ?s)
