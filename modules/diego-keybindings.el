@@ -110,6 +110,7 @@
  "bk"      #'(kill-buffer :which-key "Kill selected buffer")
  "bl"      #'(mode-line-other-buffer :which-key "Switch to last buffer")
  "br"      #'revert-buffer-quick
+ "bz"      #'bury-buffer
 
  "bm"      '(:ignore t :which-key "move buffer")
  "bmk"     #'(buf-move-up :which-key "Move up")
