@@ -84,9 +84,9 @@
            (side . bottom)
            (window-height . 0.4)
            (slot . 0))
-          (,(rx "*ChatGPT*")
+          (,(rx "*🤖C3PO🤖*")
            (display-buffer-in-tab)
-           (tab-name . "ChatGPT"))
+           (tab-name . "C3PO"))
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************
