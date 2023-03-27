@@ -127,22 +127,16 @@
 ;; Once you’ve finished and want to insert the text into the window you triggered
 ;; Emacs Everywhere from, just press C-c C-c.
 (use-package emacs-everywhere
-  :after ox-gfm
   :init
-  (setq emacs-everywhere-markdown-apps '("Slack"))
-  (setq emacs-everywhere-markdown-windows
-        '("Stack Exchange" "Stack Overflow" "Reddit" ; Sites
-          "Pull Request" "Issue" "Comparing .*\\.\\.\\." ; Github
-          "Discord" "Slack"))
-
   ;; use by default gfm-mode instead of using org-mode and pandoc
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-major-mode-org-or-markdown)
   (remove-hook 'emacs-everywhere-init-hooks #'org-mode)
+  (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-set-frame-position)
   (add-hook 'emacs-everywhere-init-hooks #'gfm-mode)
 
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
-          (width . 120)
+          (width . 150)
           (height . 20))))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
