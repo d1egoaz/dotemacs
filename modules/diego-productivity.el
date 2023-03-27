@@ -72,25 +72,11 @@
   :config
   (yas-global-mode 1))
 
-
-;;** flyspell.el
-;; `z=` to correct word.
-(use-package flyspell
-  :after org
-  :config
-  (setq ispell-program-name "aspell")
-  :hook ((prog-mode-hook       . flyspell-prog-mode)
-         (gfm-mode-hook        . flyspell-prog-mode)
-         (text-mode-hook       . flyspell-mode)
-         (git-commit-mode-hook . flyspell-mode)
-         (org-mode-hook        . flyspell-mode)))
-
-(use-package flyspell-correct
-  :after flyspell
-  :bind (([remap ispell-word] . #'flyspell-correct-at-point))
-  :config
-  (setq flyspell-correct-interface #'flyspell-correct-dummy)) ; provides save, skip
-
+;; flyspell replacement
+(use-package jinx
+  :straight (:host github :repo "minad/jinx" :files (:defaults "jinx-mod.c" "emacs-module.h"))
+  :bind (([remap ispell-word] . #'jinx-correct))
+  :hook ((emacs-startup-hook . global-jinx-mode)))
 
 ;;** Define word
 ;; Use directly this server instead of trying localhost.
@@ -131,7 +117,6 @@
       ('(4) (funcall orig-fn))))
 
   (advice-add #'iedit-mode :around #'diego/iedit-scoped))
-
 
 ;;** which-function-mode.el
 (use-package which-func
@@ -178,7 +163,6 @@
   (setq blamer-min-offset 60))
 ;; :config
 ;; (global-blamer-mode 1))
-
 
 ;;** string-inflection.el
 (use-package string-inflection)
