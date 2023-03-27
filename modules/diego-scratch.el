@@ -22,30 +22,30 @@
                                    ("text-mode" . ".txt")
                                    ("markdown" . ".md")))
 
-(defun diego--scratch-buffer-query-modes ()
-  (alist-get
-   (completing-read "Mode: " diego--scratch-mode-list)
-   diego--scratch-mode-list nil nil 'equal))
+  (defun diego--scratch-buffer-query-modes ()
+    (alist-get
+     (completing-read "Mode: " diego--scratch-mode-list)
+     diego--scratch-mode-list nil nil 'equal))
 
     ;;;###autoload
-     (defun diego/make-scratch (ext)
-       "Get a scratch buffer for with the extension EXT and a random name.
+  (defun diego/make-scratch (ext)
+    "Get a scratch buffer for with the extension EXT and a random name.
     When called interactively with a prefix arg, prompt for the mode."
-       (interactive (list (diego--scratch-buffer-query-modes)))
-       (let* ((name (concat (make-temp-name (format "*scratch-")) ext)))
-         (find-file (format "~/scratch/%s" name))
-         (with-current-buffer (get-buffer-create name)
-           (save-excursion
-             (insert (format "Scratch buffer for: %s\n\n" ext))
-             (goto-char (point-min))
-             (comment-region (point-at-bol) (point-at-eol)))
-           (forward-line 2))))
+    (interactive (list (diego--scratch-buffer-query-modes)))
+    (let* ((name (concat (make-temp-name (format "*scratch-")) ext)))
+      (find-file (format "~/scratch/%s" name))
+      (with-current-buffer (get-buffer-create name)
+        (save-excursion
+          (insert (format "Scratch buffer for: %s\n\n" ext))
+          (goto-char (point-min))
+          (comment-region (point-at-bol) (point-at-eol)))
+        (forward-line 2))))
 
-     (defun diego/make-new-scratch-buffer-go-babel ()
-       "New temporary scratch buffer with a random name with go-babel enabled."
-       (interactive)
-       (diego/make-scratch ".org")
-       (insert "
+  (defun diego/make-new-scratch-buffer-go-babel ()
+    "New temporary scratch buffer with a random name with go-babel enabled."
+    (interactive)
+    (diego/make-scratch ".org")
+    (insert "
     \#+begin_src go
     package main
     import \"fmt\"
@@ -55,4 +55,4 @@
     \
     ")))
 
-     (provide 'diego-scratch)
+(provide 'diego-scratch)
