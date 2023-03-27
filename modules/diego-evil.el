@@ -43,6 +43,7 @@
 
   ;;*** Make magit commit buffer start in insert mode
   (add-hook 'with-editor-mode-hook #'evil-insert-state)
+  (add-hook 'backtrace-mode-hook #'evil-normal-state)
 
   ;; n=nzz
   (defun diego--my-center-line (&rest _)
@@ -207,7 +208,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   :config
   (setq evil-goggles-pulse t)
   (custom-set-faces
-   '(evil-goggles-default-face ((t (:inherit 'modus-themes-active-yellow)))))
+   '(evil-goggles-default-face ((t (:inherit 'modus-themes-intense-yellow)))))
   (setq evil-goggles-duration 0.3)
   (evil-goggles-mode))
 
