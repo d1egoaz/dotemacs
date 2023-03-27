@@ -125,6 +125,13 @@
   (setq enable-recursive-minibuffers t)
   (minibuffer-depth-indicate-mode 1) ;; display the recursion level in the minibuffer
 
+  (defun diego--minibuffer-insert-newline ()
+    "Insert a newline in the minibuffer."
+    (interactive)
+    (insert "\n"))
+
+  (define-key minibuffer-local-map (kbd "S-<return>") 'diego--minibuffer-insert-newline)
+
   ;; Grow and shrink minibuffer
   (setq resize-mini-windows 'grow-only)
 
