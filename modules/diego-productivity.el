@@ -50,6 +50,7 @@
 ;;** Syntax checking (flycheck.el)
 (use-package flycheck
   :config
+  (setq-default flycheck-yamllintrc "~/.config/yamllint/config")
   (global-flycheck-mode 1))
 
 ;;** Snippets (yasnippet.el)
