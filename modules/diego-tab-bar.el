@@ -27,11 +27,9 @@
   (defface diego-modus-themes-mark-alt '((t :inherit modus-themes-mark-alt :bold nil)) "diego-modus-themes-mark-alt")
   (defface diego-modus-themes-mark-del '((t :inherit modus-themes-mark-del :bold nil)) "diego-modus-themes-mark-del")
 
-
   (defun diego-tab-format-empire ()
     "May the force be with you"
     `((global menu-item ,(propertize (concat "      " ) 'face 'diego-modus-themes-mark-del) ignore)))
-
 
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
@@ -60,7 +58,7 @@ It needs an space before to stop any colour to follow at the end of the row."
 
   (setq tab-bar-format
         '(mode-line-front-space
-                    diego-tab-format-empire
+          diego-tab-format-empire
 
           ;; prot-tab-format-modified
           prot-tab-format-evil
