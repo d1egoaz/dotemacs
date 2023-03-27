@@ -25,6 +25,7 @@
 ;;; Code:
 
 (defun diego/indent-buffer ()
+  "Indent all lines in the current buffer."
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)))
@@ -74,16 +75,14 @@
    (format "<img src=\"%s\" width=\"50%%\" />" (current-kill 0))))
 
 (defun diego/today-UTC-date ()
-  "copy the full UTC time to clipboard"
+  "This function insert the current UTC ISO-8601 at point in the current buffer."
   (interactive)
-  "Inserts the current date in the buffer"
   ;; nil to use current date, t to use UTC
   (insert (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t)))
 
-(defun diego/now ()
-  "Inserts the current time in the buffer"
+(defun diego/insert-now-H-M-S-TZ ()
   (interactive)
-  (insert (format-time-string "%H:%M:%S PT")))
+  (insert (format-time-string "%H:%M:%S %Z ")))
 
 (defun diego--exec-command-replace-region (command)
   (unless mark-active
