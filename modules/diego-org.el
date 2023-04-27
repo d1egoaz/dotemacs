@@ -2,6 +2,7 @@
 
 ;;** org.el
 (use-package org
+  :straight (:type built-in)
   :general
   ;; I prefer C-c C-c over C-c ' (more consistent)
   (:keymaps
@@ -88,21 +89,21 @@
           ("j" "Journal" entry (file+olp+datetree "~/Documents/deft/journal.org")
            "* %?\nSCHEDULED: <%(org-read-date nil nil \"today\")>" :clock-in t :clock-resume t)))
 
-;;** Make org-capture start in insert mode
-(add-hook 'org-capture-mode-hook #'evil-insert-state)
+  ;;** Make org-capture start in insert mode
+  (add-hook 'org-capture-mode-hook #'evil-insert-state)
 
-;;** Org-Babel
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '(
-                               (dot . t)
-                               (shell . t)
-                               (gnuplot . t)
-                               (latex . t)
-                               ))
+  ;;** Org-Babel
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '(
+                                 (dot . t)
+                                 (shell . t)
+                                 (gnuplot . t)
+                                 (latex . t)
+                                 ))
 
-;;** iMenu org depth
-;; Increase the maximum level for Imenu access to Org headlines.
-(setq org-imenu-depth 6))
+  ;;** iMenu org depth
+  ;; Increase the maximum level for Imenu access to Org headlines.
+  (setq org-imenu-depth 6))
 
 ;;** org-download.el
 (use-package org-download
