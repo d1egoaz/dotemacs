@@ -75,8 +75,8 @@
      (concat "git checkout -b " new_branch_name " origin/master"))))
 
 (defun diego/checkout-gh-pr (pr)
-  "Checkouts a branch from a PR number."
-  (interactive "nPR number: ")
+  "Checkouts a branch from a PR number or URL."
+  (interactive "sPR number or URL: ")
   (magit-git-command-topdir
    (format "gh pr checkout %s" pr)))
 
@@ -120,6 +120,7 @@ Uses gh and magit"
 
 ;;*** forge.el
 (use-package forge
+  :after magit
   :demand t
   :commands forge-create-pullreq)
 
