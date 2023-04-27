@@ -136,11 +136,11 @@
 (use-package eglot
   :straight (:type built-in)
   :general
-  (general-nvmap
+  (general-nmap
     :keymaps 'eglot-mode-map
     "K"  #'eldoc-print-current-symbol-info
     "gd" #'xref-find-definitions
-    "gD" #'eglot-find-implementation
+    "gi" #'eglot-find-implementation
     "gr" #'xref-find-references
     "gt" #'eglot-find-typeDefinition
     ",a" #'eglot-code-actions
@@ -178,15 +178,13 @@
 ;;              (gofmt-args . ("-local" "github.com/Shopify/cloudbuddies")))))
 ;; #+end_example
 ;;*** go-mode.el
-(use-package go-mode
+(use-package go-ts-mode
+  :straight (:type built-in)
   :after (eglot lsp-mode)
   :general
   (general-nvmap
-    :keymaps 'go-mode-map
+    :keymaps 'go-ts-mode-map
     :prefix ","
-    "a" #'go-tag-add
-    "i" #'go-goto-imports
-    "." #'godoc-at-point
     "t" '(:ignore t :which-key "test")
     ;; "tt" #'diego/go-run-test-current-function
     "tt" #'go-test-current-test
@@ -296,7 +294,7 @@
     "tt" #'rustic-cargo-current-test
     "tf" #'rustic-cargo-test
     "T"  #'lsp-rust-analyzer-related-tests)
-    ;; "r" #'rustic-cargo-run)
+  ;; "r" #'rustic-cargo-run)
 
   :config
   (setq rustic-lsp-client 'eglot)
@@ -366,32 +364,10 @@
   :mode (("\\.html.erb\\'"       . web-mode)))
 
 ;;** yaml
-(use-package yaml-mode
-  :mode (("\\.yml\\'"       . #'yaml-mode)
-         ("\\.yaml\\'"      . #'yaml-mode)
-         ("\\.yml.erb\\'"      . #'yaml-mode)
-         ("\\.yaml.lock\\'" . #'yaml-mode)))
-
-(use-package yaml
-  :straight (:host github :repo "zkry/yaml.el"))
-
-(use-package yaml-pro
-  :after yaml
-  :straight (:host github :repo "zkry/yaml-pro")
-  :general
-  (general-nvmap
-    :keymaps 'yaml-mode-map
-    :prefix ","
-    "j" #'yaml-pro-consult-jump
-    "ff" #'yaml-pro-fold-at-point
-    "fu" #'yaml-pro-unfold-at-point
-    ">" #'yaml-pro-indent-subtree
-    "<" #'yaml-pro-unindent-subtree
-    "K" #'yaml-pro-move-subtree-up
-    "J" #'yaml-pro-move-subtree-down
-    "'" #'yaml-pro-edit-scalar)
-  :hook
-  (yaml-mode-hook  . yaml-pro-mode))
+(use-package yaml-ts-mode
+  :after jinx
+  :config
+  :hook ((yaml-ts-mode-hook . (lambda ()(jinx-mode -1)))))
 
 ;;** Kubernetes
 
@@ -534,35 +510,34 @@
   (setq treesit-auto-install 'prompt)
   (global-treesit-auto-mode))
 
-(use-package evil-textobj-tree-sitter
-  :after (evil tree-sitter)
-  :straight (evil-textobj-tree-sitter :type git
-                                      :host github
-                                      :repo "meain/evil-textobj-tree-sitter"
-                                      :files (:defaults "queries"))
-  :config
-  ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-  ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+;; (use-package evil-textobj-tree-sitter
+;;   :after (evil tree-sitter)
+;;   :straight (evil-textobj-tree-sitter :type git
+;;                                       :host github
+;;                                       :repo "meain/evil-textobj-tree-sitter"
+;;                                       :files (:defaults "queries"))
+;;   :config
+;;   ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+;;   (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+;;   ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+;;   (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
 
-  (define-key evil-outer-text-objects-map "l" (cons "evil-outer-loop" (evil-textobj-tree-sitter-get-textobj "loop.outer")))
-  (define-key evil-inner-text-objects-map "l" (cons "evil-inner-loop" (evil-textobj-tree-sitter-get-textobj "loop.inner")))
+;;   (define-key evil-outer-text-objects-map "l" (cons "evil-outer-loop" (evil-textobj-tree-sitter-get-textobj "loop.outer")))
+;;   (define-key evil-inner-text-objects-map "l" (cons "evil-inner-loop" (evil-textobj-tree-sitter-get-textobj "loop.inner")))
 
-  (define-key evil-outer-text-objects-map "v" (cons "evil-outer-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.outer")))
-  (define-key evil-inner-text-objects-map "v" (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner")))
+;;   (define-key evil-outer-text-objects-map "v" (cons "evil-outer-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.outer")))
+;;   (define-key evil-inner-text-objects-map "v" (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner")))
 
-  )
+;;   )
 
-(use-package ts-fold
-  :after (tree-sitter)
-  :commands (ts-fold-mode)
-  :straight (ts-fold :host github :repo "jcs090218/ts-fold")
-  :general
-  (general-nmap "za" #'ts-fold-toggle)
-  :config
-  (add-hook 'tree-sitter-after-on-hook #'ts-fold-mode))
-
+;; (use-package ts-fold
+;;   :after (tree-sitter)
+;;   :commands (ts-fold-mode)
+;;   :straight (ts-fold :host github :repo "jcs090218/ts-fold")
+;;   :general
+;;   (general-nmap "za" #'ts-fold-toggle)
+;;   :config
+;;   (add-hook 'tree-sitter-after-on-hook #'ts-fold-mode))
 
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
 (use-package treesit
@@ -570,14 +545,27 @@
   :config
 
   (setq-default treesit-font-lock-level 4)
-  (push '(c-mode . c-ts-mode) major-mode-remap-alist)
-  (push '(c++-mode . c++-ts-mode) major-mode-remap-alist)
-  (push '(css-mode . css-ts-mode) major-mode-remap-alist)
-  (push '(javascript-mode . javascript-ts-mode) major-mode-remap-alist)
-  (push '(js-json-mode . json-ts-mode) major-mode-remap-alist)
-  (push '(python-mode . python-ts-mode) major-mode-remap-alist)
-  (push '(go-mod-mode . go-mod-ts-mode) major-mode-remap-alist)
-  (push '(go-mode . go-ts-mode) major-mode-remap-alist)
+
+
+  (setq major-mode-remap-alist '((conf-toml-mode . toml-ts-mode)
+                                 (css-mode . css-ts-mode)
+                                 (java-mode . java-ts-mode)
+                                 (js-json-mode . json-ts-mode)
+                                 (python-mode . python-ts-mode)
+                                 (ruby-mode . ruby-ts-mode)
+                                 (sh-mode . bash-ts-mode)))
+  ;; tree-sitter only modes
+  (add-to-list 'auto-mode-alist '("CMakeLists\\'" . cmake-ts-mode))
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+  (add-to-list 'auto-mode-alist '("/go\\.mod\\'" . go-mod-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
+
   (setq treesit-extra-load-path '("~/code/oss/tree-sitter-langs/bin"))
   ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
   :hook((go-ts-mode-hook . eglot-ensure)))

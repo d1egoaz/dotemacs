@@ -4,6 +4,7 @@
   :straight (:type built-in)
   :config
   ;; *** Always start with a custom scratch buffer
+  (setq initial-scratch-message nil)
   (setq initial-buffer-choice "~/scratch/*scratch*")
 
   ;; *** Open the scratch buffers when opening emacs.
