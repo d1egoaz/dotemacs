@@ -24,7 +24,7 @@
 ;;** Completion framework (corfu.el)
 ;;*** corfu
 (use-package corfu
-  :straight (:files (:defaults "extensions/*") :includes (corfu-info corfu-history corfu-popupinfo))
+  :straight (:files (:defaults "extensions/*") :includes (corfu-quick corfu-info corfu-history corfu-popupinfo))
   :config
   (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (setq corfu-auto t)                 ;; Enable auto completion
@@ -46,9 +46,11 @@
 
   (defun corfu-enable-always-in-minibuffer ()
     "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-    (unless (or (bound-and-true-p mct--active)
-                (bound-and-true-p vertico--input))
-      ;; (setq-local corfu-auto nil) Enable/disable auto completion
+    (unless (or (bound-and-true-p vertico--input)
+                (eq (current-local-map) read-passwd-map))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                  corfu-popupinfo-delay nil)
       (corfu-mode 1)))
   (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
@@ -58,6 +60,7 @@
   ;; Configure SPC for separator insertion
   (:map corfu-map
         ("SPC" . corfu-insert-separator)
+        ("C-q" . corfu-quick-complete) ;; similar to  `vertico-quick-exit'
         ("M-m" . corfu-move-to-minibuffer))
   :init
   (global-corfu-mode 1)
