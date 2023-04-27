@@ -100,6 +100,7 @@ It has been modified to always run on comint mode."
                                   (consult-ripgrep "Search" ?s)
                                   (project-dired "Dired" ?d)
                                   (diego/open-project-magit "Git status" ?g)
+                                  (project-vc-dir "Project vc-dir" ?G)
                                   (diego/consult-buffer-for-project "Recent project buffer" ?R)
                                   (project-shell-command "Shell command" ?!)
                                   (diego--open-readme-and-vterm "Vterm project" ?v))))

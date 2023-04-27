@@ -159,6 +159,7 @@
  "ga"      #'(vc-annotate :which-key "Annotate, show edit history") ;; f vc-annotate-find-revision-at-line, l vc-annotate-show-log-revision-at-line, D, F, J
  "gb"      #'magit-log-buffer-file
  "gs"      #'(magit-status :which-key "Magit status")
+ "gS"      #'(project-vc-dir :which-key "vc-dir project status")
  "gF"      #'magit-fetch-all
  "gg"      #'magit-dispatch
 
