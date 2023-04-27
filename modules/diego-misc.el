@@ -127,29 +127,31 @@
 ;; Once you’ve finished and want to insert the text into the window you triggered
 ;; Emacs Everywhere from, just press C-c C-c.
 (use-package emacs-everywhere
-  :after c3po
   :general
   (general-nmap :keymaps 'emacs-everywhere-mode-map
     "," #'diego/emacs-everywhere-filter)
   :config
+  (setq emacs-everywhere-clipboard-sleep-delay 0.1)
+  (add-hook 'emacs-everywhere-mode-hook #'evil-normal-state)
+
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-set-frame-position)
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-init-spell-check)
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-remove-trailing-whitespace)
+  (add-hook 'emacs-everywhere-init-hooks #'mark-whole-buffer t)
 
-  (add-hook 'emacs-everywhere-mode-hook #'evil-normal-state)
-  (add-hook 'emacs-everywhere-init-hooks #'mark-whole-buffer)
+  (setq emacs-everywhere-final-hooks nil)
 
   (setq emacs-everywhere-major-mode-function #'gfm-mode)
   (setq emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
           (width . 150)
-          (height . 20)))
+          (height . 30)))
 
   (transient-define-prefix diego/emacs-everywhere-filter ()
     [
      ["Actions"
-      ("g" "fix grammar" c3po-correct-grammar-and-replace)
-      ("r" "rewrite" c3po-rewrite-and-replace)]]))
+      ("c" "correct grammar" c3po-grammar-checker-new-chat-replace-region)
+      ("r" "rewrite" c3po-rewriter-new-chat-replace-region)]]))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
 ;; currently not used as I'm always using gfm-mode
@@ -161,6 +163,8 @@
 ;; ** Configure PATH on macOS
 (use-package exec-path-from-shell
   :config
+  (setq exec-path-from-shell-warn-duration-millis 200)
+  (setq exec-path-from-shell-arguments nil) ;; avoid interactive login
   (setq exec-path-from-shell-variables '("PATH" "MANPATH" "EMACS_ADDITIONAL_DIR" "KUBECONFIG" "FZF_DEFAULT_OPTS" "FZF_DEFAULT_COMMAND" "FZF_CTRL_T_COMMAND"))
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
