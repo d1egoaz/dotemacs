@@ -227,8 +227,8 @@
   (advice-add #'register-preview :override #'consult-register-window)
 
   ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+  (setq xref-show-xrefs-function #'consult-xref)
+  (setq xref-show-definitions-function #'consult-xref)
   :config
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
@@ -243,17 +243,13 @@
   (consult-customize consult-theme :preview-key '(:debounce 0.5 any))
   ;; :preview-key (list (kbd "M-SPC") (kbd "C-M-j") (kbd "C-M-k")))
 
-
   (setq consult-narrow-key ">")
   (setq consult-widen-key "<")
-
-  ;; TODO 2021-09-14T22:38:11Z
-  ;; consult-line-start-from-top
 
   ;; disable fd for now until https://github.com/minad/consult/wiki#find-files-using-fd
   ;; (setq consult-find-args "fd --color=never --full-path ARG OPTS")
   ;; add --hidden
-  (setq consult-ripgrep-args "rg --hidden --glob=!.git/ --glob=!TAGS --null --line-buffered --color=never --max-columns=1000 --path-separator=/ --smart-case --no-heading --line-number .")
+  (setq consult-ripgrep-args "rg --hidden --glob=!.git/ --glob=!TAGS --null --line-buffered --color=never --max-columns=1000 --path-separator / --smart-case --no-heading --with-filename --line-number")
   (setq xref-search-program 'ripgrep)
 
   (setq consult-fontify-preserve t)
