@@ -52,6 +52,9 @@
   ;; in their place.
   (global-so-long-mode 1)
 
+  ;; sometimes when I'm in vim edit mode and there is a selection, this makes more sense.
+  (setq-default delete-selection-mode t)
+
   ;;** Indentation, spaces, and tabs
   ;; Favor spaces over tabs.
   (setq-default indent-tabs-mode nil)
@@ -100,42 +103,16 @@
 (use-package highlight-parentheses
   :after modus-themes
   :config
-  (defvar my-highlight-parentheses-use-background t
-    "Prefer `highlight-parentheses-background-colors'.")
 
-  (setq my-highlight-parentheses-use-background nil) ; Set to nil to disable backgrounds
+  (modus-themes-with-colors
+    ;; And here we pass only foreground colors while disabling any
+    ;; backgrounds.
+    (setq highlight-parentheses-colors (list green-intense magenta-intense blue-intense red-intense))
+    (setq highlight-parentheses-background-colors nil))
 
-  (defun my-modus-themes-highlight-parentheses ()
-    (modus-themes-with-colors
-      ;; Our preference for setting either background or foreground
-      ;; styles, depending on `my-highlight-parentheses-use-background'.
-      (if my-highlight-parentheses-use-background
-
-          ;; Here we set color combinations that involve both a background
-          ;; and a foreground value.
-          (setq highlight-parentheses-background-colors (list cyan-refine-bg
-                                                              magenta-refine-bg
-                                                              green-refine-bg
-                                                              yellow-refine-bg)
-                highlight-parentheses-colors (list cyan-refine-fg
-                                                   magenta-refine-fg
-                                                   green-refine-fg
-                                                   yellow-refine-fg))
-
-        ;; And here we pass only foreground colors while disabling any
-        ;; backgrounds.
-        (setq highlight-parentheses-colors (list green-intense
-                                                 magenta-intense
-                                                 blue-intense
-                                                 red-intense)
-              highlight-parentheses-background-colors nil)))
-
-    ;; Our changes must be evaluated before enabling the relevant mode, so
-    ;; this comes last.
-    (global-highlight-parentheses-mode 1))
 
   ;; Include this if you also want to make the parentheses bold:
-  (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
+  ;; (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
   (global-highlight-parentheses-mode 1)
   :hook ((modus-themes-after-load-theme-hook . my-modus-themes-highlight-parentheses)))
 
@@ -160,10 +137,21 @@
   (lin-global-mode 1))
 
 ;;** highlight-indent-guides.el
+;; it breaks -ts-modes with:
+;; Error during redisplay: (jit-lock-function 1) signaled (void-function nil)
+;; https://github.com/DarthFennec/highlight-indent-guides/issues/123
 (use-package highlight-indent-guides
+  :after modus-themes
   :config
   (setq highlight-indent-guides-method 'character)
-  :hook ((prog-mode-hook . highlight-indent-guides-mode)))
+
+  (defun my-modus-themes-highlight-indent-guides ()
+    (modus-themes-with-colors
+      (custom-set-faces
+       `(highlight-indent-guides-character-face ((,c :foreground ,border))))))
+
+  :hook ((prog-mode-hook . highlight-indent-guides-mode)
+         (modus-themes-after-load-theme-hook . my-modus-themes-highlight-indent-guides)))
 
 ;;** pulsar.el (based on pulse.el)
 ;; Never lose the cursor again.
