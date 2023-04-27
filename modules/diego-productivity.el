@@ -72,11 +72,24 @@
   :config
   (yas-global-mode 1))
 
-;; flyspell replacement
-(use-package jinx
-  :straight (:host github :repo "minad/jinx" :files (:defaults "jinx-mod.c" "emacs-module.h"))
-  :bind (([remap ispell-word] . #'jinx-correct))
-  :hook ((emacs-startup-hook . global-jinx-mode)))
+;;** flyspell.el
+;; `z=` to correct word.
+(use-package flyspell
+  :after org
+  :config
+  (setq ispell-program-name "aspell")
+  :hook ((prog-mode-hook       . flyspell-prog-mode)
+         (gfm-mode-hook        . flyspell-prog-mode)
+         (text-mode-hook       . flyspell-mode)
+         (git-commit-mode-hook . flyspell-mode)
+         (org-mode-hook        . flyspell-mode)))
+
+(use-package flyspell-correct
+  :after flyspell
+  :bind (([remap ispell-word] . #'flyspell-correct-at-point))
+  :config
+  ;; provides save, skip
+  (setq flyspell-correct-interface #'flyspell-correct-dummy))
 
 ;;** Define word
 ;; Use directly this server instead of trying localhost.
@@ -87,13 +100,6 @@
   (setq dictionary-server "dict.org"))
 
 (use-package define-word)
-
-;;** langtool.el
-(use-package langtool
-  :config
-  (setq langtool-mother-tongue "en")
-  (setq langtool-default-language "en-US")
-  (setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/5.5/libexec/languagetool-commandline.jar"))
 
 ;;** buff-move.el
 ;; Package `buffer-move' provides simple commands to swap Emacs windows: `buf-move-up',
@@ -188,6 +194,26 @@
 (use-package c3po
   :straight (:host github :repo "d1egoaz/c3po.el")
   :config
-  (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "apikey")))
+  ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
+  (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "work"))
+  (c3po-add-new-droid-with-defaults-processors 'synonymizer
+                                               "
+I want you to act as a synonyms provider.
+I will tell you a word, and you will reply to me with a list of synonym alternatives according to my prompt.
+Provide a list of 5 synonyms per prompt, 3 short examples, and a list of 5 antonyms.
+You will only reply the words list, and nothing else, please use this template:
+**Synonyms:**
+-
+
+**Examples:**
+-
+
+**Antonyms:**
+-
+")
+  ;; (setq c3po-system-persona-prompts-alist nil)
+
+  ;; https://www.romanliutikov.com/notes/chatgpt-prompts.html
+  )
 
 (provide 'diego-productivity)
