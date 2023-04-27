@@ -114,7 +114,6 @@
   :bind (("M-/" . diego/dabbrev-full-completion)
          ("C-M-/" . dabbrev-completion)))
 
-
 (use-package emacs
   :straight (:type built-in)
   :init
@@ -149,6 +148,20 @@
   :hook
   (minibuffer-setup-hook . cursor-intangible-mode))
 
+(use-package ffap
+  :straight (:type built-in)
+  ;; https://github.com/minad/vertico/blob/67e3735e7edbcc8c03c35cd30f4f482920ae283c/README.org#ffap-menu
+  ;; The command ffap-menu shows the *Completions* buffer by default like tmm-menubar, which is
+  ;; unnecessary with Vertico. This completion buffer can be disabled as follows.
+  :config
+  (advice-add #'ffap-menu-ask :around (lambda (&rest args)
+                                        (cl-letf (((symbol-function #'minibuffer-completion-help)
+                                                   #'ignore))
+                                          (apply args))))
+
+  ;; remap some existing bindings
+  ;; (ffap-bindings)
+  )
 ;;** Selection and Narrowing
 
 ;; Individual packages that work well together.
@@ -180,11 +193,6 @@
   ;; vertico repeat
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
 
-  (advice-add #'ffap-menu-ask :around (lambda (&rest args)
-                                        (cl-letf (((symbol-function #'minibuffer-completion-help)
-                                                   #'ignore))
-                                          (apply args))))
-
   (defun vertico--select-first (state)
     (when (> (alist-get 'vertico--total state) 0)
       (setf (alist-get 'vertico--index state) 0))
@@ -195,8 +203,6 @@
          vertico-map
          ("<C-tab>" . #'vertico-quick-insert)
          ("C-q"     . #'vertico-quick-exit)))
-
-
 
 ;;*** consult.el
 ;; Provides a suite of useful commands using completing-read.
