@@ -30,7 +30,6 @@
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . top)
            (window-height . 0.3)
-           (dedicated . t)
            (preserve-size . (t . t)))
           ;;️↓ bottom side window
           (,(rx "*Embark Actions*")
@@ -79,7 +78,7 @@
           (,(rx "*" (or "Calendar" "Org todo") "*")
            (display-buffer-reuse-window display-buffer-below-selected)
            (window-height . fit-window-to-buffer))
-          (,(rx "*Process List*")
+          (,(rx "*" (or "Process List" "Diff" "🤖C3PO Diff🤖") "*")
            (display-buffer-in-side-window)
            (side . bottom)
            (window-height . 0.4)
@@ -121,7 +120,7 @@
            (side . right)
            (window-width . 0.5))
           (,(rx "*kubel manager" (* any))
-           (display-buffer-in-tab)
+           (display-buffer-in-tab display-buffer-reuse-mode-window)
            (tab-name . "kubel")
            (dedicated . t))
            ;;;; Elfeed
@@ -148,6 +147,24 @@
            (tab-name . diego/workspaces-name-for-buffer))
           ;; end display-buffer-alist elements
           ))
+
+  ;; (defun diego/display-new-buffer ()
+  ;;   )
+  ;;   (defun diego/display-new-buffer ()
+  ;;     "Run the `display-buffer' function for the new buffer after killing a buffer.
+  ;; Which will apply the rules in `display-buffer-alist` for that buffer."
+  ;;     (let ((buffer (other-buffer)))
+  ;;       (display-buffer buffer)))
+
+  ;;   (add-hook 'kill-buffer-hook #'diego/display-new-buffer)
+
+  (defun diego-apply-current-buffer-display-rules ()
+    "Run display-buffer-alist rules after switching tabs or killing buffers."
+    (when diego-workspaces-enabled
+      (display-buffer (current-buffer))))
+
+  (advice-add 'kill-current-buffer :after #'diego-apply-current-buffer-display-rules)
+  ;; (add-hook 'kill-buffer-hook #'diego-apply-current-buffer-display-rules)
 
   ;; (setq display-buffer-alist nil) ;; use on emergency :)
 
@@ -219,7 +236,9 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
   (defun diego/window-remove-side-parameter ()
     (interactive)
-    (set-window-parameter nil 'window-side nil))
+    (set-window-parameter nil 'window-side nil)
+    (with-current-buffer (current-buffer)
+      (setq-local diego-workspaces-enabled nil)))
 
   :bind ("<f6>" . #'window-toggle-side-windows))
 

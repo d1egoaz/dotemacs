@@ -73,6 +73,8 @@ It needs an space before to stop any colour to follow at the end of the row."
 
   (global-tab-line-mode 1)
   (tab-bar-mode 1)
-  (tab-bar-history-mode 1))
+  (tab-bar-history-mode 1)
+
+  (add-hook 'tab-bar-switch-functions #'diego-apply-current-buffer-display-rules))
 
 (provide 'diego-tab-bar)
