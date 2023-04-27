@@ -23,6 +23,10 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
   ;; The special marker ‘,’ inside of the argument to backquote indicates a value that isn’t constant.
   (setq backup-directory-alist `(("." . ,(concat no-littering-var-directory "backup"))))
+  (defun diego--backup-enable-predicate (name)
+    (and (normal-backup-enable-predicate name)
+         (not (string-match-p "\\.gpg\\'" name))))
+  (setq backup-enable-predicate #'diego--backup-enable-predicate)
 
   ;;* Files
   ;;** Don't prompt for confirmation when we create a new file or buffer.
