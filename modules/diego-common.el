@@ -265,7 +265,7 @@ exist after each headings's drawers."
 
 (defun diego--lookup-provider-alist ()
   (append
-   diego--shopify-lookup-provider-alist
+   ;; diego--shopify-lookup-provider-alist
    '(("Github Search" "https://github.com/search?q=%s")
      ("Github NEW Search" "https://cs.github.com/?scopeName=All+repos&scope=&q=%s")
      ("Github open Shopify Repository" "https://github.com/Shopify/%s")

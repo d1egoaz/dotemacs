@@ -49,7 +49,6 @@
 
   (setq magit-repository-directories
         '(
-          ("~/src/github.com/Shopify" . 2)
           ("~/code/" . 2)
           ("~/dotfiles/" . 1)))
 

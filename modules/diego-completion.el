@@ -59,6 +59,7 @@
   :bind
   ;; Configure SPC for separator insertion
   (:map corfu-map
+        ;; ("<return>" . corfu-quit)
         ("SPC" . corfu-insert-separator)
         ("C-q" . corfu-quick-complete) ;; similar to  `vertico-quick-exit'
         ("M-m" . corfu-move-to-minibuffer))

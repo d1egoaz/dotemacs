@@ -466,12 +466,13 @@
       (point-max)
       (comint-set-process-mark)))
 
-  ;; from https://www.reddit.com/r/emacs/comments/wwdpju/comment/ilotsc5/?utm_source=share&utm_medium=web2x&context=3
-  (defun meain/compilation-colorcode (_buffer string)
+  ;; Adapted from https://www.reddit.com/r/emacs/comments/wwdpju/comment/ilotsc5/?utm_source=share&utm_medium=web2x&context=3
+  (defun diego--compilation-colorcode (_buffer process-end-line)
     "Change background color of compilation `_BUFFER' to red on failure."
-    (unless (string-prefix-p "finished" string) ; Having color for success was distracting
+    (if (string-prefix-p "finished" process-end-line)
+        (face-remap-add-relative 'default 'lin-green)
       (face-remap-add-relative 'default 'lin-red)))
-  (add-to-list 'compilation-finish-functions 'meain/compilation-colorcode)
+  (add-to-list 'compilation-finish-functions 'diego--compilation-colorcode)
 
   :bind (:map compilation-mode-map
               ("C-c -" . compilation-add-separator)
@@ -506,6 +507,7 @@
 ;;   (push '(gfm-mode . markdown) tree-sitter-major-mode-language-alist))
 
 (use-package treesit-auto
+  :straight (:type git :host github :repo "renzmann/treesit-auto")
   :config
   (setq treesit-auto-install 'prompt)
   (global-treesit-auto-mode))

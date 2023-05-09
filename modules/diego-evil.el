@@ -207,8 +207,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   :after evil
   :config
   (setq evil-goggles-pulse t)
-  (custom-set-faces
-   '(evil-goggles-default-face ((t (:inherit 'modus-themes-intense-yellow)))))
+  (set-face-attribute 'evil-goggles-default-face nil :inherit 'cursor)
   (setq evil-goggles-duration 0.3)
   (evil-goggles-mode))
 

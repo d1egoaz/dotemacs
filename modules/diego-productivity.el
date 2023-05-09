@@ -192,7 +192,7 @@
          (text-mode-hook       . undo-fu-session-mode)))
 
 (use-package c3po
-  :straight (:host github :repo "d1egoaz/c3po.el")
+  :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
   :config
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
   (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "work"))

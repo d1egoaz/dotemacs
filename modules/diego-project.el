@@ -1,6 +1,6 @@
 ;;; diego-project.el --- Diego Project Related Functions  -*- lexical-binding: t; -*-
 
-(defvar diego--project-project-roots '("~/src/github.com/Shopify" "~/code/oss"))
+(defvar diego--project-project-roots '("~/src/github.com" "~/code/oss"))
 
 ;;** project.el
 (use-package project
@@ -54,7 +54,7 @@
 
   (defun diego/project-compile-dwim (command)
     "Run `compile' in the project root."
-    (declare (interactive-only compile))
+    ;; (declare (interactive-only compile))
     (interactive)
     (let ((default-directory (diego/current-project-root))
           (compilation-buffer-name-function
@@ -104,6 +104,5 @@ It has been modified to always run on comint mode."
                                   (diego/consult-buffer-for-project "Recent project buffer" ?R)
                                   (project-shell-command "Shell command" ?!)
                                   (diego--open-readme-and-vterm "Vterm project" ?v))))
-
 
 (provide 'diego-project)

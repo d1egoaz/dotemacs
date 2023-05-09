@@ -110,11 +110,9 @@
     (setq highlight-parentheses-colors (list green-intense magenta-intense blue-intense red-intense))
     (setq highlight-parentheses-background-colors nil))
 
-
   ;; Include this if you also want to make the parentheses bold:
   ;; (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
-  (global-highlight-parentheses-mode 1)
-  :hook ((modus-themes-after-load-theme-hook . my-modus-themes-highlight-parentheses)))
+  (global-highlight-parentheses-mode 1))
 
 ;;** lin.el
 (use-package lin

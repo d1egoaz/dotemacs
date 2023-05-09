@@ -18,6 +18,7 @@
                       :slant 'italic)
 
   ;; *** Configure emoji font 😎
+  (add-to-list 'face-font-rescale-alist '("Apple Color Emoji" . 0.8))
   (set-fontset-font t 'emoji '("Apple Color Emoji" . "iso10646-1") nil 'prepend)
 
   ;; *** Zooming In and Out
@@ -31,6 +32,7 @@
 (use-package mixed-pitch
   :hook (
          (org-mode-hook       . mixed-pitch-mode)
-         (gfm-mode-hook       . mixed-pitch-mode)))
+         ;; (gfm-mode-hook       . mixed-pitch-mode)
+         ))
 
 (provide 'diego-ui-font)
