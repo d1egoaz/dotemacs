@@ -5,17 +5,14 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fonts.html
   ;; (add-to-list 'default-frame-alist '(font . "Essential PragmataPro-14:weight=regular"))
   (add-to-list 'default-frame-alist '(font . "Essential PragmataPro-14"))
+  (set-fontset-font t nil "Essential PragmataPro-14")
 
-  (setq-default line-spacing 1) ; needs to be changed for some fonts
+  ;; (setq-default line-spacing 1) ; needs to be changed for some fonts
 
-  (set-face-attribute 'fixed-pitch nil
-                      :font "-*-Essential PragmataPro-regular-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-  (set-face-attribute 'variable-pitch nil
-                      :font "SF Pro Text-14")
-  (set-face-attribute 'font-lock-comment-face nil
-                      :slant 'italic)
-  (set-face-attribute 'font-lock-keyword-face nil
-                      :slant 'italic)
+  (set-face-attribute 'fixed-pitch nil :font "-*-Essential PragmataPro-regular-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+  (set-face-attribute 'variable-pitch nil :font "SF Pro Text-14")
+  (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+  (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
 
   ;; *** Configure emoji font 😎
   (add-to-list 'face-font-rescale-alist '("Apple Color Emoji" . 0.8))
