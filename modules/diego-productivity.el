@@ -195,7 +195,7 @@
   :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
   :config
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
-  (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "work"))
+  (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
   (c3po-add-new-droid-with-defaults-processors 'synonymizer
                                                "
 I want you to act as a synonyms provider.
