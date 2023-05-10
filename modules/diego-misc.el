@@ -165,7 +165,7 @@
   :config
   (setq exec-path-from-shell-warn-duration-millis 200)
   (setq exec-path-from-shell-arguments nil) ;; avoid interactive login
-  (setq exec-path-from-shell-variables '("PATH" "MANPATH" "EMACS_ADDITIONAL_DIR" "KUBECONFIG" "FZF_DEFAULT_OPTS" "FZF_DEFAULT_COMMAND" "FZF_CTRL_T_COMMAND"))
+  (setq exec-path-from-shell-variables '("PATH" "MANPATH" "EMACS_ADDITIONAL_DIR" "KUBECONFIG" "FZF_DEFAULT_OPTS" "FZF_DEFAULT_COMMAND" "FZF_CTRL_T_COMMAND" "GPG_AGENT_INFO"))
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
