@@ -7,6 +7,7 @@
   (setq tab-bar-close-tab-select 'recent)
   (setq tab-bar-auto-width nil) ; I don't like the width of the tabs
 
+  ;; for fonts to show up use: all-the-icons-install-fonts first
   (setq tab-bar-new-tab-choice nil)
   (setq tab-bar-separator "  ")
   (setq tab-bar-show t)
