@@ -568,7 +568,7 @@
   (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
 
-  (setq treesit-extra-load-path '("~/code/oss/tree-sitter-langs/bin"))
+  (setq treesit-extra-load-path '("~/code/tree-sitter-langs/bin"))
   ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
   :hook((go-ts-mode-hook . eglot-ensure)))
 
