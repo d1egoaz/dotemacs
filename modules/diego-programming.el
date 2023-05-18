@@ -373,8 +373,8 @@
 
 ;;*** kubel.el
 (use-package kubel
-  ;; :straight (kubel :host github :repo "d1egoaz/kubel" :branch "diego/multiple-kubel-buffers")
-  :straight (kubel :host github :repo "d1egoaz/kubel" :branch "test")
+  :straight (kubel :host github :repo "d1egoaz/kubel" :branch "diego/multiple-kubel-buffers")
+  ;; :straight (kubel :host github :repo "d1egoaz/kubel" :branch "test")
   :general
   (general-mmap :keymaps 'kubel-evil-mode-map
     "," #'diego/kubel-filter)
@@ -568,7 +568,6 @@
   (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
 
-  (setq treesit-extra-load-path '("~/code/tree-sitter-langs/bin"))
   ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
   :hook((go-ts-mode-hook . eglot-ensure)))
 
