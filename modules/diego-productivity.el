@@ -131,12 +131,20 @@
   ;; Show the current function name in the header line
   (setq-default header-line-format
                 '((which-function-mode ("" which-func-format " "))))
+                  ;; (:eval (breadcrumb-project-crumbs))))
 
   ;; We remove Which Function Mode from the mode line, because it's mostly
   ;; invisible here anyway.
   (setq mode-line-misc-info (assq-delete-all 'which-function-mode mode-line-misc-info))
 
-  (which-function-mode 1))
+  (which-function-mode -1))
+
+
+;;** blamer.el
+(use-package breadcrumb
+  :straight (:type git :host github :repo "joaotavora/breadcrumb")
+  :config
+  (breadcrumb-mode 1))
 
 ;;** bookmarks.el
 (use-package bookmark
