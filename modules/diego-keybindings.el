@@ -62,7 +62,7 @@
  "SPC"     #'(execute-extended-command :which-key "M-x")
  "'"       #'(vertico-repeat-last :which-key "Resume last search")
  "\""       #'(vertico-repeat-select :which-key "Resume last session")
- ">"       #'(er/expand-region :which-key "Expand region")
+ ">"       #'(expreg-expand :which-key "Expand region")
  "u"       #'(universal-argument :which-key "Universal argument")
  "U"       #'(universal-argument-more :which-key "Universal argument more")
  "x"       #'((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "Scratch buffer")

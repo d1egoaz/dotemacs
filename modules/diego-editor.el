@@ -78,7 +78,11 @@
 ;; https://github.com/magnars/expand-region.el
 ;; Emacs extension to increase selected region by semantic units.
 ;; er/expand-region
-(use-package expand-region)
+;; (use-package expand-region)
+
+;; TODO: test
+(use-package expreg
+  :straight (:host github :repo "casouri/expreg"))
 
 ;;** Parens (elec-pair.el)
 (use-package elec-pair
