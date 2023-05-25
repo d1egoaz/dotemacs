@@ -5,6 +5,7 @@
   (setq modus-themes-mixed-fonts t)
   (setq modus-themes-variable-pitch-ui t)
   (setq modus-themes-prompts '(italic bold))
+  (setq modus-themes-org-blocks 'tinted-background)
   (setq modus-themes-completions
         '((matches . (extrabold))
           (selection . (semibold text-also))))
