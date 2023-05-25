@@ -17,6 +17,7 @@
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 500000)
+  (setq vterm-shell "/bin/zsh --login")
 
   (defun diego--vterm-hook ()
     ;; Don't prompt about dying processes when killing vterm
