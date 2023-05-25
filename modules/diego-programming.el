@@ -512,25 +512,25 @@
   (setq treesit-auto-install 'prompt)
   (global-treesit-auto-mode))
 
-;; (use-package evil-textobj-tree-sitter
-;;   :after (evil tree-sitter)
-;;   :straight (evil-textobj-tree-sitter :type git
-;;                                       :host github
-;;                                       :repo "meain/evil-textobj-tree-sitter"
-;;                                       :files (:defaults "queries"))
-;;   :config
-;;   ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-;;   (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-;;   ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-;;   (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+(use-package evil-textobj-tree-sitter
+  :after (evil treesit)
+  :straight (evil-textobj-tree-sitter
+             :host github
+             :repo "meain/evil-textobj-tree-sitter"
+             :files (:defaults "queries" "treesit-queries")
+             :branch "treesit")
+  ;; :files (:defaults "queries"))
+  :config
+  ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  ;; ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
 
-;;   (define-key evil-outer-text-objects-map "l" (cons "evil-outer-loop" (evil-textobj-tree-sitter-get-textobj "loop.outer")))
-;;   (define-key evil-inner-text-objects-map "l" (cons "evil-inner-loop" (evil-textobj-tree-sitter-get-textobj "loop.inner")))
+  (define-key evil-outer-text-objects-map "l" (cons "evil-outer-loop" (evil-textobj-tree-sitter-get-textobj "loop.outer")))
+  (define-key evil-inner-text-objects-map "l" (cons "evil-inner-loop" (evil-textobj-tree-sitter-get-textobj "loop.inner")))
 
-;;   (define-key evil-outer-text-objects-map "v" (cons "evil-outer-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.outer")))
-;;   (define-key evil-inner-text-objects-map "v" (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner")))
-
-;;   )
+  (define-key evil-outer-text-objects-map "v" (cons "evil-outer-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.outer")))
+  (define-key evil-inner-text-objects-map "v" (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner"))))
 
 ;; (use-package ts-fold
 ;;   :after (tree-sitter)
