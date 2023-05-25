@@ -239,7 +239,8 @@
                                          "KUBECONFIG"
                                          "MANPATH"
                                          "PATH"
-                                         "USE_GKE_GCLOUD_AUTH_PLUGIN"))
+                                         "USE_GKE_GCLOUD_AUTH_PLUGIN"
+                                         "GPG_AGENT_INFO"))
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
