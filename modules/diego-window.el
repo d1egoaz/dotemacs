@@ -84,7 +84,7 @@
            (window-height . 0.4)
            (slot . 0))
           (,(rx "*🤖C3PO🤖*")
-           (display-buffer-in-tab)
+           (display-buffer-full-frame display-buffer-in-tab)
            (tab-name . "C3PO"))
           ;; ***************************
           ;; Workspaces (dedicated tabs
