@@ -14,7 +14,9 @@
   ;; creating backups:
   (setq auto-save-default t)
   (setq backup-by-copying t)
-  (setq delete-old-versions -1)
+  (setq delete-old-versions t)
+  (setq kept-new-versions 6)
+  (setq kept-old-versions 2)
   (setq make-backup-files t)
   (setq vc-make-backup-files t)
   (setq version-control t)
