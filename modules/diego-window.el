@@ -59,8 +59,8 @@
                   (derived-mode . apropos-mode)
                   (derived-mode . helpful-mode)))
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           (side . left)
-           (window-width . 0.40))
+           (side . bottom)
+           (window-height . 0.60))
           ;; → right side window
           (,(rx "*" (or "vterm-project" "VC-history" "eldoc") (* any) "*")
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
