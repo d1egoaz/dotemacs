@@ -60,7 +60,7 @@
   (setq org-adapt-indentation nil) ; emacs sometimes hangs when using evil to open line above/below
   (setq org-ellipsis "⌄ ")
   (setq org-fontify-quote-and-verse-blocks t)
-  (set-face-attribute 'org-block nil :background "#caa6df" :extend t)
+  (set-face-attribute 'org-block nil :background "#230631" :extend t)
   ;; (setq org-hide-leading-stars nil)
   (setq org-hide-leading-stars t)
   (setq org-hide-emphasis-markers nil)
