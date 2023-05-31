@@ -147,6 +147,8 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   (keymap-set evil-normal-state-map "H" 'evil-backward-arg)
   (keymap-set evil-motion-state-map "L" 'evil-forward-arg)
   (keymap-set evil-motion-state-map "H" 'evil-backward-arg)
+
+  (define-key evil-motion-state-map (kbd "TAB") 'evil-toggle-fold)
   ;; bind evil-jump-out-args
   ;; (keymap-set evil-normal-state-map "K" 'evil-jump-out-args)
 
