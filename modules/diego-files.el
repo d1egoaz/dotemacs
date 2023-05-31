@@ -103,8 +103,27 @@
 (use-package dired-sidebar
   :general
   (general-nvmap :keymaps 'dired-sidebar-mode-map
-    "<mouse-2>" #'dired-sidebar-mouse-subtree-cycle-or-find-file)
+    "<down-mouse-1>" #'dired-sidebar-mouse-subtree-cycle-or-find-file
+    "<mouse-2>" #'dired-sidebar-mouse-subtree-cycle-or-find-file
+    (kbd "<return>") 'diego/dired-sidebar-find-file
+    (kbd "RET") 'diego/dired-sidebar-find-file)
   :config
+
+  (let ((map dired-sidebar-mode-map))
+    (define-key map (kbd "TAB") 'dired-sidebar-subtree-toggle)
+    (define-key map [tab] 'dired-sidebar-subtree-toggle)
+    (define-key map (kbd "RET") 'diego/dired-sidebar-find-file)
+    (define-key map (kbd "<return>") 'diego/dired-sidebar-find-file)
+    (define-key map (kbd "C-o") 'dired-sidebar-find-file-alt))
+
+  (defun diego/dired-sidebar-find-file ()
+    "Wrapper over `dired-sidebar-find-file'."
+    (interactive)
+    (let ((dired-file-name (dired-get-file-for-visit)))
+      (if (file-directory-p dired-file-name)
+          (dired-sidebar-subtree-toggle)
+        (dired-sidebar-find-file))))
+
   (setq dired-sidebar-subtree-line-prefix "  ")
   (setq dired-sidebar-theme 'icons)
   (setq dired-sidebar-use-custom-font t)
