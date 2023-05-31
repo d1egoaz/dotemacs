@@ -1,6 +1,6 @@
 ;;; diego-project.el --- Diego Project Related Functions  -*- lexical-binding: t; -*-
 
-(defvar diego--project-project-roots '("~/src/github.com" "~/code/oss"))
+(defvar diego--project-project-roots '("~/src/github.com" "~/code/oss" "~/code/tmp"))
 
 ;;** project.el
 (use-package project
