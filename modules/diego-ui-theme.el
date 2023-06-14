@@ -1,7 +1,8 @@
 (use-package modus-themes
   :config
-  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-italic-constructs nil)
   (setq modus-themes-bold-constructs nil)
+  (setq modus-themes-bold-constructs t)
   (setq modus-themes-mixed-fonts t)
   (setq modus-themes-variable-pitch-ui t)
   (setq modus-themes-prompts '(italic bold))
@@ -17,12 +18,10 @@
        `(tab-bar-tab ((,c :background ,bg-blue-nuanced :foreground ,blue :overline ,blue :bold nil)))
        `(tab-bar-tab-inactive ((,c :background ,bg-cyan-subtle :overline ,blue :bold nil)))))
 
-    (set-face-attribute 'font-lock-number-face nil :foreground "#d19a66" :bold nil)
-    (set-face-attribute 'font-lock-escape-face nil :foreground "#dcdcaa")
-    (set-face-attribute 'font-lock-function-call-face nil :inherit nil :foreground "#56b6c2")
+    (set-face-attribute 'font-lock-number-face nil :foreground "#ff9580" :bold nil)
+    (set-face-attribute 'font-lock-escape-face nil :foreground "#feacd0")
+    (set-face-attribute 'font-lock-function-call-face nil :inherit nil :foreground "#00bcff" :bold nil)
     (set-face-attribute 'font-lock-function-name-face nil :background "#004065" :foreground "#00d3d0"))
-
-  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
 
   ;; similar to Dark Modern
   ;; (setq modus-vivendi-palette-overrides '((bg-main "#212121")
@@ -33,21 +32,17 @@
   ;;                                         (string "#ce9178")
   ;;                                         (variable "#9cdcfe")))
 
-  ;; Similar to One Dark Pro Darker
+  ;; tmp ;; (keyword  "#C678DD") ;; (keyword  "#d19a66")
+
+  ;; dark theme, mixed of One Dark Pro and Dark plus
   (setq modus-vivendi-palette-overrides '((bg-main "#23272e")
                                           (fg-main "#abb2bf")
-                                          (fnname "#79a8ff")
-                                          (variable "#9cdcfe")
-                                          (type "#feacd0")
-
                                           (string "#98C379")
+                                          (type "#6ae4b9")
+                                          (keyword "#b6a0ff")
+                                          (variable "#d4d4d4")
                                           (comment  "#7f848e")
-                                          ;; (constant "#D19A66")
-                                          (keyword  "#C678DD")
-                                          ))
-
-  (load-theme 'modus-vivendi :no-confirm)
-  ;; (modus-themes-select 'modus-vivendi)
+                                          (constant "#9cdcfe")))
 
   :bind ("<f5>" . #'modus-themes-toggle)
   :hook (modus-themes-after-load-theme-hook . diego--improve-colors))
