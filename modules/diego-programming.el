@@ -150,6 +150,11 @@
     ",x" #'eglot-code-actions)
   :commands eglot eglot-ensure
   :config
+  (set-face-attribute 'eglot-highlight-symbol-face nil :underline t)
+
+  ;; disable bold on hover
+  ;; (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
+
   (setq eglot-autoshutdown t)
   (setq eldoc-documentation-strategy #'eldoc-documentation-default)
   :hook ((eglot-managed-mode-hook . eglot-inlay-hints-mode)
