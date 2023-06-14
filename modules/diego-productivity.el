@@ -201,11 +201,23 @@
 
 (use-package c3po
   :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
+  :bind ("<f7>" . #'c3po-pop-results-buffer)
   :config
+
+  (defun diego/toggle-c3po-model ()
+    (interactive)
+    (setq c3po-model
+          (if (string-equal c3po-model "gpt-3.5-turbo")
+              "gpt-4"
+            "gpt-3.5-turbo"))
+    (message "ChatGPT model changed to: %S" c3po-model))
+
+  (setq c3po-model "gpt-3.5-turbo")
+
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
   (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
-  (c3po-add-new-droid-with-defaults-processors 'synonymizer
-                                               "
+  (c3po-add-new-droid '(synonymizer . (:system-prompt
+                                       "
 I want you to act as a synonyms provider.
 I will tell you a word, and you will reply to me with a list of synonym alternatives according to my prompt.
 Provide a list of 5 synonyms per prompt, 3 short examples, and a list of 5 antonyms.
@@ -218,10 +230,7 @@ You will only reply the words list, and nothing else, please use this template:
 
 **Antonyms:**
 -
-")
-  ;; (setq c3po-system-persona-prompts-alist nil)
+"))))
 
-  ;; https://www.romanliutikov.com/notes/chatgpt-prompts.html
-  )
 
 (provide 'diego-productivity)
