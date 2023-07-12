@@ -34,6 +34,8 @@
 
   ;; tmp ;; (keyword  "#C678DD") ;; (keyword  "#d19a66")
 
+  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+
   ;; dark theme, mixed of One Dark Pro and Dark plus
   (setq modus-vivendi-palette-overrides '((bg-main "#23272e")
                                           (fg-main "#abb2bf")

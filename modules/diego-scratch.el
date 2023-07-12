@@ -11,6 +11,7 @@
   (defun diego--init-scratch-buffers ()
     (tab-bar-rename-tab "scratch") ;; create initial tab
     (kill-buffer "*scratch*") ;; in case that for some reason it opened the emacs scratch buffer and not my version
+    ;; (find-file "~/scratch/*scratch*.*" t)
     (find-file "~/scratch/*scratch*" t)
     (with-current-buffer "*scratch*" ; Protect scratch buffer against accidental kill
       (emacs-lock-mode 'kill)))
@@ -47,13 +48,13 @@
     (interactive)
     (diego/make-scratch ".org")
     (insert "
-    \#+begin_src go
-    package main
-    import \"fmt\"
-    func main() {
-        fmt.Println(\"hello d1egoaz\")
-    }
-    \
-    ")))
+#+begin_src go
+package main
+import \"fmt\"
+func main() {
+    fmt.Println(\"hello d1egoaz\")
+}
+#+end_src
+")))
 
 (provide 'diego-scratch)

@@ -78,14 +78,11 @@
           (,(rx "*" (or "Calendar" "Org todo") "*")
            (display-buffer-reuse-window display-buffer-below-selected)
            (window-height . fit-window-to-buffer))
-          (,(rx "*" (or "Process List" "Diff" "🤖C3PO Diff🤖") "*")
+          (,(rx "*" (or "Process List" "Diff") "*")
            (display-buffer-in-side-window)
            (side . bottom)
            (window-height . 0.4)
            (slot . 0))
-          (,(rx "*🤖C3PO🤖*")
-           (display-buffer-full-frame display-buffer-in-tab)
-           (tab-name . "C3PO"))
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************

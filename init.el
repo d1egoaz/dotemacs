@@ -276,8 +276,4 @@
 
 (modus-themes-select 'modus-vivendi)
 
-;; 2023-05-09T21:26:10Z fix issue
-;; TODO: See https://github.com/Wilfred/elisp-refs/issues/35 Remove once fixed upstream.
-(defvar read-symbol-positions-list nil)
-
 ;;; init.el ends here
