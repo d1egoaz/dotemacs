@@ -127,6 +127,7 @@
 ;; Once you’ve finished and want to insert the text into the window you triggered
 ;; Emacs Everywhere from, just press C-c C-c.
 (use-package emacs-everywhere
+  :straight (:host github :repo "tecosaur/emacs-everywhere")
   :general
   (general-nmap :keymaps 'emacs-everywhere-mode-map
     "," #'diego/emacs-everywhere-filter)
