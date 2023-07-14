@@ -2,7 +2,6 @@
   :config
   (setq modus-themes-italic-constructs nil)
   (setq modus-themes-bold-constructs nil)
-  (setq modus-themes-bold-constructs t)
   (setq modus-themes-mixed-fonts t)
   (setq modus-themes-variable-pitch-ui t)
   (setq modus-themes-prompts '(italic bold))
