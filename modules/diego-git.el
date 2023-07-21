@@ -24,12 +24,12 @@
     :keymaps 'magit-status-mode-map
     :prefix ","
     "b"  '(:ignore t :which-key "branch")
-    "bb" #'(diego/git-create-branch-from-origin-master :which-key "branch of origin/master")
-    "bm" #'(diego/git-create-branch-from-origin-main :which-key "branch of origin/main")
+    "bm" #'(diego/git-create-branch-from-origin-master :which-key "branch of origin/master")
+    "bb" #'(diego/git-create-branch-from-origin-main :which-key "branch of origin/main")
     "p" '(:ignore t :which-key "pr")
     "pc"  #'forge-create-pullreq
     "pC" #'diego/checkout-gh-pr
-    "o" #'diego/fetch-and-rebase-onto-origin-master
+    "o" #'diego/fetch-and-rebase-onto-origin-main
     "v" #'diego/visit-pull-request-url)
 
   :config
@@ -79,11 +79,11 @@
   (magit-git-command-topdir
    (format "gh pr checkout %s" pr)))
 
-(defun diego/fetch-and-rebase-onto-origin-master ()
+(defun diego/fetch-and-rebase-onto-origin-main ()
   (interactive)
-  (magit-fetch-branch "origin" "master" nil)
+  (magit-fetch-branch "origin" "main" nil)
   ;; (magit-git-rebase "origin/master" "--keep-base"))
-  (magit-git-rebase "origin/master" nil))
+  (magit-git-rebase "origin/main" nil))
 
 (defun diego/visit-pull-request-url ()
   "Visit the current branch's PR on Github.

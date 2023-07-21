@@ -166,11 +166,13 @@
  "gl"      '(:ignore t :which-key "git link")
  "glh"      #'git-link-homepage
  "gll"     #'(git-link :which-key "git link in current branch")
- "glm"     #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link in master")
+ "glm"     #'((lambda () (interactive) (let ((git-link-default-branch "main"))(call-interactively #'git-link))) :which-key "git link in main")
+ "glM"     #'((lambda () (interactive) (let ((git-link-default-branch "master"))(call-interactively #'git-link))) :which-key "git link in master")
 
  "gL"      #'magit-log
  "gr"      #'vc-region-history ;; same as a 'magit-log-buffer-file if a region is sele
- "gv"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
+ "gv"      #'((lambda () (interactive)(vc-revision-other-window "main")) :which-key "Visit file in main branch")
+ "gV"      #'((lambda () (interactive)(vc-revision-other-window "master")) :which-key "Visit file in master branch")
  ;; Help/Highlight
  "h"       '(:ignore t :which-key "help/highlight")
  "ha"      #'(consult-apropos :which-key "Describe apropos")
