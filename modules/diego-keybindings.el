@@ -287,6 +287,12 @@
  "ss"      #'(consult-line :which-key "Search lines")
  "sS"      #'(diego/search-symbol-at-point :which-key "Search at point")
  "sp"      #'(consult-ripgrep :which-key "Search in project")
+ ;; Substitute
+ "S"       '(:ignore t :which-key "substitute")
+ "Ss"      #'substitute-target-below-point
+ "Sr"      #'substitute-target-above-point
+ "Sd"      #'substitute-target-in-defun
+ "Sb"      #'substitute-target-in-buffer
  ;; Toggle
  "t"       '(:ignore t :which-key "toggle")
  "tf"      #'toggle-frame-fullscreen

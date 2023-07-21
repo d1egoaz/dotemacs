@@ -214,4 +214,9 @@
 ;;** rainbow-mode.el
 (use-package rainbow-mode)
 
+(use-package substitute
+  :config
+  (setq substitute-fixed-letter-case t)
+  (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
+
 (provide 'diego-editor)
