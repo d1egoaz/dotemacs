@@ -33,6 +33,20 @@
 (setq gc-cons-threshold most-positive-fixnum)
 (setq garbage-collection-messages t)    ; indicator of GC activity
 
+
+(setq byte-compile-warnings '(not obsolete))
+(setq warning-suppress-log-types '((comp) (bytecomp)))
+(setq native-comp-async-report-warnings-errors 'silent)
+
+;; * UI - Let's make Emacs look a little better.
+;; ** Disable toolbars and scrollbars
+(setq frame-resize-pixelwise t)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode 1) ; I do like to have the menu-bar available to use when I break Emacs :D
+(setq default-frame-alist '((fullscreen . maximized)
+             (ns-transparent-titlebar . t)))
+
 (setq inhibit-automatic-native-compilation nil)
 (setq native-comp-always-compile t)
 (setq native-comp-async-jobs-number 4)
