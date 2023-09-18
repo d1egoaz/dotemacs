@@ -31,7 +31,6 @@
     "pC" #'diego/checkout-gh-pr
     "o" #'diego/fetch-and-rebase-onto-origin-main
     "v" #'diego/visit-pull-request-url)
-
   :config
   (setq evil-collection-magit-state 'normal)
   (evil-collection-magit-setup)
@@ -42,6 +41,16 @@
   ;; helpful and only add to runtime costs.
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
+  ;; (put 'magit-log-mode 'magit-log-default-arguments '("-n30" "--decorate"))
+  ;; TODO: @d1egoaz 2023-07-28: https://github.com/d1egoaz/dotfiles/commit/5831d94d27b9217a3c3cc7cbe174ac57470dacaf
+  (put 'magit-log-mode 'magit-log-default-arguments '("-n30"))
+  ;; (setq magit-refs-show-commit-count nil
+  ;;       magit-revision-show-gravatars nil
+  ;;       magit-process-popup-time 0
+  ;;       magit-log-arguments '("-n50" "--decorate")  ;; was: '("-n256" "--graph" "--decorate")
+  ;;       magit-log-section-arguments  '("-n50" "--decorate") ;; was: ("-n256" "--decorate")
+  ;;       magit-log-select-arguments '("-n50" "--decorate")  ;; was: '("-n256" "--decorate")
+  ;;       )
   (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   ;; (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
 
