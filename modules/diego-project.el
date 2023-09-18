@@ -70,7 +70,8 @@
           (compilation-buffer-name-function
            (or project-compilation-buffer-name-function
                compilation-buffer-name-function)))
-      (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) nil)))
+      ;; use t for enable Comint mode with compilation-shell-minor-mode.
+      (compile (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
 
   (defun diego/recompile ()
     "Function has been almost copied from the original recompile.
