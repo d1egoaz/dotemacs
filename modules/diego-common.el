@@ -265,13 +265,13 @@ exist after each headings's drawers."
 
 (defun diego--lookup-provider-alist ()
   (append
-   ;; diego--shopify-lookup-provider-alist
+   diego--chime-lookup-provider-alist
    '(("Github Search" "https://github.com/search?q=%s")
      ("Github NEW Search" "https://cs.github.com/?scopeName=All+repos&scope=&q=%s")
-     ("Github open Shopify Repository" "https://github.com/Shopify/%s")
-     ("Github open Shopify Repository .dev (code)" "https://github.dev/Shopify/%s")
-     ("Github Shopify Search" "https://github.com/search?q=org:Shopify+%s")
-     ("Github Shopify NEW Search" "https://cs.github.com/?scope=org:Shopify&scopeName=Shopify&q=%s")
+     ("Github open Chime Repository" "https://github.com/1debit/%s")
+     ("Github open Chime Repository .dev (code)" "https://github.dev/1debit/%s")
+     ("Github Chime Search" "https://github.com/search?q=org:1debit+%s")
+     ("Github Chime NEW Search" "https://cs.github.com/?scope=org:1debit&scopeName=1debit&q=%s")
      ("Google" "https://google.com/search?q=%s"))))
 
 (defun diego/open-url ()

@@ -250,7 +250,7 @@
 (add-to-list 'load-path (substitute-in-file-name "$EMACS_ADDITIONAL_DIR"))
 
 (require 'diego-common)
-;(require 'shopify-emacs)
+(require 'chime-emacs)
 (require 'diego-ui)
 (require 'diego-ui-font)
 (require 'diego-ui-theme)
