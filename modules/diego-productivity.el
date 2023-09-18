@@ -203,14 +203,6 @@
   :bind ("<f7>" . #'c3po-pop-results-buffer)
   :config
 
-  (defun diego/toggle-c3po-model ()
-    (interactive)
-    (setq c3po-model
-          (if (string-equal c3po-model "gpt-3.5-turbo")
-              "gpt-4"
-            "gpt-3.5-turbo"))
-    (message "ChatGPT model changed to: %S" c3po-model))
-
   (setq c3po-model "gpt-3.5-turbo")
 
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
@@ -230,6 +222,5 @@ You will only reply the words list, and nothing else, please use this template:
 **Antonyms:**
 -
 "))))
-
 
 (provide 'diego-productivity)
