@@ -70,7 +70,7 @@
   (setq org-src-tab-acts-natively t)
   (setq org-src-window-setup 'reorganize-frame)
   (setq org-startup-with-inline-images t)
-  (setq org-todo-keywords '((sequence "TODO(t!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)" "IN-PROGRESS(i!)")))
+  (setq org-todo-keywords '((sequence "TODO(t!)" "WAITING(w!)"  "IN-PROGRESS(i!)" "|" "DONE(d!)" "CANCELLED(c!)")))
   (setq org-capture-templates
         '(
           ;; example:
