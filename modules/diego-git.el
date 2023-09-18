@@ -67,46 +67,46 @@
     '("-t" "Fetch all tags" ("-t" "--tags")))
 
   (defun diego/git-create-branch-from-origin-main ()
-  "Create a new branch starting from origin/main."
-  (interactive)
-  (magit-fetch-branch "origin" "main" nil)
-  (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/main): " "d1egoaz_")))
+    "Create a new branch starting from origin/main."
+    (interactive)
+    (magit-fetch-branch "origin" "main" nil)
+    (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/main): " "d1egoaz_")))
+      (magit-git-command-topdir
+       (concat "git checkout -b " new_branch_name " origin/main"))))
+
+  (defun diego/git-create-branch-from-origin-master ()
+    "Create a new branch starting from origin/master."
+    (interactive)
+    (magit-fetch-branch "origin" "master" nil)
+    (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/master): " "d1egoaz_")))
+      (magit-git-command-topdir
+       (concat "git checkout -b " new_branch_name " origin/master"))))
+
+  (defun diego/checkout-gh-pr (pr)
+    "Checkouts a branch from a PR number or URL."
+    (interactive "sPR number or URL: ")
     (magit-git-command-topdir
-     (concat "git checkout -b " new_branch_name " origin/main"))))
+     (format "gh pr checkout %s" pr)))
 
-(defun diego/git-create-branch-from-origin-master ()
-  "Create a new branch starting from origin/master."
-  (interactive)
-  (magit-fetch-branch "origin" "master" nil)
-  (let ((new_branch_name (read-from-minibuffer "New branch name (from origin/master): " "d1egoaz_")))
-    (magit-git-command-topdir
-     (concat "git checkout -b " new_branch_name " origin/master"))))
+  (defun diego/fetch-and-rebase-onto-origin-main ()
+    (interactive)
+    (magit-fetch-branch "origin" "main" nil)
+    ;; (magit-git-rebase "origin/master" "--keep-base"))
+    (magit-git-rebase "origin/main" nil))
 
-(defun diego/checkout-gh-pr (pr)
-  "Checkouts a branch from a PR number or URL."
-  (interactive "sPR number or URL: ")
-  (magit-git-command-topdir
-   (format "gh pr checkout %s" pr)))
-
-(defun diego/fetch-and-rebase-onto-origin-main ()
-  (interactive)
-  (magit-fetch-branch "origin" "main" nil)
-  ;; (magit-git-rebase "origin/master" "--keep-base"))
-  (magit-git-rebase "origin/main" nil))
-
-(defun diego/visit-pull-request-url ()
-  "Visit the current branch's PR on Github.
+  (defun diego/visit-pull-request-url ()
+    "Visit the current branch's PR on Github.
 Uses gh and magit"
-  (interactive)
-  (call-process
-   "gh"
-   nil
-   0 ; <- Discard and don't wait
-   nil
-   "pr"
-   "view"
-   (magit-get-current-branch)
-   "-w")))
+    (interactive)
+    (call-process
+     "gh"
+     nil
+     0 ; <- Discard and don't wait
+     nil
+     "pr"
+     "view"
+     (magit-get-current-branch)
+     "-w")))
 
 ;;*** transient.el
 ;; Package `transient' is the interface used by Magit to display popups.
