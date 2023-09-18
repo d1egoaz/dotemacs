@@ -531,8 +531,7 @@
   :straight (evil-textobj-tree-sitter
              :host github
              :repo "meain/evil-textobj-tree-sitter"
-             :files (:defaults "queries" "treesit-queries")
-             :branch "treesit")
+             :files (:defaults "queries" "treesit-queries"))
   ;; :files (:defaults "queries"))
   :config
   ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
