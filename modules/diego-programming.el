@@ -150,6 +150,7 @@
     ",x" #'eglot-code-actions)
   :commands eglot eglot-ensure
   :config
+  (fset #'jsonrpc--log-event #'ignore)
   (set-face-attribute 'eglot-highlight-symbol-face nil :underline t)
 
   ;; disable bold on hover
