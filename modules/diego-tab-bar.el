@@ -24,9 +24,9 @@
     "Format `mode-line-modified' for the tab bar."
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-modified)) ignore)))
 
-  (defface diego-modus-themes-mark-sel '((t :inherit modus-themes-mark-sel :bold nil)) "diego-modus-themes-mark-sel")
-  (defface diego-modus-themes-mark-alt '((t :inherit modus-themes-mark-alt :bold nil)) "diego-modus-themes-mark-alt")
-  (defface diego-modus-themes-mark-del '((t :inherit modus-themes-mark-del :bold nil)) "diego-modus-themes-mark-del")
+  (defface diego-modus-themes-mark-sel '((t :foreground "#00d3d0" :background nil :bold nil)) "diego-modus-themes-mark-sel")
+  (defface diego-modus-themes-mark-alt '((t :foreground "#d0bc00" :bold nil :background nil)) "diego-modus-themes-mark-alt")
+  (defface diego-modus-themes-mark-del '((t :foreground "#ff7f9f" :background nil :bold nil)) "diego-modus-themes-mark-del")
 
   (defun diego-tab-format-empire ()
     "May the force be with you"
@@ -34,19 +34,19 @@
 
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
-    `((global menu-item ,(propertize (concat " " vc-mode "  ") 'face 'diego-modus-themes-mark-alt) ignore)))
+    `((global menu-item ,(propertize (concat "" vc-mode " ") 'face 'diego-modus-themes-mark-alt) ignore)))
 
   (defun diego-tab-format-buffer-id ()  ;
     "Buffer true name for files or just the buffer name."
     (ignore-errors
       `((global menu-item ,(propertize
                             (concat (if (and buffer-file-truename (not (file-remote-p buffer-file-truename)) (diego/current-project-root))
-                                        (concat "File: " (all-the-icons-icon-for-buffer) " "
+                                        (concat "File: " (all-the-icons-icon-for-file buffer-file-truename :height 2 :v-adjust 0.1) " "
                                                 (if (string-prefix-p (diego/current-project-root) buffer-file-truename)
                                                     (car (split-string  buffer-file-truename (diego/current-project-root) t nil))
                                                   buffer-file-truename))
                                       (concat "Buffer: " (all-the-icons-icon-for-buffer) " " (buffer-name))))
-                            'face 'diego-modus-themes-mark-sel) ignore))))
+                            'face 'all-the-icons-dblue) ignore))))
 
   (defun diego-tab-format-keycast ()
     "Format `mode-line-modified' for the tab bar."
@@ -64,6 +64,7 @@ It needs an space before to stop any colour to follow at the end of the row."
           ;; prot-tab-format-modified
           prot-tab-format-evil
           tab-bar-format-tabs ;; tab-bar-format-tabs-groups ; remove as it duplicates the tabs
+          tab-bar-separator
           ;; diego-tab-format-empire
           diego-tab-format-line-break
           diego-tab-format-vc
