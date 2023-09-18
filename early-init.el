@@ -71,6 +71,9 @@
 ;; I don't need the repo's history
 (setq straight-vc-git-default-clone-depth 1)
 
+(setq straight-recipes-gnu-elpa-use-mirror t)
+(setq straight-recipes-emacsmirror-use-mirror t)
+
 ;; Since byte-code is rarely compatible across different versions of Emacs, it's best we build them
 ;; in separate directories, per emacs version.
 (setq straight-build-dir (format "build-%s" emacs-version))
