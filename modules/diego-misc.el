@@ -104,7 +104,9 @@
       ("l" "linux" "+linux")
       ("t" "top" "+top")
       ("s" "sre" "+sre")
-      ("v" "verge" "+theverge")]
+      ("v" "verge" "+theverge")
+      ("w" "aws" "+aws")
+      ]
      ["Reddit"
       ("p" "r/Programming" "+programming")]
      ["Actions"
