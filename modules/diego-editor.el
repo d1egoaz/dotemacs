@@ -42,10 +42,6 @@
   ;;** Highlight current line
   (global-hl-line-mode 1)
 
-  ;;** Highlight TODO, NOTES, etc.
-  (add-hook 'find-file-hook
-            (lambda() (highlight-phrase "\\(BUG\\|FIXME\\|TODO\\|NOTE\\):")))
-
   ;;** Avoid performance issues with long lines
   ;; When the lines in a file are so long that performance could suffer to an unacceptable degree, we say
   ;; "so long" to the slow modes and options enabled in that buffer, and invoke something much more basic
@@ -218,5 +214,15 @@
   :config
   (setq substitute-fixed-letter-case t)
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
+
+
+;;** Highlight TODO, FIXME, NOTE, etc.
+(use-package hl-todo
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO" . "#cc9393")
+          ("FIXME"  . "#cc9393")
+          ("NOTE"   . "#d0bf8f")))
+  (global-hl-todo-mode 1))
 
 (provide 'diego-editor)
