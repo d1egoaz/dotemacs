@@ -406,6 +406,14 @@
   :load-path "/Users/diegoalvarez/.emacs.d/straight/repos/kubel/kubel-evil.el"
   :after (kubel evil))
 
+(use-package kubedoc
+  :config
+  (setq kubedoc-namespace "default")
+  (setq kubedoc-context "")
+  (setq kubedoc-context diego--chime-kubedoc-context))
+
+(use-package docker)
+
 ;;** hideshow.el
 ;; Hideshow mode is a buffer-local minor mode that allows you to selectively
 ;; display portions of a program, which are referred to as blocks.

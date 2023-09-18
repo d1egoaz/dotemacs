@@ -14,6 +14,7 @@
     (modus-themes-with-colors
       (custom-set-faces
        `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
+       ;; `(tab-bar ((,c :background ,bg-blue-subtle)))
        `(tab-bar-tab ((,c :background ,bg-blue-nuanced :foreground ,blue :overline ,blue :bold nil)))
        `(tab-bar-tab-inactive ((,c :background ,bg-cyan-subtle :overline ,blue :bold nil)))))
 
