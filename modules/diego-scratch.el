@@ -21,7 +21,6 @@
   ;; *** Custom scratch buffers
   (setq diego--scratch-mode-list '(("org-mode" . ".org")
                                    ("emacs-lisp" . ".el")
-                                   ("text-mode" . ".txt")
                                    ("markdown" . ".md")))
 
   (defun diego--scratch-buffer-query-modes ()
