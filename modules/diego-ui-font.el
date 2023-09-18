@@ -26,10 +26,11 @@
   (pixel-scroll-precision-mode 1))
 
 ;;** mixed-pitch.el
-(use-package mixed-pitch
-  :hook (
-         (org-mode-hook       . mixed-pitch-mode)
-         ;; (gfm-mode-hook       . mixed-pitch-mode)
-         ))
+
+(use-package mixed-pitch)
+  ;; :hook (
+  ;;        ;; (org-mode-hook       . mixed-pitch-mode)
+  ;;        ;; (gfm-mode-hook       . mixed-pitch-mode)
+  ;;        ))
 
 (provide 'diego-ui-font)
