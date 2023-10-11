@@ -23,7 +23,7 @@
   (keymap-global-set "s--" #'text-scale-decrease)
 
   ;; Helps when scrolling images, as Emacs treats pictures as a single characters.
-  (pixel-scroll-precision-mode 1))
+  (setq pixel-scroll-precision-mode t))
 
 ;;** mixed-pitch.el
 
