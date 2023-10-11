@@ -113,7 +113,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
                           go-mode
                           help helpful
                           ibuffer info imenu imenu-list
-                          magit ocurr popup
+                          magit ocurr org popup
                           vc-annotate vc-dir vc-git
                           vertico vterm wgrep which-key xref)))
 
