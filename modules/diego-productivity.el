@@ -204,6 +204,7 @@
   :config
 
   (setq c3po-model "gpt-3.5-turbo")
+  (setq c3po-temperature 0.2) ;; 0.2 will make it more focused and deterministic.
 
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
   (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
