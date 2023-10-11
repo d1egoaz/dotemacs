@@ -14,7 +14,7 @@
   (setq evil-kill-on-visual-paste nil) ; don't add the replaced text to the kill ring
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil) ; so we can use evil-collection
-  (setq evil-want-minibuffer nil)
+  (setq evil-want-minibuffer nil) ; after trying several times, it doesn't fit my workflow
   (setq evil-want-C-u-delete nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-d-scroll t)
