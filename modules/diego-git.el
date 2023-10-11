@@ -51,15 +51,12 @@
   ;;       magit-log-section-arguments  '("-n50" "--decorate") ;; was: ("-n256" "--decorate")
   ;;       magit-log-select-arguments '("-n50" "--decorate")  ;; was: '("-n256" "--decorate")
   ;;       )
-  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
-  ;; (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  ;; (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
 
   ;; (setq magit-display-buffer-function #'display-buffer) to use window rules
 
-  (setq magit-repository-directories
-        '(
-          ("~/code/" . 2)
-          ("~/dotfiles/" . 1)))
+  (setq magit-repository-directories '(("~/code/" . 2) ("~/dotfiles/" . 1)))
 
   (setq magit-bury-buffer-function 'magit-restore-window-configuration)
 
