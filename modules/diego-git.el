@@ -98,15 +98,10 @@
     "Visit the current branch's PR on Github.
 Uses gh and magit"
     (interactive)
-    (call-process
-     "gh"
+    (call-process "gh" nil
+     0 ; <- Discard and don't wait for process to finish
      nil
-     0 ; <- Discard and don't wait
-     nil
-     "pr"
-     "view"
-     (magit-get-current-branch)
-     "-w")))
+     "pr" "view" (magit-get-current-branch) "-w")))
 
 ;;*** transient.el
 ;; Package `transient' is the interface used by Magit to display popups.
