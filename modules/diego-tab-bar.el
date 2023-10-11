@@ -24,9 +24,10 @@
     "Format `mode-line-modified' for the tab bar."
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-modified)) ignore)))
 
-  (defface diego-modus-themes-mark-sel '((t :foreground "#00d3d0" :background nil :bold nil)) "diego-modus-themes-mark-sel")
-  (defface diego-modus-themes-mark-alt '((t :foreground "#d0bc00" :bold nil :background nil)) "diego-modus-themes-mark-alt")
-  (defface diego-modus-themes-mark-del '((t :foreground "#ff7f9f" :background nil :bold nil)) "diego-modus-themes-mark-del")
+  ;; modify theme and remove (beginning-of-line)d
+  (defface diego-modus-themes-mark-sel '((t :foreground "#00d3d0" :background "#004065" :bold nil)) "diego-modus-themes-mark-sel")
+  (defface diego-modus-themes-mark-alt '((t :foreground "#d0bc00" :background "#4a4000" :bold nil  )) "diego-modus-themes-mark-alt")
+  (defface diego-modus-themes-mark-del '((t :foreground "#ff7f9f" :background "#620f2a" :bold nil)) "diego-modus-themes-mark-del")
 
   (defun diego-tab-format-empire ()
     "May the force be with you"
@@ -57,6 +58,22 @@
 It needs an space before to stop any colour to follow at the end of the row."
     `((global menu-item " \n" ignore)))
 
+  (setq kubel-context "")
+  (setq kubel-namespace "")
+  (setq kubel-resource "")
+
+  (defun diego-tab-format-kubel-context ()
+    "Show kubel context"
+    `((global menu-item ,(propertize (concat " :" kubel-context ) 'face 'diego-modus-themes-mark-del) ignore)))
+
+  (defun diego-tab-format-kubel-namespace ()
+    "Show kubel namespace"
+    `((global menu-item ,(propertize (concat " :" kubel-namespace ) 'face 'diego-modus-themes-mark-alt) ignore)))
+
+  (defun diego-tab-format-kubel-resource ()
+    "Show kubel namespace"
+    `((global menu-item ,(propertize (concat " :" kubel-resource ) 'face 'diego-modus-themes-mark-sel) ignore)))
+
   (setq tab-bar-format
         '(mode-line-front-space
           diego-tab-format-empire
@@ -69,6 +86,9 @@ It needs an space before to stop any colour to follow at the end of the row."
           diego-tab-format-line-break
           diego-tab-format-vc
           diego-tab-format-buffer-id
+          diego-tab-format-kubel-context
+          diego-tab-format-kubel-namespace
+          diego-tab-format-kubel-resource
           ;; diego-tab-format-keycast
           tab-bar-format-align-right
           tab-bar-format-global))
