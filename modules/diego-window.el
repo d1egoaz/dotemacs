@@ -116,7 +116,7 @@
            (tab-name . "kubel")
            (side . right)
            (window-width . 0.5))
-          (,(rx "*kubel manager" (* any))
+          (,(rx "*kubel session" (* any))
            (display-buffer-in-tab display-buffer-reuse-mode-window)
            (tab-name . "kubel")
            (dedicated . t))
