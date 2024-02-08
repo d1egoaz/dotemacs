@@ -1,7 +1,7 @@
 ;;* Workspaces/tabs (tab-bar.el)
 
 (use-package tab-bar
-  :after  modus-themes
+  :after modus-themes
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-tab-select 'recent)
@@ -58,21 +58,17 @@
 It needs an space before to stop any colour to follow at the end of the row."
     `((global menu-item " \n" ignore)))
 
-  (setq kubel-context "")
-  (setq kubel-namespace "")
-  (setq kubel-resource "")
-
   (defun diego-tab-format-kubel-context ()
     "Show kubel context"
-    `((global menu-item ,(propertize (concat " :" kubel-context ) 'face 'diego-modus-themes-mark-del) ignore)))
+    `((global menu-item ,(propertize (concat " :" (when (boundp 'kubel-context) kubel-context)) 'face 'diego-modus-themes-mark-del) ignore)))
 
   (defun diego-tab-format-kubel-namespace ()
     "Show kubel namespace"
-    `((global menu-item ,(propertize (concat " :" kubel-namespace ) 'face 'diego-modus-themes-mark-alt) ignore)))
+    `((global menu-item ,(propertize (concat " :" (when (boundp 'kubel-namespace) kubel-namespace)) 'face 'diego-modus-themes-mark-alt) ignore)))
 
   (defun diego-tab-format-kubel-resource ()
     "Show kubel namespace"
-    `((global menu-item ,(propertize (concat " :" kubel-resource ) 'face 'diego-modus-themes-mark-sel) ignore)))
+    `((global menu-item ,(propertize (concat " :" (when (boundp 'kubel-resource) kubel-resource)) 'face 'diego-modus-themes-mark-sel) ignore)))
 
   (setq tab-bar-format
         '(mode-line-front-space
