@@ -8,6 +8,8 @@
   ;;#+begin_src elisp
   (setq create-lockfiles nil)
 
+  (setq save-silently t)
+
   ;; ** Enable files backup
 
   (setq delete-by-moving-to-trash t)
