@@ -131,7 +131,7 @@
   ;; Show the current function name in the header line
   (setq-default header-line-format
                 '((which-function-mode ("" which-func-format " "))))
-;;  (:eval (breadcrumb-project-crumbs))))
+  ;;  (:eval (breadcrumb-project-crumbs))))
 
   ;; We remove Which Function Mode from the mode line, because it's mostly
   ;; invisible here anyway.
