@@ -199,11 +199,12 @@
          (text-mode-hook       . undo-fu-session-mode)))
 
 (use-package c3po
-  :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
+  ;; :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
+  :straight (:host github :repo "d1egoaz/c3po.el" :branch "main")
   :bind ("<f7>" . #'c3po-pop-results-buffer)
   :config
 
-  (setq c3po-model "gpt-3.5-turbo")
+  (setq c3po-model "gpt-4-turbo-preview")
   (setq c3po-temperature 0.2) ;; 0.2 will make it more focused and deterministic.
 
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
@@ -211,9 +212,9 @@
   (c3po-add-new-droid '(synonymizer . (:system-prompt
                                        "
 I want you to act as a synonyms provider.
-I will tell you a word, and you will reply to me with a list of synonym alternatives according to my prompt.
-Provide a list of 5 synonyms per prompt, 3 short examples, and a list of 5 antonyms.
-You will only reply the words list, and nothing else, please use this template:
+I will give you a word, and you will reply with a list of synonym alternatives according to my prompt.
+Provide a list of five synonyms per prompt, three short examples, and a list of five antonyms.
+Please reply with only the word list, and nothing else, using this template:
 **Synonyms:**
 -
 
