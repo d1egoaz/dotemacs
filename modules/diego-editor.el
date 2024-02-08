@@ -10,6 +10,8 @@
   ;; Add a newline automatically at the end of the file.
   (setq require-final-newline t)
 
+  (setq sentence-end-double-space nil) ; who uses this?
+
   ;;** Display line numbers and truncated lines
 
   ;; Explicitly define a width to reduce the cost of on-the-fly computation
@@ -28,6 +30,8 @@
   (setq-default truncate-lines t)
   (setq-default truncate-partial-width-windows nil)
   (setq-default visual-line-mode nil)
+
+  (setq show-trailing-whitespace t) ;; highlight whitespace at the end of line
 
   ;; ** Kill ring not save duplicates
   ;; Remove duplicates in the kill ring.
