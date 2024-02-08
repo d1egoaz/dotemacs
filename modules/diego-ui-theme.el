@@ -34,8 +34,8 @@
 
   ;; tmp ;; (keyword  "#C678DD") ;; (keyword  "#d19a66")
 
-  ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
-  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
+  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+  ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
   ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-cooler)
   ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-warmer)
 
