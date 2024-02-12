@@ -11,9 +11,14 @@
 ;; https://github.com/bmag/imenu-list
 ;; Emacs plugin to show the current buffer's imenu entries in a seperate buffer.
 (use-package imenu-list
+  :general
+  (general-nvmap :keymaps 'imenu-list-major-mode-map
+    (kbd "<return>") 'imenu-list-display-entry
+    (kbd "TAB") 'imenu-list-display-entry
+    (kbd "RET") 'imenu-list-display-entry)
   :config
   (setq imenu-list-focus-after-activation t)
-  (setq imenu-list-after-jump-hook nil)
+  ;; (setq imenu-list-after-jump-hook nil)
   (setq imenu-list-auto-resize t)
   (set-face-attribute 'imenu-list-entry-face nil :height 0.7)
   (set-face-attribute 'imenu-list-entry-face-0 nil :height 0.7)
