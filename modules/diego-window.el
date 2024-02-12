@@ -21,31 +21,42 @@
 
   ;;** Window rules
   ;; The =display-buffer-alist= is a rule-set for controlling the placement of windows.
+  ;; Slots: L=-1 Mid=0 R=1
 
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-Display-Action-Alists.html
   (setq display-buffer-alist
         `(
           ;; ↑ top side window
-          (,(rx "*" (or "Messages" "world-clock" "Backtrace" "Warnings") "*")
-           (display-buffer-reuse-mode-window display-buffer-in-side-window)
+          ("\\*\\(?:Backtrace\\|Warnings\\|world-clock\\)\\*"
+           (display-buffer-in-side-window)
            (side . top)
            (window-height . 0.3)
-           (preserve-size . (t . t)))
-          ;;️↓ bottom side window
-          (,(rx "*Embark Actions*")
-           (display-buffer-reuse-mode-window display-buffer-at-bottom)
-           (window-height . fit-window-to-buffer)
-           (window-parameters . ((no-other-window . t)
-                                 (mode-line-format . none))))
-          (,(rx "*Flycheck errors*")
-           (display-buffer-reuse-window display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.3))
-          ((derived-mode . reb-mode) ; M-x re-builder
-           (display-buffer-reuse-mode-window display-buffer-below-selected)
-           (window-height . 4) ; note this is literal lines, not relative
+           (slot . 0))
+          ("\\*Messages\\*"
+           (display-buffer-in-side-window)
+           (side . top)
+           (window-height . 0.3)
+           (slot . -1)
+           (dedicated . t))
+          ("\\*Org Select\\*"
+           (display-buffer-in-side-window)
+           (side . top)
+           (slot . -1)
            (dedicated . t)
-           (preserve-size . (t . t)))
+           (window-parameters . ((mode-line-format . none))))
+          ;;️↓ bottom side window
+          ;; M-x re-builder
+          ("\\*RE-Builder\\*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (window-height . 0.2)
+           (slot . -1))
+          ("\\*Flycheck errors\\*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (window-height . 0.4)
+           (slot . 1))
+          ;; compilation modes
           ((or . ((derived-mode . compilation-mode)
                   (derived-mode . comint-mode)
                   (derived-mode . magit-diff-mode)
@@ -54,86 +65,96 @@
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
            (window-width . 0.6))
-          ;; ← left side window
+          ;; help modes
           ((or . ((derived-mode . help-mode)
-                  (derived-mode . apropos-mode)
-                  (derived-mode . helpful-mode)))
-           (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           (side . bottom)
-           (window-height . 0.60))
+                 (derived-mode . apropos-mode)
+                 (derived-mode . helpful-mode)))
+          (display-buffer-reuse-mode-window display-buffer-in-side-window)
+           (window-height . 0.60)
+          (side . bottom))
+          ;; ← left side window
+
           ;; → right side window
-          (,(rx "*" (or "vterm-project" "VC-history" "eldoc") (* any) "*")
-           (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           (side . right)
-           (window-width . 0.50))
-          (,(rx "*Ilist*")
-           (display-buffer-in-side-window)
-           (side . right)
-           (window-width . 0.20))
-          (,(rx "*Org MD Export*")
-           (display-buffer-reuse-mode-window display-buffer-in-side-window)
-           (side . right)
-           (window-width . 0.50))
+          ("\\*\\(?:VC-history\\|eldoc\\|vterm-project\\).*\\*"
+          (display-buffer-in-side-window)
+          (side . right)
+           (window-width . 0.50)
+          (slot . 1))
+          ("\\*Ilist\\*"
+          (display-buffer-in-side-window)
+          (side . right)
+           (slot . -1)
+          (window-width . 0.20))
+          ("\\*Org MD Export\\*"
+          (display-buffer-reuse-mode-window display-buffer-in-side-window)
+          (side . right)
+          (window-width . 0.50))
           ;; below current window
-          (,(rx "*" (or "Calendar" "Org todo") "*")
-           (display-buffer-reuse-window display-buffer-below-selected)
-           (window-height . fit-window-to-buffer))
-          (,(rx "*" (or "Process List" "Diff") "*")
-           (display-buffer-in-side-window)
+          ("\\*Embark Actions\\*"
+          (display-buffer-reuse-mode-window display-buffer-below-selected)
+          (window-height . fit-window-to-buffer)
+          (window-parameters . ((no-other-window . t)
+                                (mode-line-format . none))))
+          ("\\*\\(?:Calendar\\|Org todo\\)\\*"
+          (display-buffer-in-side-window)
+          (side . bottom)
+          (window-height . 0.4)
+          (slot . -1))
+          ("\\*\\(?:Diff\\|Process List\\)\\*"
+          (display-buffer-in-side-window)
            (side . bottom)
            (window-height . 0.4)
-           (slot . 0))
+           (slot . 1))
           ;; ***************************
           ;; Workspaces (dedicated tabs
           ;; ***************************
-          (,(rx "*vterm*)" (* any))
+          ("\\*vterm\\*"
            (display-buffer-in-tab)
            (tab-name . "vterm"))
-          (,(rx "*diego/vterm*")
+          ("\\*diego/vterm\\*"
            (display-buffer-in-tab)
            (tab-name . "vterm"))
            ;;;; Kubel
-          (,(rx "*kubel-process" (* any))
+          ("\\*kubel-process.*"
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.2)
-           (slot . 0))
-          (,(rx "*kubel stderr*")
+           (slot . -1))
+          ("\\*kubel stderr\\*"
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.2)
            (slot . 1)
            (window-parameters . ((no-other-window . t))))
-          (,(rx "*kubel resource" (* any) "logs" (* any) "tail" (* any))
+          ("\\*kubel resource.*logs.*tail.*"
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . bottom)
            (window-height . 0.4))
-          (,(rx "*kubel resource" (* any))
+          ("\\*kubel resource.*"
            (display-buffer-in-tab display-buffer-in-side-window)
            (tab-name . "kubel")
            (side . right)
            (window-width . 0.5))
-          (,(rx "*kubel session" (* any))
+          ("\\*kubel session.*"
            (display-buffer-in-tab display-buffer-reuse-mode-window)
            (tab-name . "kubel")
            (dedicated . t))
            ;;;; Elfeed
-          (,(rx "*elfeed-search*")
+          ("\\*elfeed-search\\*"
            (display-buffer-in-tab)
            (tab-name . "|elfeed|"))
-          (,(rx "*elfeed-entry*")
-           (display-buffer-in-tab display-buffer-in-side-window)
-           (tab-name . "|elfeed|")
+          ("\\*elfeed-entry\\*"
+           (display-buffer-in-side-window)
            (side . bottom)
            (window-height . 0.7))
            ;;;; Scratch buffers
-          (,(rx "*scratch" (* any))
+          ("\\*scratch.*"
            (display-buffer-in-tab)
            (tab-name . "scratch"))
-          (,(rx "*" (or "straight-process" "Async-native-compile-log") "*")
+          ("\\*\\(?:Async-native-compile-log\\|straight-process\\)\\*"
            (display-buffer-in-tab)
            (tab-name . "general"))
           ;;; Automatic workspaces-tabs management
