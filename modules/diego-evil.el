@@ -99,30 +99,33 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   :init
   (setq evil-collection-company-use-tng nil) ; I don't want that completion experience
   (setq evil-collection-mode-list nil) ; I don't want surprises, I'll enable it manually by mode
-  (setq evil-collection-key-blacklist '("SPC" "SPC m" "C-SPC" "M-SPC" "gd" "gf" "K" "gr" "gR" "[" "]" "gz" "<escape>"))
+  (setq evil-collection-key-blacklist
+        '("SPC" "SPC m" "C-SPC" "M-SPC" "gd" "gf" "K" "gr" "gR" "[" "]" "gz" "<escape>"))
   (setq evil-collection-setup-minibuffer nil) ; don't setup Vim style bindings in the minibuffer.
   (setq evil-collection-setup-debugger-keys nil)
   (setq evil-collection-calendar-want-org-bindings t)
   :config
   ;; https://github.com/emacs-evil/evil-collection/blob/master/modes/
-  (evil-collection-init '(
-                          calendar comint company compile consult corfu
-                          diff-mode dired docview
-                          embark ediff eglot elfeed elisp-mode elisp-refs eshell
-                          flycheck flymake
-                          go-mode
-                          help helpful
-                          ibuffer info imenu imenu-list
-                          magit ocurr org popup
-                          vc-annotate vc-dir vc-git
-                          vertico vterm wgrep which-key xref)))
+  (evil-collection-init
+   '(
+     calendar comint company compile consult corfu
+     diff-mode dired docview
+     embark ediff eglot elfeed elisp-mode elisp-refs eshell
+     flycheck flymake
+     go-mode
+     help helpful
+     ibuffer info imenu imenu-list
+     magit ocurr org popup
+     vc-annotate vc-dir vc-git
+     vertico vterm wgrep which-key xref)))
 
 ;;** goto-chg.el
 ;; | Keymap | Command                  |
 ;; |--------+--------------------------|
 ;; | g;     | goto-last-change         |
 ;; | g,     | goto-last-change-reverse |
-(use-package goto-chg :after evil)
+(use-package goto-chg
+  :after evil)
 
 ;;** evil-args.el
 ;; Motions and text objects for delimited arguments.
@@ -152,28 +155,19 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   ;; bind evil-jump-out-args
   ;; (keymap-set evil-normal-state-map "K" 'evil-jump-out-args)
 
-  (setq evil-args-delimiters '("," ";")); include space to use in lisp
+  (setq evil-args-delimiters '("," ";")) ; include space to use in lisp
 
   (defun diego--fix-evil-args-lisp ()
     (make-local-variable 'evil-args-delimiters)
     (setq evil-args-delimiters " "))
 
-  :bind (:map
-         evil-inner-text-objects-map
-         ("a" . #'evil-inner-arg)
-         :map
-         evil-outer-text-objects-map
-         ("a" . #'evil-outer-arg)
-         :map
-         evil-normal-state-map
-         ("L" . #'evil-forward-arg)
-         ("H" . #'evil-backward-arg)
-         :map
-         evil-motion-state-map
-         ("H" . #'evil-backward-arg)
-         ("L" . #'evil-forward-arg))
-  :hook ((emacs-lisp-mode-hook . diego--fix-evil-args-lisp)
-         (org-mode-hook . diego--fix-evil-args-lisp)))
+  :bind
+  (:map
+   evil-inner-text-objects-map ("a" . #'evil-inner-arg) ;
+   :map evil-outer-text-objects-map ("a" . #'evil-outer-arg)
+   :map evil-normal-state-map ("L" . #'evil-forward-arg) ("H" . #'evil-backward-arg)
+   :map evil-motion-state-map ("H" . #'evil-backward-arg) ("L" . #'evil-forward-arg))
+  :hook ((emacs-lisp-mode-hook . diego--fix-evil-args-lisp) (org-mode-hook . diego--fix-evil-args-lisp)))
 
 ;;** evil-commentary.el
 ;; evil-commentary is an Emacs package for evil-mode that intends to make it easy to comment out (lines of) code:
@@ -186,8 +180,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 (use-package evil-commentary
   :straight (:build (autoloads native-compile))
   :after evil
-  :config
-  (evil-commentary-mode 1))
+  :config (evil-commentary-mode 1))
 
 ;;** evil-exchange.el
 ;; Easy text exchange operator for Evil.
@@ -201,8 +194,7 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 ;; | gX     | evil exchange cancel      |
 (use-package evil-exchange
   :after evil
-  :config
-  (evil-exchange-install))
+  :config (evil-exchange-install))
 
 ;;** evil-goggles.el
 (use-package evil-goggles
@@ -217,16 +209,17 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 (use-package evil-snipe
   :after evil
   :general
-  (general-nmap :keymaps 'evil-snipe-local-mode-map
-    "s" 'evil-snipe-s
-    "S" 'evil-snipe-S)
+  ;; format-next-line: off
+  (general-nmap
+   :keymaps 'evil-snipe-local-mode-map
+   "s" 'evil-snipe-s
+   "S" 'evil-snipe-S)
   :config
   (setq evil-snipe-scope 'line)
   (setq evil-snipe-smart-case t)
   (evil-snipe-mode 1)
   (evil-snipe-override-mode 1)
-  :hook ((magit-mode-hook . turn-off-evil-snipe-override-mode)
-         (after-init-hook . evil-snipe-mode)))
+  :hook ((magit-mode-hook . turn-off-evil-snipe-override-mode) (after-init-hook . evil-snipe-mode)))
 
 ;;** evil-surround.el
 ;; Add/change surrounding to text objects.
@@ -237,7 +230,6 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 ;; | ds<textobject> | Delete surrounding              |
 (use-package evil-surround
   :after evil
-  :config
-  (global-evil-surround-mode 1))
+  :config (global-evil-surround-mode 1))
 
 (provide 'diego-evil)

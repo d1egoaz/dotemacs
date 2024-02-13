@@ -199,7 +199,8 @@
 (use-package no-littering
   :config
   (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
-  (setq auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;; * General Emacs Base Settings
 ;; ** Garbage collection
@@ -210,8 +211,7 @@
 ;; This is important as Emacs just dies trying to collect GC due to the huge
 ;; initial GC threshold in =early-init.el=.
 (use-package gcmh
-  :config
-  (gcmh-mode 1))
+  :config (gcmh-mode 1))
 
 ;; ** Pinentry
 ;; Emacs can be prompted for the PIN of GPG private keys.
@@ -232,15 +232,16 @@
 ;; ** Configure PATH on macOS
 (use-package exec-path-from-shell
   :config
-  (setq exec-path-from-shell-variables '("EMACS_ADDITIONAL_DIR"
-                                         "FZF_CTRL_T_COMMAND"
-                                         "FZF_DEFAULT_COMMAND"
-                                         "FZF_DEFAULT_OPTS"
-                                         "KUBECONFIG"
-                                         "MANPATH"
-                                         "PATH"
-                                         "USE_GKE_GCLOUD_AUTH_PLUGIN"
-                                         "GPG_AGENT_INFO"))
+  (setq exec-path-from-shell-variables
+        '("EMACS_ADDITIONAL_DIR"
+          "FZF_CTRL_T_COMMAND"
+          "FZF_DEFAULT_COMMAND"
+          "FZF_DEFAULT_OPTS"
+          "KUBECONFIG"
+          "MANPATH"
+          "PATH"
+          "USE_GKE_GCLOUD_AUTH_PLUGIN"
+          "GPG_AGENT_INFO"))
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 

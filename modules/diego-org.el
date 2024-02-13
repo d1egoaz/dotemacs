@@ -5,52 +5,61 @@
   :straight (:type built-in)
   :general
   ;; I prefer C-c C-c over C-c ' (more consistent)
-  (:keymaps
-   'org-src-mode-map
-   "C-c C-c" #'org-edit-src-exit)
-  (:keymaps
-   'org-mode-map
-   "C-j"  #'org-move-subtree-down
-   "C-k"  #'org-move-subtree-up
-   "M-h" nil
-   "M-l" nil)
+  ;; format-next-line: off
+  (:keymaps 'org-src-mode-map
+            "C-c C-c" #'org-edit-src-exit)
+  ;; format-next-line: off
+  (:keymaps 'org-mode-map
+            "C-j" #'org-move-subtree-down
+            "C-k" #'org-move-subtree-up
+            "M-h" nil
+            "M-l" nil)
   ;; local leader
+  ;; format-next-line: off
   (general-nvmap
-    :keymaps 'org-mode-map
-    :prefix ","
-    "'" #'org-edit-special
-    "e" #'org-export-dispatch
-    "h" #'org-toggle-heading
-    "i" #'org-toggle-item
-    "q" #'org-set-tags-command
-    "t" #'org-todo
-    "x" #'org-toggle-checkbox
-    "a"  '(:ignore t :which-key "attachments")
-    "aa" #'org-attach
-    "ar" #'org-attach-reveal
-    "au" #'org-attach-url
-    "ac" #'org-download-screenshot
-    "l"  '(:ignore t :which-key "link")
-    "li" #'org-id-store-link
-    "ll" 'org-insert-link
-    "ls" 'org-store-link
-    "d"   '(:ignore t :which-key "date/deadline")
-    "dd" #'org-deadline
-    "ds" #'org-schedule
-    "dt" #'org-time-stamp)
+   :keymaps 'org-mode-map
+   :prefix ","
+   "'" #'org-edit-special
+   "e" #'org-export-dispatch
+   "h" #'org-toggle-heading
+   "i" #'org-toggle-item
+   "q" #'org-set-tags-command
+   "t" #'org-todo
+   "x" #'org-toggle-checkbox
+   "a" '(:ignore t :which-key "attachments")
+   "aa" #'org-attach
+   "ar" #'org-attach-reveal
+   "au" #'org-attach-url
+   "ac" #'org-download-screenshot
+   "l" '(:ignore t :which-key "link")
+   "li" #'org-id-store-link
+   "ll" 'org-insert-link
+   "ls" 'org-store-link
+   "d" '(:ignore t :which-key "date/deadline")
+   "dd" #'org-deadline
+   "ds" #'org-schedule
+   "dt" #'org-time-stamp)
   :init
   (setq org-directory "~/Documents/deft")
-  (setq org-agenda-files (list "~/Documents/deft/journal.org" "~/Documents/deft/gtd-inbox.org" "~/Documents/deft/gtd-personal.org" "~/Documents/deft/gtd-work.org" ))
+  (setq org-agenda-files
+        (list
+         "~/Documents/deft/journal.org"
+         "~/Documents/deft/gtd-inbox.org"
+         "~/Documents/deft/gtd-personal.org"
+         "~/Documents/deft/gtd-work.org"))
   (setq org-agenda-window-setup 'reorganize-frame)
   (setq org-agenda-deadline-faces
         '((1.001 . error)
           (1.0 . org-warning)
           (0.5 . org-upcoming-deadline)
           (0.0 . org-upcoming-distant-deadline)))
-  (setq org-agenda-span 'month); or 'week
-  (setq org-attach-id-dir (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
+  (setq org-agenda-span 'month) ; or 'week
+  (setq org-attach-id-dir
+        (file-name-as-directory (concat (file-name-as-directory org-directory) "images")))
   (setq org-default-notes-file (concat (file-name-as-directory org-directory) "notes.org"))
-  (setq org-refile-targets '(("~/Documents/deft/gtd-inbox.org" :maxlevel . 1) ("~/Documents/deft/gtd-personal.org" :level . 1) ("~/Documents/deft/gtd-work.org" :maxlevel . 2)))
+  (setq
+   org-refile-targets
+   '(("~/Documents/deft/gtd-inbox.org" :maxlevel . 1) ("~/Documents/deft/gtd-personal.org" :level . 1) ("~/Documents/deft/gtd-work.org" :maxlevel . 2)))
   :config
   (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
   (setq org-clock-out-remove-zero-time-clocks nil)
@@ -70,7 +79,8 @@
   (setq org-src-tab-acts-natively t)
   (setq org-src-window-setup 'reorganize-frame)
   (setq org-startup-with-inline-images t)
-  (setq org-todo-keywords '((sequence "TODO(t!)" "WAITING(w!)"  "IN-PROGRESS(i!)" "|" "DONE(d!)" "CANCELLED(c!)")))
+  (setq org-todo-keywords
+        '((sequence "TODO(t!)" "WAITING(w!)" "IN-PROGRESS(i!)" "|" "DONE(d!)" "CANCELLED(c!)")))
   (setq org-capture-templates
         '(
           ;; example:
@@ -94,13 +104,13 @@
   (add-hook 'org-capture-mode-hook #'evil-insert-state)
 
   ;;** Org-Babel
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '(
-                                 (dot . t)
-                                 (shell . t)
-                                 (gnuplot . t)
-                                 (latex . t)
-                                 ))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (dot . t)
+     (shell . t)
+     (gnuplot . t)
+     (latex . t)))
 
   ;;** iMenu org depth
   ;; Increase the maximum level for Imenu access to Org headlines.
@@ -136,21 +146,22 @@
 (use-package evil-org
   :after (evil org)
   :straight (:host github :repo "hlissner/evil-org-mode")
+  :general
+  ;; format-next-line: off
+  (general-nmap
+   :keymaps 'evil-org-mode-map
+   "M-h" nil
+   "M-j" nil
+   "M-k" nil
+   "M-l" nil)
   :config
   ;; enable bindings, remove `additional` as I want to use M-hjkl for different things
   (setq evil-org-key-theme '(heading insert navigation textobjects))
   (evil-org-set-key-theme)
 
-  (general-nmap :keymaps 'evil-org-mode-map
-    "M-h" nil
-    "M-j" nil
-    "M-k" nil
-    "M-l" nil)
-
   (defun diego--org-set-key-theme ()
     (evil-org-set-key-theme))
-  :hook ((org-mode-hook . evil-org-mode)
-         (evil-org-mode-hook . diego--org-set-key-theme)))
+  :hook ((org-mode-hook . evil-org-mode) (evil-org-mode-hook . diego--org-set-key-theme)))
 
 ;;** mermaid support
 (use-package mermaid-mode)
@@ -174,9 +185,7 @@
 ;;   default).  The other supported style is :TOC_#_org:,
 (use-package toc-org
   :after (org markdown-mode)
-  :config
-  (setq toc-org-max-depth 2)
-  :hook ((org-mode-hook . toc-org-mode)
-         (markdown-mode-hook . toc-org-mode)))
+  :config (setq toc-org-max-depth 2)
+  :hook ((org-mode-hook . toc-org-mode) (markdown-mode-hook . toc-org-mode)))
 
 (provide 'diego-org)

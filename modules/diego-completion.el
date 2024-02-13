@@ -5,8 +5,7 @@
 ;; from previous history files.
 (use-package savehist
   :straight (:type built-in)
-  :init
-  (savehist-mode 1)
+  :init (savehist-mode 1)
   :config
   (setq auto-save-interval 100)
   (setq history-delete-duplicates t)
@@ -24,14 +23,17 @@
 ;;** Completion framework (corfu.el)
 ;;*** corfu
 (use-package corfu
-  :straight (:files (:defaults "extensions/*") :includes (corfu-quick corfu-info corfu-history corfu-popupinfo))
+  :straight
+  (:files
+   (:defaults "extensions/*")
+   :includes (corfu-quick corfu-info corfu-history corfu-popupinfo))
   :config
-  (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (setq corfu-auto t)                 ;; Enable auto completion
+  (setq corfu-cycle t) ;; Enable cycling for `corfu-next/previous'
+  (setq corfu-auto t) ;; Enable auto completion
   (setq corfu-auto-prefix 2)
-  (setq corfu-quit-no-match t)      ;; Never quit, even if there is no match
+  (setq corfu-quit-no-match t) ;; Never quit, even if there is no match
   (setq corfu-min-width 100)
-  (setq corfu-max-width corfu-min-width)     ; Always have the same width
+  (setq corfu-max-width corfu-min-width) ; Always have the same width
   (setq corfu-count 15)
   (setq corfu-scroll-margin 4)
   (setq corfu-echo-documentation nil)
@@ -41,16 +43,17 @@
   (defun corfu-move-to-minibuffer ()
     (interactive)
     (let ((completion-extra-properties corfu--extra)
-          completion-cycle-threshold completion-cycling)
+          completion-cycle-threshold
+          completion-cycling)
       (apply #'consult-completion-in-region completion-in-region--data)))
 
   (defun corfu-enable-always-in-minibuffer ()
     "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-    (unless (or (bound-and-true-p vertico--input)
-                (eq (current-local-map) read-passwd-map))
+    (unless (or (bound-and-true-p vertico--input) (eq (current-local-map) read-passwd-map))
       ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
-      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                  corfu-popupinfo-delay nil)
+      (setq-local
+       corfu-echo-delay nil ;; Disable automatic echo and popup
+       corfu-popupinfo-delay nil)
       (corfu-mode 1)))
   (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
@@ -58,11 +61,11 @@
 
   :bind
   ;; Configure SPC for separator insertion
-  (:map corfu-map
-        ;; ("<return>" . corfu-quit)
-        ("SPC" . corfu-insert-separator)
-        ("C-q" . corfu-quick-complete) ;; similar to  `vertico-quick-exit'
-        ("M-m" . corfu-move-to-minibuffer))
+  (:map
+   corfu-map
+   ("SPC" . corfu-insert-separator)
+   ("C-q" . corfu-quick-complete)
+   ("M-m" . corfu-move-to-minibuffer))
   :init
   (global-corfu-mode 1)
   (corfu-history-mode 1)
@@ -79,12 +82,12 @@
 (use-package corfu-doc
   :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
   :after corfu
-  :general (:keymaps 'corfu-map
-                     ;; This is a manual toggle for the documentation window.
-                     [remap corfu-show-documentation] #'corfu-doc-toggle ; Remap the default doc command
-                     ;; Scroll in the documentation window
-                     "M-n" #'corfu-doc-scroll-up
-                     "M-p" #'corfu-doc-scroll-down)
+  :general
+  ;; format-next-line: off
+  (:keymaps 'corfu-map
+            [remap corfu-show-documentation] #'corfu-doc-toggle
+            "M-n" #'corfu-doc-scroll-up
+            "M-p" #'corfu-doc-scroll-down)
   :config
   (setq corfu-doc-delay 0.5)
   (setq corfu-doc-max-width 70)
@@ -112,8 +115,9 @@
     (let ((current-prefix-arg 16)) ; 16 C-u C-u = all buffers
       (call-interactively #'dabbrev-completion)))
 
-  :bind (("M-/" . diego/dabbrev-full-completion)
-         ("C-M-/" . dabbrev-completion)))
+  :bind
+  (("M-/" . diego/dabbrev-full-completion) ;
+   ("C-M-/" . dabbrev-completion)))
 
 (use-package emacs
   :straight (:type built-in)
@@ -139,15 +143,13 @@
   (setq resize-mini-windows 'grow-only)
 
   ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (setq minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
-  :hook
-  (minibuffer-setup-hook . cursor-intangible-mode))
+  :hook (minibuffer-setup-hook . cursor-intangible-mode))
 
 (use-package ffap
   :straight (:type built-in)
@@ -155,10 +157,12 @@
   ;; The command ffap-menu shows the *Completions* buffer by default like tmm-menubar, which is
   ;; unnecessary with Vertico. This completion buffer can be disabled as follows.
   :config
-  (advice-add #'ffap-menu-ask :around (lambda (&rest args)
-                                        (cl-letf (((symbol-function #'minibuffer-completion-help)
-                                                   #'ignore))
-                                          (apply args))))
+  (advice-add
+   #'ffap-menu-ask
+   :around
+   (lambda (&rest args)
+     (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
+       (apply args))))
 
   ;; remap some existing bindings
   ;; (ffap-bindings)
@@ -180,11 +184,13 @@
   :after orderless ; https://github.com/oantolin/orderless/issues/64#issuecomment-868989378
   :straight (:files (:defaults "extensions/*") :includes (vertico-repeat vertico-quick))
   :init
-  (add-hook 'vertico-mode-hook (lambda ()
-                                 (setq completion-in-region-function
-                                       (if vertico-mode
-                                           #'consult-completion-in-region
-                                         #'completion--in-region))))
+  (add-hook
+   'vertico-mode-hook
+   (lambda ()
+     (setq completion-in-region-function
+           (if vertico-mode
+               #'consult-completion-in-region
+             #'completion--in-region))))
   (vertico-mode)
   :config
   (setq vertico-resize nil)
@@ -199,11 +205,7 @@
       (setf (alist-get 'vertico--index state) 0))
     state)
   (advice-add #'vertico--recompute :filter-return #'vertico--select-first)
-
-  :bind (:map
-         vertico-map
-         ("<C-tab>" . #'vertico-quick-insert)
-         ("C-q"     . #'vertico-quick-exit)))
+  :bind (:map vertico-map ("<C-tab>" . #'vertico-quick-insert) ("C-q" . #'vertico-quick-exit)))
 
 ;;*** consult.el
 ;; Provides a suite of useful commands using completing-read.
@@ -220,8 +222,8 @@
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
+  (setq register-preview-delay 0.5)
+  (setq register-preview-function #'consult-register-format)
 
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -233,11 +235,9 @@
   :config
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
-   consult-line consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark
+   consult-line consult-ripgrep consult-git-grep consult-grep consult-bookmark
    ;; consult-recent-file
-   consult-xref
-   consult--source-project-recent-file
+   consult-xref consult--source-project-recent-file
    ;; consult--source-recent-file
    consult--source-project-recent-file consult--source-bookmark
    :preview-key '(:debounce 0.2 any))
@@ -250,7 +250,9 @@
   ;; disable fd for now until https://github.com/minad/consult/wiki#find-files-using-fd
   ;; (setq consult-find-args "fd --color=never --full-path ARG OPTS")
   ;; add --hidden
-  (setq consult-ripgrep-args "rg --hidden --glob=!.git/ --glob=!TAGS --null --line-buffered --color=never --max-columns=1000 --path-separator / --smart-case --no-heading --with-filename --line-number")
+  (setq
+   consult-ripgrep-args
+   "rg --hidden --glob=!.git/ --glob=!TAGS --null --line-buffered --color=never --max-columns=1000 --path-separator / --smart-case --no-heading --with-filename --line-number")
   (setq xref-search-program 'ripgrep)
 
   (setq consult-fontify-preserve t)
@@ -276,24 +278,24 @@
       (set src (plist-put (symbol-value src) :hidden t))))
 
   (defun buffer-list-for-mode (mode)
-    (seq-filter (lambda (buffer)
-                  (eq mode (buffer-local-value 'major-mode buffer)))
-                (buffer-list)))
+    (seq-filter (lambda (buffer) (eq mode (buffer-local-value 'major-mode buffer))) (buffer-list)))
 
   (defvar kubel-buffer-source
-    `(:name     "Kubel"
-                :narrow   ?k
-                :category buffer
-                :state    ,#'consult--buffer-state
-                :items  ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'kubel-mode)))))
+    `(:name
+      "Kubel"
+      :narrow ?k
+      :category buffer
+      :state ,#'consult--buffer-state
+      :items ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'kubel-mode)))))
   (add-to-list 'consult-buffer-sources 'kubel-buffer-source 'append)
 
   (defvar vterm-buffer-source
-    `(:name     "Vterm"
-                :narrow   ?v
-                :category buffer
-                :state    ,#'consult--buffer-state
-                :items  ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'vterm-mode)))))
+    `(:name
+      "Vterm"
+      :narrow ?v
+      :category buffer
+      :state ,#'consult--buffer-state
+      :items ,(lambda () (mapcar #'buffer-name (buffer-list-for-mode 'vterm-mode)))))
   (add-to-list 'consult-buffer-sources 'vterm-buffer-source 'append)
 
   (defun diego/consult-buffer-for-project ()
@@ -308,23 +310,24 @@
     (interactive)
     (consult-line))
 
-  :bind (
-         ([remap apropos]                       . #'consult-apropos)
-         ([remap bookmark-jump]                 . #'consult-bookmark)
-         ([remap evil-show-marks]               . #'consult-mark)
-         ([remap goto-line]                     . #'consult-goto-line)
-         ([remap imenu]                         . #'consult-imenu)
-         ([remap load-theme]                    . #'consult-theme)
-         ([remap locate]                        . #'consult-locate)
-         ([remap org-goto]                      . #'consult-org-heading)
-         ([remap switch-to-buffer]              . #'consult-buffer)
-         ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
-         ([remap switch-to-buffer-other-frame]  . #'consult-buffer-other-frame)
-         ([remap yank-pop]                      . #'consult-yank-pop)
-         ([remap recentf-open-files]            . #'consult-recent-file)
-         ("C-s" . #'my/consult-line-forward)
-         :map minibuffer-local-map
-         ("C-r" . consult-history)))
+  :bind
+  (([remap apropos] . #'consult-apropos)
+   ([remap bookmark-jump] . #'consult-bookmark)
+   ([remap evil-show-marks] . #'consult-mark)
+   ([remap goto-line] . #'consult-goto-line)
+   ([remap imenu] . #'consult-imenu)
+   ([remap load-theme] . #'consult-theme)
+   ([remap locate] . #'consult-locate)
+   ([remap org-goto] . #'consult-org-heading)
+   ([remap switch-to-buffer] . #'consult-buffer)
+   ([remap switch-to-buffer-other-window] . #'consult-buffer-other-window)
+   ([remap switch-to-buffer-other-frame] . #'consult-buffer-other-frame)
+   ([remap yank-pop] . #'consult-yank-pop)
+   ([remap recentf-open-files] . #'consult-recent-file)
+   ("C-s" . #'my/consult-line-forward)
+   :map
+   minibuffer-local-map
+   ("C-r" . consult-history)))
 
 (use-package consult-flycheck
   :after (consult flycheck))
@@ -334,19 +337,17 @@
 
 (use-package consult-dir
   :after (vertico consult)
-  :bind (("C-x C-d" . consult-dir)
-         :map vertico-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file)))
+  :bind
+  (("C-x C-d" . consult-dir)
+   :map
+   vertico-map
+   ("C-x C-d" . consult-dir)
+   ("C-x C-j" . consult-dir-jump-file)))
 
 ;; https://github.com/gagbo/consult-lsp
 (use-package consult-lsp
   :after (consult lsp-mode)
-  :bind
-  (:map
-   lsp-mode-map
-   ([remap xref-find-apropos] . #'consult-lsp-symbols)))
-
+  :bind (:map lsp-mode-map ([remap xref-find-apropos] . #'consult-lsp-symbols)))
 
 ;;*** embark.el
 ;; Embark is a minor mode to allow each minibuffer entry to have multiple actions.
@@ -362,16 +363,18 @@
 
   ;; If you want to see the actions and their key bindings, but want to use the
   ;; key bindings rather than completing the command name
-  (setq embark-action-indicator
-        (lambda (map _target)
-          (which-key--show-keymap "Embark" map nil nil 'no-paging)
-          #'which-key--hide-popup-ignore-command)
-        embark-become-indicator embark-action-indicator)
+  (setq
+   embark-action-indicator
+   (lambda (map _target)
+     (which-key--show-keymap "Embark" map nil nil 'no-paging)
+     #'which-key--hide-popup-ignore-command)
+   embark-become-indicator embark-action-indicator)
   ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none))))
+  (add-to-list
+   'display-buffer-alist
+   '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+     nil
+     (window-parameters (mode-line-format . none))))
 
   (defun diego/embark-export-write ()
     "Export the current vertico results to a writable buffer if possible.
@@ -380,18 +383,22 @@
     (pcase-let ((`(,type . ,candidates)
                  (run-hook-with-args-until-success 'embark-candidate-collectors)))
       (pcase type
-        ('consult-grep (let ((embark-after-export-hook #'wgrep-change-to-wgrep-mode))
-                         (embark-export)))
-        ('file (let ((embark-after-export-hook #'wdired-change-to-wdired-mode))
-                 (embark-export)))
-        ('consult-location (let ((embark-after-export-hook #'occur-edit-mode))
-                             (embark-export)))
+        ('consult-grep
+         (let ((embark-after-export-hook #'wgrep-change-to-wgrep-mode))
+           (embark-export)))
+        ('file
+         (let ((embark-after-export-hook #'wdired-change-to-wdired-mode))
+           (embark-export)))
+        ('consult-location
+         (let ((embark-after-export-hook #'occur-edit-mode))
+           (embark-export)))
         (x (user-error "embark category %S doesn't support writable export" x)))))
 
   (defun +embark-collect-hook ()
     (when (eq embark-collect--kind :live)
       (with-selected-window (active-minibuffer-window)
-        (setq-local vertico-resize t vertico-count 0)
+        (setq-local vertico-resize t)
+        (setq-local vertico-count 0)
         (vertico--exhibit))))
 
   (add-hook 'embark-collect-mode-hook #'+embark-collect-hook)
@@ -399,18 +406,19 @@
   (add-hook 'occur-mode-hook #'evil-normal-state)
 
   :bind
-  (("M-a"                     . #'embark-act)
-   ("M-d"                     . #'embark-dwim)
-   ("C-h B"                   . #'embark-bindings)
+  (("M-a" . #'embark-act) ;
+   ("M-d" . #'embark-dwim) ;
+   ("C-h B" . #'embark-bindings)
    ;; alternative for `describe-bindings'
    ([remap describe-bindings] . #'embark-bindings)
-   (:map minibuffer-local-map
-         (("C-o" . embark-export)
-          (("C-c C-o" . embark-collect-live)
-           ("C-c C-e" . diego/embark-export-write)))
-         :map embark-collect-mode-map
-         (("a" . embark-act)
-          ("E" . embark-export)))))
+   (:map
+    minibuffer-local-map
+    (("C-o" . embark-export)
+     ("C-c C-o" . embark-collect-live)
+     ("C-c C-e" . diego/embark-export-write))
+    :map embark-collect-mode-map
+    (("a" . embark-act) ;
+     ("E" . embark-export)))))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -418,14 +426,12 @@
   :demand t ; only necessary if you have the hook below
   ;; if you want to have consult previews as you move around an
   ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode-hook . consult-preview-at-point-mode))
+  :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 ;;*** marginalia.el
 ;; Provides annotations to completion candidates.
 (use-package marginalia
-  :init
-  (marginalia-mode 1)
+  :init (marginalia-mode 1)
   :config
   (setq marginalia-truncate-width 120)
   (setq marginalia-field-width 120))
@@ -467,9 +473,8 @@
   (setq which-key-sort-uppercase-first nil) ; I prefer to have lowercase first when there is for example a k and K
   (setq which-key-max-display-columns nil)
   (setq which-key-min-display-lines 10)
-  (setq which-key-side-window-slot -10); A negative value means use a slot preceding (that is, above or on the left of) the middle slot.
+  (setq which-key-side-window-slot -10) ; A negative value means use a slot preceding (that is, above or on the left of) the middle slot.
   (setq which-key-idle-delay 0.3)
-  :config
-  (which-key-mode 1))
+  :config (which-key-mode 1))
 
 (provide 'diego-completion)

@@ -29,10 +29,11 @@
   (declare (interactive-only compile))
   (interactive)
   (let* ((prefix "/opt/dev/bin/dev ")
-         (list (mapcar (lambda (str)
-                        (concat prefix str))
-                      '("up" "down" "build" "test" "style" "runtime refresh")))
-        (cmd (completing-read "dev command: " list  nil nil prefix 'compile-history)))
+         (list
+          (mapcar
+           (lambda (str) (concat prefix str))
+           '("up" "down" "build" "test" "style" "runtime refresh")))
+         (cmd (completing-read "dev command: " list nil nil prefix 'compile-history)))
     (compile cmd t)))
 
 (defun diego/dev-project ()
@@ -40,14 +41,13 @@
   (declare (interactive-only compile))
   (interactive)
   (let* ((prefix "/opt/dev/bin/dev ")
-         (devopts (split-string
-                   (shell-command-to-string (concat prefix "help --project | grep dev | tail -n +2 | cut -d' ' -f4 | sort"))
-                   "\n"))
-         (list (mapcar (lambda (str)
-                         (concat prefix str))
-                       devopts)))
-    (compile
-     (completing-read "Project Dev Command: " list nil nil prefix 'compile-history) t)))
+         (devopts
+          (split-string (shell-command-to-string
+                         (concat
+                          prefix "help --project | grep dev | tail -n +2 | cut -d' ' -f4 | sort"))
+                        "\n"))
+         (list (mapcar (lambda (str) (concat prefix str)) devopts)))
+    (compile (completing-read "Project Dev Command: " list nil nil prefix 'compile-history) t)))
 
 (provide 'diego-dev)
 ;;; diego-dev.el ends here

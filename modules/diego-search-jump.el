@@ -12,13 +12,14 @@
 ;; Emacs plugin to show the current buffer's imenu entries in a seperate buffer.
 (use-package imenu-list
   :general
-  (general-nvmap :keymaps 'imenu-list-major-mode-map
-    (kbd "<return>") 'imenu-list-display-entry
-    (kbd "TAB") 'imenu-list-display-entry
-    (kbd "RET") 'imenu-list-display-entry)
+  ;; format-next-line: off
+  (general-nvmap
+   :keymaps 'imenu-list-major-mode-map
+   (kbd "<return>") 'imenu-list-display-entry
+   (kbd "TAB") 'imenu-list-display-entry
+   (kbd "RET") 'imenu-list-display-entry)
   :config
   (setq imenu-list-focus-after-activation t)
-  ;; (setq imenu-list-after-jump-hook nil)
   (setq imenu-list-auto-resize t)
   (set-face-attribute 'imenu-list-entry-face nil :height 0.7)
   (set-face-attribute 'imenu-list-entry-face-0 nil :height 0.7)
@@ -47,8 +48,7 @@
 ;; Package `visual-regexp-steroids' allows `visual-regexp' to use regexp engines other than Emacs'; for
 ;; example, Python or Perl regexps.
 (use-package visual-regexp
-  :config
-  (setq vr/default-replace-preview t))
+  :config (setq vr/default-replace-preview t))
 
 (use-package visual-regexp-steroids
   :after visual-regexp

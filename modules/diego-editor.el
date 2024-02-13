@@ -63,15 +63,14 @@
   ;; Make =tabify= and =untabify= only affect indentation. Not tabs/spaces in the middle of a line.
   (setq tabify-regexp "^\t* [ \t]+")
   ;;** Enable narrowing functions
-  (put 'narrow-to-defun  'disabled nil)
-  (put 'narrow-to-page   'disabled nil)
+  (put 'narrow-to-defun 'disabled nil)
+  (put 'narrow-to-page 'disabled nil)
   (put 'narrow-to-region 'disabled nil))
 
 ;;** Whitespace cleanup on buffer save
 (use-package whitespace
   :straight (:type built-in)
-  :hook
-  (before-save-hook . whitespace-cleanup))
+  :hook (before-save-hook . whitespace-cleanup))
 
 ;;** expand-region.el
 ;; SPC >
@@ -88,12 +87,11 @@
 (use-package elec-pair
   :straight (:type built-in)
   :config
-  (setq electric-pair-pairs '(
-                              (?\" . ?\")
-                              (?\` . ?\`)
-                              (?\( . ?\))
-                              (?\{ . ?\})
-                              ))
+  (setq electric-pair-pairs
+        '((?\" . ?\")
+          (?\` . ?\`)
+          (?\( . ?\))
+          (?\{ . ?\})))
   (setq electric-pair-text-pairs electric-pair-pairs)
   (setq electric-pair-inhibit-predicate (lambda (c) (char-equal c ?\<)))
   (electric-pair-mode 1))
@@ -101,7 +99,20 @@
 ;;** format-all.el
 ;; Lets you auto-format source code in many languages using the same command for all languages, instead
 ;; of learning a different Emacs package and formatting command for each language.
-(use-package format-all)
+(use-package format-all
+  :config
+  (define-format-all-formatter
+   elisp-autofmt
+   (:executable)
+   (:install "M-x package-install elisp-autofmt")
+   (:languages "Emacs Lisp")
+   (:features region)
+   (:format
+    (format-all--buffer-native
+     'elisp-autofmt-mode
+     (if region
+         (lambda () (funcall 'elisp-autofmt-region (car region) (cdr region)))
+       (lambda () (funcall 'elisp-autofmt-region (point-min) (point-max))))))))
 
 ;;** highlight-parentheses.el
 (use-package highlight-parentheses
@@ -109,10 +120,10 @@
   :config
 
   (modus-themes-with-colors
-    ;; And here we pass only foreground colors while disabling any
-    ;; backgrounds.
-    (setq highlight-parentheses-colors (list green-intense magenta-intense blue-intense red-intense))
-    (setq highlight-parentheses-background-colors nil))
+   ;; And here we pass only foreground colors while disabling any
+   ;; backgrounds.
+   (setq highlight-parentheses-colors (list green-intense magenta-intense blue-intense red-intense))
+   (setq highlight-parentheses-background-colors nil))
 
   ;; Include this if you also want to make the parentheses bold:
   ;; (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
@@ -123,8 +134,7 @@
   :straight (:host github :repo "protesilaos/lin")
   :init
   (setq lin-mode-hooks
-        '(
-          dired-mode-hook
+        '(dired-mode-hook
           elfeed-search-mode-hook
           git-rebase-mode-hook
           ibuffer-mode-hook
@@ -144,16 +154,15 @@
 ;; https://github.com/DarthFennec/highlight-indent-guides/issues/123
 (use-package highlight-indent-guides
   :after modus-themes
-  :config
-  (setq highlight-indent-guides-method 'character)
+  :config (setq highlight-indent-guides-method 'character)
 
   (defun my-modus-themes-highlight-indent-guides ()
     (modus-themes-with-colors
-      (custom-set-faces
-       `(highlight-indent-guides-character-face ((,c :foreground ,border))))))
+     (custom-set-faces `(highlight-indent-guides-character-face ((,c :foreground ,border))))))
 
-  :hook ((prog-mode-hook . highlight-indent-guides-mode)
-         (modus-themes-after-load-theme-hook . my-modus-themes-highlight-indent-guides)))
+  :hook
+  ((prog-mode-hook . highlight-indent-guides-mode)
+   (modus-themes-after-load-theme-hook . my-modus-themes-highlight-indent-guides)))
 
 ;;** pulsar.el (based on pulse.el)
 ;; Never lose the cursor again.
@@ -161,8 +170,7 @@
   :straight (:host github :repo "protesilaos/pulsar")
   :init
   (setq pulsar-pulse-functions
-        '(
-          backward-page
+        '(backward-page
           bookmark-jump
           delete-other-windows
           delete-window
@@ -223,10 +231,7 @@
 ;;** Highlight TODO, FIXME, NOTE, etc.
 (use-package hl-todo
   :config
-  (setq hl-todo-keyword-faces
-        '(("TODO" . "#cc9393")
-          ("FIXME"  . "#cc9393")
-          ("NOTE"   . "#d0bf8f")))
+  (setq hl-todo-keyword-faces '(("TODO" . "#cc9393") ("FIXME" . "#cc9393") ("NOTE" . "#d0bf8f")))
   (global-hl-todo-mode 1))
 
 (provide 'diego-editor)

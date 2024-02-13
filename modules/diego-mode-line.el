@@ -2,8 +2,7 @@
 
 (use-package emacs
   :ensure nil
-  :config
-  (setq mode-line-compact t)
+  :config (setq mode-line-compact t)
 
   ;; ** Format
 
@@ -13,21 +12,22 @@
   (setq mode-line-position-column-line-format '(" (Ln:%l, Col:%c)"))
   (setq evil-mode-line-format nil)
 
-  (setq-default mode-line-format '("%e" mode-line-front-space
-                                   ;;"[" (:eval (diego/current-tab-name)) "]"
-                                   ;; " "
-                                   ;; (:eval (if (eq (buffer-local-value 'major-mode (current-buffer)) 'kubel-mode)
-                                   ;;            (kubel-current-state)))
-                                   mode-line-buffer-identification  " "
-                                   ;; default-directory
-                                   mode-line-position minions-mode-line-modes
-                                   ;; (vc-mode vc-mode) " "
-                                   ;; mode-line-misc-info
-                                   ;; mode-line-mule-info
-                                   ;; mode-line-client
-                                   ;; mode-line-modified
-                                   ;; mode-line-remote
-                                   mode-line-frame-identification mode-line-end-spaces)))
+  (setq-default mode-line-format
+                '("%e" mode-line-front-space
+                  ;;"[" (:eval (diego/current-tab-name)) "]"
+                  ;; " "
+                  ;; (:eval (if (eq (buffer-local-value 'major-mode (current-buffer)) 'kubel-mode)
+                  ;;            (kubel-current-state)))
+                  mode-line-buffer-identification " "
+                  ;; default-directory
+                  mode-line-position minions-mode-line-modes
+                  ;; (vc-mode vc-mode) " "
+                  ;; mode-line-misc-info
+                  ;; mode-line-mule-info
+                  ;; mode-line-client
+                  ;; mode-line-modified
+                  ;; mode-line-remote
+                  mode-line-frame-identification mode-line-end-spaces)))
 
 (use-package minions
   :config
@@ -49,21 +49,24 @@
   (setq keycast-remove-tail-elements nil) ; leave mode line alone
 
   ;; copied from Prot
-  (dolist (input '(self-insert-command
-                   org-self-insert-command))
+  (dolist (input
+           '(self-insert-command
+             org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
 
-  (dolist (event '(mouse-event-p
-                   mouse-movement-p
-                   mwheel-scroll
-                   ;; added these additional events
-                   lsp-ui-doc--handle-mouse-movement
-                   ignore))
+  (dolist (event
+           '(mouse-event-p
+             mouse-movement-p
+             mwheel-scroll
+             ;; added these additional events
+             lsp-ui-doc--handle-mouse-movement
+             ignore))
     (add-to-list 'keycast-substitute-alist `(,event nil)))
 
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line."
-    :global t
+    :global
+    t
     (if keycast-mode
         (add-hook 'pre-command-hook 'keycast--update t)
       (remove-hook 'pre-command-hook 'keycast--update)))

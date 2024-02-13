@@ -19,16 +19,18 @@
   (add-hook 'after-init-hook #'diego--init-scratch-buffers)
 
   ;; *** Custom scratch buffers
-  (setq diego--scratch-mode-list '(("org-mode" . ".org")
-                                   ("emacs-lisp" . ".el")
-                                   ("markdown" . ".md")))
+  (setq diego--scratch-mode-list
+        '(("org-mode" . ".org")
+          ("emacs-lisp" . ".el")
+          ("markdown" . ".md")))
 
   (defun diego--scratch-buffer-query-modes ()
-    (alist-get
-     (completing-read "Mode: " diego--scratch-mode-list)
-     diego--scratch-mode-list nil nil 'equal))
+    (alist-get (completing-read "Mode: " diego--scratch-mode-list) diego--scratch-mode-list
+               nil
+               nil
+               'equal))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun diego/make-scratch (ext)
     "Get a scratch buffer for with the extension EXT and a random name.
     When called interactively with a prefix arg, prompt for the mode."

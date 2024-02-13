@@ -51,29 +51,33 @@
   "Toggle workspaces by tabs."
   (interactive)
   (setq diego-workspaces-enabled (not diego-workspaces-enabled))
-  (message "Workspaces tabs %s" (if diego-workspaces-enabled "enabled" "disabled")))
+  (message "Workspaces tabs %s"
+           (if diego-workspaces-enabled
+               "enabled"
+             "disabled")))
 
 (defun diego/workspaces-validate-buffer (buffer &rest _)
   "Check if workspaces per buffer is enabled and that BUFFER is visiting a file."
   (and diego-workspaces-enabled
-       (or (string-prefix-p "magit:" buffer) ; special case for when the first project buffer is magit
-           (buffer-local-value 'buffer-file-name (get-buffer buffer)))))
+       (or
+        (string-prefix-p "magit:" buffer) ; special case for when the first project buffer is magit
+        (buffer-local-value 'buffer-file-name (get-buffer buffer)))))
 
 (defun diego/workspaces-name-for-buffer (buffer _a)
   "Select an appropriate tab name given a buffer BUFFER."
   (if-let ((file-name (buffer-file-name buffer))) ; check if buffer is visiting a file
-      (if (file-remote-p file-name)
-          "|tramp|" ; I don't use remote files too much, when I use them just use a single workspace
-        (let* ((root-dir (diego--locate-project-root-dir file-name))
-               (name (diego--root-dir-format-name root-dir file-name)))
-          name))
-    (diego--root-dir-format-name (buffer-local-value 'default-directory (get-buffer buffer)) file-name)))
+    (if (file-remote-p file-name)
+        "|tramp|" ; I don't use remote files too much, when I use them just use a single workspace
+      (let* ((root-dir (diego--locate-project-root-dir file-name))
+             (name (diego--root-dir-format-name root-dir file-name)))
+        name))
+    (diego--root-dir-format-name
+     (buffer-local-value 'default-directory (get-buffer buffer)) file-name)))
 
 (defun diego--locate-project-root-dir (file-name)
   "Check if FILE-NAME is under a known project type.
 Known project types are Git or a directory having a .project file."
-  (or (locate-dominating-file file-name ".project")
-      (locate-dominating-file file-name ".git")))
+  (or (locate-dominating-file file-name ".project") (locate-dominating-file file-name ".git")))
 
 (defun diego--root-dir-format-name (root-dir file-name)
   "Remove path prefixes for only known directories to keep the tab names short.

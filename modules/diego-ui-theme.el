@@ -12,16 +12,21 @@
 
   (defun diego--improve-colors ()
     (modus-themes-with-colors
-      (custom-set-faces
-       `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
-       ;; `(tab-bar ((,c :background ,bg-blue-subtle)))
-       `(tab-bar-tab ((,c :background ,bg-blue-nuanced :foreground ,blue :overline ,blue :bold nil)))
-       `(tab-bar-tab-inactive ((,c :background ,bg-cyan-subtle :overline ,blue :bold nil)))))
+     (custom-set-faces
+      `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
+      ;; `(tab-bar ((,c :background ,bg-blue-subtle)))
+      `(tab-bar-tab ((,c :background ,bg-blue-nuanced :foreground ,blue :overline ,blue :bold nil)))
+      `(tab-bar-tab-inactive ((,c :background ,bg-cyan-subtle :overline ,blue :bold nil)))))
 
     (set-face-attribute 'font-lock-number-face nil :foreground "#ff9580" :bold nil)
     (set-face-attribute 'font-lock-escape-face nil :foreground "#feacd0")
-    (set-face-attribute 'font-lock-function-call-face nil :inherit nil :foreground "#00bcff" :bold nil)
-    (set-face-attribute 'font-lock-function-name-face nil :background "#004065" :foreground "#00d3d0"))
+    (set-face-attribute 'font-lock-function-call-face nil
+                        :inherit nil
+                        :foreground "#00bcff"
+                        :bold nil)
+    (set-face-attribute 'font-lock-function-name-face nil
+                        :background "#004065"
+                        :foreground "#00d3d0"))
 
   ;; similar to Dark Modern
   ;; (setq modus-vivendi-palette-overrides '((bg-main "#212121")
@@ -40,14 +45,15 @@
   ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-warmer)
 
   ;; dark theme, mixed of One Dark Pro and Dark plus
-  (setq modus-vivendi-palette-overrides '((bg-main "#23272e")
-                                          (fg-main "#abb2bf")
-                                          (string "#98C379")
-                                          (type "#6ae4b9")
-                                          (keyword "#b6a0ff")
-                                          (variable "#d4d4d4")
-                                          (comment  "#7f848e")
-                                          (constant "#9cdcfe")))
+  (setq modus-vivendi-palette-overrides
+        '((bg-main "#23272e")
+          (fg-main "#abb2bf")
+          (string "#98C379")
+          (type "#6ae4b9")
+          (keyword "#b6a0ff")
+          (variable "#d4d4d4")
+          (comment "#7f848e")
+          (constant "#9cdcfe")))
 
   :bind ("<f5>" . #'modus-themes-toggle)
   :hook (modus-themes-after-load-theme-hook . diego--improve-colors))

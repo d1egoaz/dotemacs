@@ -25,8 +25,7 @@
           vertico-next
           pixel-scroll-precision
           org-self-insert-command
-          vterm--self-insert
-          ))
+          vterm--self-insert))
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
 
@@ -34,6 +33,9 @@
 (use-package ediff
   :straight (:type built-in)
   :config
+
+  (setq ediff-keep-variants nil)
+  (setq ediff-show-clashes-only t)
   (setq ediff-split-window-function #'split-window-horizontally)
   ;; stop creating a new frame for navigating changes
   (setq ediff-window-setup-function #'ediff-setup-windows-plain))
@@ -43,9 +45,7 @@
   :config
   (setq diff-hl-draw-borders nil)
   (setq diff-hl-side 'left)
-  :hook ((prog-mode-hook       . diff-hl-mode)
-         (gfm-mode-hook        . diff-hl-mode)
-         (org-mode-hook        . diff-hl-mode)))
+  :hook ((prog-mode-hook . diff-hl-mode) (gfm-mode-hook . diff-hl-mode) (org-mode-hook . diff-hl-mode)))
 
 ;;** Syntax checking (flycheck.el)
 (use-package flycheck
@@ -69,20 +69,19 @@
 (use-package doom-snippets
   :after yasnippet
   :straight (doom-snippets :type git :host github :repo "hlissner/doom-snippets" :files ("*.el" "*"))
-  :config
-  (yas-global-mode 1))
+  :config (yas-global-mode 1))
 
 ;;** flyspell.el
 ;; `z=` to correct word.
 (use-package flyspell
   :after org
-  :config
-  (setq ispell-program-name "aspell")
-  :hook ((prog-mode-hook       . flyspell-prog-mode)
-         (gfm-mode-hook        . flyspell-prog-mode)
-         (text-mode-hook       . flyspell-mode)
-         (git-commit-mode-hook . flyspell-mode)
-         (org-mode-hook        . flyspell-mode)))
+  :config (setq ispell-program-name "aspell")
+  :hook
+  ((prog-mode-hook . flyspell-prog-mode)
+   (gfm-mode-hook . flyspell-prog-mode)
+   (text-mode-hook . flyspell-mode)
+   (git-commit-mode-hook . flyspell-mode)
+   (org-mode-hook . flyspell-mode)))
 
 (use-package flyspell-correct
   :after flyspell
@@ -96,8 +95,7 @@
 ;; dict.org uses Webster 1913 dictionary.
 (use-package dictionary
   :straight (:type built-in)
-  :config
-  (setq dictionary-server "dict.org"))
+  :config (setq dictionary-server "dict.org"))
 
 (use-package define-word)
 
@@ -114,7 +112,7 @@
   :config
   (add-to-list 'warning-suppress-types '(iedit)) ; to avoid warn edit default key %S is occupied by %s
 
-   ;;;###autoload
+  ;;;###autoload
   (defun diego/iedit-scoped (orig-fn)
     "Call `iedit-mode' with function-local scope, or global scope if called with a universal prefix."
     (interactive)
@@ -129,8 +127,7 @@
   :straight (:type built-in)
   :config
   ;; Show the current function name in the header line
-  (setq-default header-line-format
-                '((which-function-mode ("" which-func-format " "))))
+  (setq-default header-line-format '((which-function-mode ("" which-func-format " "))))
   ;;  (:eval (breadcrumb-project-crumbs))))
 
   ;; We remove Which Function Mode from the mode line, because it's mostly
@@ -142,8 +139,7 @@
 ;;** blamer.el
 (use-package breadcrumb
   :straight (:type git :host github :repo "joaotavora/breadcrumb")
-  :config
-  (breadcrumb-mode 1))
+  :config (breadcrumb-mode 1))
 
 ;;** bookmarks.el
 (use-package bookmark
@@ -165,7 +161,7 @@
     (interactive "sBookmark URL: \nsBookmark name: ")
     (if (assoc name bookmark-alist)
         (user-error "%s is already bookmarked" name)
-      (push `(,name . ((handler . ,#'diego--bookmark-url-handler)(url . ,url)(filename . ,url)))
+      (push `(,name . ((handler . ,#'diego--bookmark-url-handler) (url . ,url) (filename . ,url)))
             bookmark-alist))))
 
 ;;** blamer.el
@@ -183,9 +179,10 @@
 ;;** undo-fu.el
 (use-package undo-fu
   :config
-  (setq undo-limit 8000000           ; 8mb (default is 160kb)
-        undo-strong-limit 8000000   ; 8mb   (default is 240kb)
-        undo-outer-limit 48000000))  ; 48mb  (default is 24mb)
+  (setq
+   undo-limit 8000000 ; 8mb (default is 160kb)
+   undo-strong-limit 8000000 ; 8mb   (default is 240kb)
+   undo-outer-limit 48000000)) ; 48mb  (default is 24mb)
 
 (use-package undo-fu-session
   :after undo-fu
@@ -193,10 +190,16 @@
   (setq undo-fu-session-incompatible-files '("\\.gpg$" "/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (setq undo-fu-session-incompatible-major-modes '(vterm-mode kubel-mode))
   (global-undo-fu-session-mode 1)
-  :hook ((prog-mode-hook       . undo-fu-session-mode)
-         (gfm-mode-hook        . undo-fu-session-mode)
-         (org-mode-hook        . undo-fu-session-mode)
-         (text-mode-hook       . undo-fu-session-mode)))
+  :hook
+  ((prog-mode-hook . undo-fu-session-mode)
+   (gfm-mode-hook . undo-fu-session-mode)
+   (org-mode-hook . undo-fu-session-mode)
+   (text-mode-hook . undo-fu-session-mode)))
+
+(use-package elisp-autofmt
+  :commands (elisp-autofmt-mode elisp-autofmt-buffer)
+  :config (setq-default elisp-autofmt-load-packages-local '("use-package"))
+  :hook (emacs-lisp-mode . elisp-autofmt-mode))
 
 (use-package c3po
   ;; :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
@@ -209,8 +212,9 @@
 
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
   (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
-  (c3po-add-new-droid '(synonymizer . (:system-prompt
-                                       "
+  (c3po-add-new-droid
+   '(synonymizer . (:system-prompt
+                    "
 I want you to act as a synonyms provider.
 I will give you a word, and you will reply with a list of synonym alternatives according to my prompt.
 Provide a list of five synonyms per prompt, three short examples, and a list of five antonyms.

@@ -28,8 +28,7 @@
   ;; The special marker ‘,’ inside of the argument to backquote indicates a value that isn’t constant.
   (setq backup-directory-alist `(("." . ,(concat no-littering-var-directory "backup"))))
   (defun diego--backup-enable-predicate (name)
-    (and (normal-backup-enable-predicate name)
-         (not (string-match-p "\\.gpg\\'" name))))
+    (and (normal-backup-enable-predicate name) (not (string-match-p "\\.gpg\\'" name))))
   (setq backup-enable-predicate #'diego--backup-enable-predicate)
 
   ;;* Files
@@ -48,8 +47,9 @@
       (let ((parent-directory (file-name-directory buffer-file-name)))
         (and (not (file-directory-p parent-directory))
              (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory))
-             (progn (make-directory parent-directory 'parents)
-                    t)))))
+             (progn
+               (make-directory parent-directory 'parents)
+               t)))))
   (add-to-list 'find-file-not-found-functions #'diego/my-create-non-existent-directory)
 
 
@@ -87,13 +87,14 @@
   :straight (:type built-in)
   :after evil-collection
   :general
+  ;; format-next-line: off
   (general-nvmap
-    :keymaps 'dired-mode-map
-    :prefix ","
-    "w"  #'wdired-change-to-wdired-mode)
+   :keymaps 'dired-mode-map
+   :prefix ","
+   "w" #'wdired-change-to-wdired-mode)
   :config
   (evil-collection-dired-setup)
-  (setq dired-mouse-drag-files t)                   ; added in Emacs 29
+  (setq dired-mouse-drag-files t) ; added in Emacs 29
   (setq mouse-drag-and-drop-region-cross-program t) ; added in Emacs 29
   (setq insert-directory-program "gls")
   ;; only one dired buffer when opening directories
@@ -104,11 +105,13 @@
 ;;*** dired-sidebar.el
 (use-package dired-sidebar
   :general
-  (general-nvmap :keymaps 'dired-sidebar-mode-map
-    "<down-mouse-1>" #'dired-sidebar-mouse-subtree-cycle-or-find-file
-    "<mouse-2>" #'dired-sidebar-mouse-subtree-cycle-or-find-file
-    (kbd "<return>") 'diego/dired-sidebar-find-file
-    (kbd "RET") 'diego/dired-sidebar-find-file)
+  ;; format-next-line: off
+  (general-nvmap
+   :keymaps 'dired-sidebar-mode-map
+   "<down-mouse-1>" #'dired-sidebar-mouse-subtree-cycle-or-find-file
+   "<mouse-2>" #'dired-sidebar-mouse-subtree-cycle-or-find-file
+   (kbd "<return>") 'diego/dired-sidebar-find-file
+   (kbd "RET") 'diego/dired-sidebar-find-file)
   :config
 
   (let ((map dired-sidebar-mode-map))
@@ -130,14 +133,13 @@
   (setq dired-sidebar-theme 'icons)
   (setq dired-sidebar-use-custom-font t)
   (setq dired-sidebar-should-follow-file t)
-  (setq  dired-sidebar-follow-file-at-point-on-toggle-open t)
+  (setq dired-sidebar-follow-file-at-point-on-toggle-open t)
   (set-face-attribute 'dired-sidebar-face nil :height 0.8)
   (setq dired-sidebar-should-follow-file t)
   (setq dired-sidebar-recenter-cursor-on-follow-file nil))
 
 (use-package dirvish
-  :init
-  (dirvish-override-dired-mode)
+  :init (dirvish-override-dired-mode)
   :config
 
   (setq dirvish-attributes '(all-the-icons))
@@ -145,17 +147,15 @@
   (setq delete-by-moving-to-trash t)
   (setq dirvish-use-header-line nil)
   (setq dirvish-use-mode-line nil)
-  (setq dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group")
-  (setq dirvish-libraries
-        '((dirvish-widgets  path symlink sort omit index free-space file-link-number
-                            file-user file-group file-time file-size file-modes
-                            file-inode-number file-device-number
-                            audio image gif video epub pdf pdf-preface archive)
-          ;; (dirvish-vc       vc-state git-msg vc-diff vc-blame vc-log vc-info)
-          (dirvish-icons    all-the-icons vscode-icon)
-          (dirvish-collapse collapse)
-          (dirvish-subtree  subtree-state)
-          (dirvish-yank     yank)))
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group")
+  (setq
+   dirvish-libraries
+   '((dirvish-widgets path symlink sort omit index free-space file-link-number file-user file-group file-time file-size file-modes file-inode-number file-device-number audio image gif video epub pdf pdf-preface archive)
+     (dirvish-icons all-the-icons vscode-icon)
+     (dirvish-collapse collapse)
+     (dirvish-subtree subtree-state)
+     (dirvish-yank yank)))
 
   (dirvish-side-follow-mode 1))
 
