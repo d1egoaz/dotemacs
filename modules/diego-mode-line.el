@@ -13,21 +13,30 @@
   (setq evil-mode-line-format nil)
 
   (setq-default mode-line-format
-                '("%e" mode-line-front-space
+                '("%e"
+                  mode-line-front-space
+                  (:propertize
+                   ("" mode-line-client mode-line-modified mode-line-window-dedicated)
+                   display
+                   (min-width (6.0)))
                   ;;"[" (:eval (diego/current-tab-name)) "]"
                   ;; " "
                   ;; (:eval (if (eq (buffer-local-value 'major-mode (current-buffer)) 'kubel-mode)
                   ;;            (kubel-current-state)))
-                  mode-line-buffer-identification " "
+                  mode-line-buffer-identification
+                  " "
                   ;; default-directory
-                  mode-line-position minions-mode-line-modes
-                  ;; (vc-mode vc-mode) " "
+                  mode-line-position
+                  (project-mode-line project-mode-line-format)
+                  minions-mode-line-modes
+                  (vc-mode vc-mode) " "
                   ;; mode-line-misc-info
                   ;; mode-line-mule-info
                   ;; mode-line-client
                   ;; mode-line-modified
                   ;; mode-line-remote
-                  mode-line-frame-identification mode-line-end-spaces)))
+                  mode-line-frame-identification
+                  mode-line-end-spaces)))
 
 (use-package minions
   :config
