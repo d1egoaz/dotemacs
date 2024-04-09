@@ -12,7 +12,7 @@
   (set-face-attribute
    'fixed-pitch nil
    :font "-*-Essential PragmataPro-regular-normal-normal-*-16-*-*-*-m-0-iso10646-1")
-  (set-face-attribute 'variable-pitch nil :font "SF Pro Text-16")
+  (set-face-attribute 'variable-pitch nil :font "SF Pro Text-15")
   (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
   (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
 
