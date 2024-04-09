@@ -12,6 +12,10 @@
   :config (setq help-window-select t))
 
 
+(use-package emacs
+  :straight (:type built-in)
+  :config (add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function))
+
 ;;** all-the-icons.el
 ;; To have some icons available in doom mode line.
 (use-package all-the-icons
