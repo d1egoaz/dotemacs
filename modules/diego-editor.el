@@ -176,6 +176,7 @@
           delete-window
           evil-avy-goto-line
           evil-goto-definition
+          evil-mouse-drag-region
           evil-scroll-down
           evil-scroll-line-to-bottom
           evil-scroll-line-to-center
@@ -185,6 +186,7 @@
           evil-window-right
           evil-window-split
           forward-page
+          handle-select-window
           kill-current-buffer
           lsp-find-references
           lsp-find-definition
@@ -215,7 +217,7 @@
   (setq pulsar-pulse t)
   (setq pulsar-delay 0.2)
   (setq pulsar-iterations 6)
-  (setq pulsar-face 'pulsar-yellow)
+  (setq pulsar-face 'pulsar-magenta)
   (setq pulsar-highlight-face 'pulsar-magenta)
   (pulsar-global-mode 1))
 
