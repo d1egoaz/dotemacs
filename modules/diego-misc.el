@@ -154,10 +154,16 @@
 
   (setq emacs-everywhere-major-mode-function #'gfm-mode)
 
+  (defun diego--custom-c3po-assistant ()
+    (interactive)
+    (let ((current-prefix-arg '(8)))
+      (call-interactively 'c3po-assistant-new-chat-replace-region)))
+
   (transient-define-prefix
    diego/emacs-everywhere-filter ()
    [["Actions"
      ("c" "correct grammar" c3po-grammar-checker-new-chat-replace-region)
+     ("a" "assistant" diego--custom-c3po-assistant)
      ("r" "rewrite" c3po-rewriter-new-chat-replace-region)]]))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
