@@ -442,7 +442,8 @@
   :init
   ;; The =basic= completion style is specified as fallback in addition to =orderless= in order to
   ;; ensure that completion commands which rely on dynamic completion tables,
-  (setq completion-styles '(orderless basic))
+  ;; (setq completion-styles '(orderless basic))
+  (setq completion-styles '(orderless))
   (setq completion-category-defaults nil)
   ;; Enable `partial-completion' for files to allow path expansion.
   (setq completion-category-overrides '((file (styles basic partial-completion))))
@@ -457,6 +458,7 @@
   ;; * !without-literal without-literal!
   ;; * .ext (file extension)
   ;; * regexp$ (regexp matching at end)
+  (add-to-list 'orderless-style-dispatchers #'orderless-kwd-dispatch)
 
   ;; allow escaping space with backslash
   (setq orderless-component-separator #'orderless-escapable-split-on-space))
