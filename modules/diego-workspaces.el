@@ -83,7 +83,7 @@ Known project types are Git or a directory having a .project file."
   "Remove path prefixes for only known directories to keep the tab names short.
 If ROOT-DIR matches a list of known paths returns only the
 directory name, otherwise return the ROOT-DIR."
-  (message "root-dir: %s" root-dir)
+  ;; (message "root-dir: %s" root-dir)
   (unless root-dir
     (setq root-dir (file-name-directory file-name)))
   (setq root-dir (expand-file-name root-dir)) ;; to converts path that uses ~ or $HOME

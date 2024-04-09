@@ -4,28 +4,27 @@
 (use-package keyfreq
   :config
   (setq keyfreq-excluded-commands
-        '(self-insert-command
-          backward-char
-          evil-backward-char
-          evil-forward-char
-          evil-forward-word-begin
-          evil-mouse-drag-region
-          evil-next-line
-          evil-next-visual-line
-          evil-normal-state
-          evil-previous-line
-          forward-char
-          ignore
-          lsp-ui-doc--handle-mouse-movement
-          mouse-set-point
-          mwheel-scroll
-          next-line
-          previous-line
-          vertico-exit
-          vertico-next
-          pixel-scroll-precision
-          org-self-insert-command
-          vterm--self-insert))
+        '(self-insert-command backward-char
+                              evil-backward-char
+                              evil-forward-char
+                              evil-forward-word-begin
+                              evil-mouse-drag-region
+                              evil-next-line
+                              evil-next-visual-line
+                              evil-normal-state
+                              evil-previous-line
+                              forward-char
+                              ignore
+                              lsp-ui-doc--handle-mouse-movement
+                              mouse-set-point
+                              mwheel-scroll
+                              next-line
+                              previous-line
+                              vertico-exit
+                              vertico-next
+                              pixel-scroll-precision
+                              org-self-insert-command
+                              vterm--self-insert))
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
 
@@ -207,14 +206,18 @@
   :bind ("<f7>" . #'c3po-pop-results-buffer)
   :config
 
-  (setq c3po-model "gpt-4-turbo-preview")
-  (setq c3po-temperature 0.2) ;; 0.2 will make it more focused and deterministic.
+  ;; (setq c3po-model "gpt-3.5-turbo")
+  ;; (setq c3po-model "claude-3-sonnet-20240229")
+  (setq c3po-model "openchat")
+  (setq c3po-results-file-path "~/*🤖C3PO🤖*")
+  ;; (setq c3po-temperature 0.1) ; 0.1 will make it more focused and deterministic.
+  (setq c3po-temperature 0.7) ; 0.1 will make it more focused and deterministic.
 
   ;; (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
   (setq c3po-api-key (diego/auth-source-get-password "api.openai.com" "personal"))
-  (c3po-add-new-droid
-   '(synonymizer . (:system-prompt
-                    "
+  (setq c3po-api-key (diego/auth-source-get-password "api.anthropic.com" "personal"))
+
+  (c3po-add-new-droid '(synonymizer . (:system-prompt "
 I want you to act as a synonyms provider.
 I will give you a word, and you will reply with a list of synonym alternatives according to my prompt.
 Provide a list of five synonyms per prompt, three short examples, and a list of five antonyms.

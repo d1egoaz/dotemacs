@@ -78,7 +78,7 @@
           ;; ← left side window
 
           ;; → right side window
-          ("\\*\\(?:VC-history\\|eldoc\\|vterm-project\\).*\\*"
+          ("\\*\\(?:VC-history\\|eldoc\\|vterm-project\\|vterm-compile\\).*\\*"
            (display-buffer-in-side-window)
            (side . right)
            (window-width . 0.50)
