@@ -320,6 +320,7 @@
    "ri" #'(iedit-mode :which-key "iedit") ; next item TAB
    "rs" #'replace-string
    "rr" #'replace-regexp
+   "rd" #'replace-regexp-as-diff
    "rw" #'fixup-whitespace
    ;; Window manipulation
    "w" '(:ignore t :which-key "windows")
