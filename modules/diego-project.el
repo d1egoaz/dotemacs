@@ -48,15 +48,35 @@
     (with-current-buffer (find-file (expand-file-name "README.md" (diego/current-project-root)))
       (magit-status)))
 
+  (defun diego/compile-in-vterm (orig-fun &rest args)
+    "Run compilation in a vterm buffer."
+    (let* ((compile-command (car args)) ; Use the first argument directly
+           (default-directory default-directory)
+           (vterm-buffer-name
+            (format "*vterm-compile: [%s]> %s*"
+                    (diego--root-dir-format-name default-directory nil)
+                    compile-command)))
+      (when (get-buffer vterm-buffer-name)
+        (with-current-buffer vterm-buffer-name
+          (setq-local kill-buffer-query-functions nil))
+        (kill-buffer vterm-buffer-name))
+      (vterm)
+      (vterm-send-string compile-command)
+      (vterm--compilation-setup)
+      (compilation-minor-mode)
+      (vterm-send-return)))
 
-  (defun diego/project-compile-dwim (command)
-    "Run `compile' in the project root."
-    ;; (declare (interactive-only compile))
+  (defun diego/recompile ()
+    "Recompile using vterm."
     (interactive)
-    (let ((default-directory (diego/current-project-root))
-          (compilation-buffer-name-function
-           (or project-compilation-buffer-name-function compilation-buffer-name-function)))
-      (compile command t)))
+    (save-some-buffers (not compilation-ask-about-save) compilation-save-buffers-predicate)
+    (let ((default-directory (or compilation-directory default-directory)))
+      (if (null compile-command)
+          (error "No compile command has been set")
+        (compile compile-command t))))
+
+  (advice-add 'compile :around #'diego/compile-in-vterm)
+  (advice-add 'recompile :override #'diego/recompile)
 
   (defun diego/project-compile ()
     "Run `compile' in the project root."
@@ -69,14 +89,14 @@
       (compile
        (completing-read "Compile command: " compile-history nil nil nil 'compile-history) t)))
 
-  (defun diego/recompile ()
-    "Function has been almost copied from the original recompile.
-It has been modified to always run on comint mode."
-    (interactive)
-    (save-some-buffers (not compilation-ask-about-save) compilation-save-buffers-predicate)
-    (let ((default-directory (or compilation-directory default-directory))
-          (command (eval compile-command)))
-      (apply #'compilation-start (list command t nil nil)))) ; make sure to always use comint mode
+  ;;   (defun diego/recompile ()
+  ;;     "Function has been almost copied from the original recompile.
+  ;; It has been modified to always run on comint mode."
+  ;;     (interactive)
+  ;;     (save-some-buffers (not compilation-ask-about-save) compilation-save-buffers-predicate)
+  ;;     (let ((default-directory (or compilation-directory default-directory))
+  ;;           (command (eval compile-command)))
+  ;;       (apply #'compilation-start (list command t nil nil)))) ; make sure to always use comint mode
 
   (defun diego/current-project-root ()
     "Return the current project root."
