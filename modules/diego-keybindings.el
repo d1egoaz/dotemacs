@@ -327,7 +327,7 @@
    "wb" #'balance-windows
    "wB" #'balance-windows-area
    "ws" #'diego/swap-windows
-   "ww" #'diego/dedicated-mode
+   "ww" #'toggle-window-dedicated
    "w-" #'(+evil/window-split-and-follow :which-key "Horizontal split window")
    "w/" #'(+evil/window-vsplit-and-follow :which-key "Vertical split window")
    "wd" #'(evil-window-delete :which-key "Close window")
