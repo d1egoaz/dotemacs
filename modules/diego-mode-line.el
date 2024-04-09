@@ -49,18 +49,14 @@
   (setq keycast-remove-tail-elements nil) ; leave mode line alone
 
   ;; copied from Prot
-  (dolist (input
-           '(self-insert-command
-             org-self-insert-command))
+  (dolist (input '(self-insert-command org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
 
   (dolist (event
-           '(mouse-event-p
-             mouse-movement-p
-             mwheel-scroll
-             ;; added these additional events
-             lsp-ui-doc--handle-mouse-movement
-             ignore))
+           '(mouse-event-p mouse-movement-p
+                           mwheel-scroll
+                           ;; added these additional events
+                           lsp-ui-doc--handle-mouse-movement ignore))
     (add-to-list 'keycast-substitute-alist `(,event nil)))
 
   (define-minor-mode keycast-mode
