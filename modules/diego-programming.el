@@ -235,6 +235,7 @@
   ;; (setq flycheck-golangci-lint-config "/Users/diegoalvarez/code/go/.golangci.yml")
   (setq flycheck-golangci-lint-fast t)
   (setq flycheck-golangci-lint-tests t)
+  ;; format-next-line: off
   (setq flycheck-golangci-lint-enable-linters
         '(
           ;; default
@@ -489,7 +490,6 @@
   (setq compilation-always-kill t) ; kill old compile processes before starting the new one
   (setq compilation-ask-about-save nil) ; save all buffers on `compile'
 
-
   (defun compilation-add-separator ()
     "Insert separator in read-only buffer."
     (interactive)
@@ -531,17 +531,17 @@
 ;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 ;;   (setq tree-sitter-debug-jump-buttons t))
 
-;; (use-package tree-sitter-langs
-;;   :after tree-sitter
-;;   :config
-;;   (push '(markdown-mode . markdown) tree-sitter-major-mode-language-alist)
-;;   (push '(gfm-mode . markdown) tree-sitter-major-mode-language-alist))
-
-(use-package treesit-auto
-  :straight (:type git :host github :repo "renzmann/treesit-auto")
+(use-package tree-sitter-langs
+  :after tree-sitter
   :config
-  (setq treesit-auto-install 'prompt)
-  (global-treesit-auto-mode))
+  (setq tree-sitter-langs--dir "/Users/diego.albeiroalvarezzuluag/.emacs.d/tree-sitter")
+  )
+
+;; (use-package treesit-auto
+;;   :straight (:type git :host github :repo "renzmann/treesit-auto")
+;;   :config
+;;   (setq treesit-auto-install 'prompt)
+;;   (global-treesit-auto-mode))
 
 (use-package evil-textobj-tree-sitter
   :after (evil treesit)
@@ -575,14 +575,19 @@
    evil-inner-text-objects-map "v"
    (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner"))))
 
+(use-package treesit-fold
+  :straight (treesit-fold :type git :host github :repo "abougouffa/treesit-fold")
+
+;; (use-package ts-fold
+;;   :straight (ts-fold :type git :host github :repo "abougouffa/treesit-fold"))
 ;; (use-package ts-fold
 ;;   :after (tree-sitter)
 ;;   :commands (ts-fold-mode)
-;;   :straight (ts-fold :host github :repo "jcs090218/ts-fold")
-;;   :general
-;;   (general-nmap "za" #'ts-fold-toggle)
-;;   :config
-;;   (add-hook 'tree-sitter-after-on-hook #'ts-fold-mode))
+  ;; :straight (ts-fold :host github :repo "jcs090218/ts-fold")
+  :general
+  (general-nmap "za" #'treesit-fold-toggle)
+  :config
+  (add-hook 'tree-sitter-after-on-hook #'treesit-fold-mode))
 
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
 (use-package treesit
@@ -600,6 +605,7 @@
           (python-mode . python-ts-mode)
           (ruby-mode . ruby-ts-mode)
           (sh-mode . bash-ts-mode)))
+
   ;; tree-sitter only modes
   (add-to-list 'auto-mode-alist '("CMakeLists\\'" . cmake-ts-mode))
   (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
@@ -612,20 +618,10 @@
   (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
 
-  ;; (push '(go-mode . go-ts-mode) major-mode-remap-alist)
+  (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-pro-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-pro-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-pro-ts-mode))
   :hook ((go-ts-mode-hook . eglot-ensure)))
-
-;; from https://github.com/casouri/lunarymacs/commit/a8590327ccb891b5e2693811284ba45a9d7392cc
-
-;; (use-package tree-sitter
-;;   :straight (tree-sitter :host github :repo "emacs-tree-sitter/elisp-tree-sitter")
-;;   :config
-;;   (global-tree-sitter-mode)
-;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-
-;; (use-package tree-sitter-langs
-;;   :straight (tree-sitter-langs :host github :repo "emacs-tree-sitter/tree-sitter-langs")
-;;   :after tree-sitter)
 
 ;; #+begin_example elisp
 ;; (defun configure-imenu-Custom ()
