@@ -115,9 +115,11 @@ Uses gh and magit"
            (when (string-match ".*/browse/\\(.*\\)" url)
              (match-string 1 url))))
       (when ticket-id
-        (insert (format "%s\n\n%s" ticket-id url))
-        (insert "\n\n")
-        (backward-char 2)))))
+        (insert ticket-id)
+        (save-excursion
+          (insert (format "\n\n### Jira Ticket\n%s\n\n" url))
+          (insert "## What?\n\n")
+          (insert "## Why?\n"))))))
 
 ;;*** transient.el
 ;; Package `transient' is the interface used by Magit to display popups.
