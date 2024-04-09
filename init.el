@@ -274,6 +274,7 @@
 (require 'diego-org)
 (require 'diego-misc)
 (require 'diego-keybindings)
+(require 'diego-test)
 
 ;; (load-theme 'modus-vivendi t)
 (modus-themes-select 'modus-vivendi)
