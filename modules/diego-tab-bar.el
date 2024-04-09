@@ -55,8 +55,8 @@
                             "File: "
                             (all-the-icons-icon-for-file
                              buffer-file-truename
-                             :height 2
-                             :v-adjust 0.1)
+                             :height 0.7
+                             :v-adjust 0.0)
                             " "
                             (if (string-prefix-p (diego/current-project-root) buffer-file-truename)
                                 (car
@@ -65,7 +65,10 @@
                                                t
                                                nil))
                               buffer-file-truename))
-                         (concat "Buffer: " (all-the-icons-icon-for-buffer) " " (buffer-name))))
+                         (concat
+                          "Buffer: "
+                          (all-the-icons-icon-for-mode major-mode :height 0.7 :v-adjust 0.0)
+                          " ")))
                       'face 'all-the-icons-dblue)
          ignore))))
 
