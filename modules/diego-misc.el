@@ -125,7 +125,6 @@
 ;; new buffer. To clear this, type DEL or C-SPC before anything else.
 ;; Once you’ve finished and want to insert the text into the window you triggered
 ;; Emacs Everywhere from, just press C-c C-c.
-
 (use-package emacs-everywhere
   :straight (:host github :repo "tecosaur/emacs-everywhere")
   :general
@@ -138,16 +137,22 @@
   (setq emacs-everywhere-clipboard-sleep-delay 0.1)
   (add-hook 'emacs-everywhere-mode-hook #'evil-normal-state)
 
+  (defun diego/emacs-everywhere-set-frame-position ()
+    "Set the size and position of the emacs-everywhere frame."
+    (let ((frame (selected-frame)))
+      (set-frame-size frame 210 60)
+      (set-frame-position frame 100 100)))
+
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-set-frame-position)
+  (add-hook 'emacs-everywhere-init-hooks #'diego/emacs-everywhere-set-frame-position)
+
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-init-spell-check)
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-remove-trailing-whitespace)
-  (add-hook 'emacs-everywhere-init-hooks #'mark-whole-buffer t)
+  (add-hook 'emacs-everywhere-init-hooks #'mark-whole-buffer t) ; t add the hook at the beginning
 
   (setq emacs-everywhere-final-hooks nil)
 
   (setq emacs-everywhere-major-mode-function #'gfm-mode)
-  (setq emacs-everywhere-frame-parameters
-        `((name . "emacs-everywhere") (width . 150) (height . 30)))
 
   (transient-define-prefix
    diego/emacs-everywhere-filter ()
