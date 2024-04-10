@@ -201,8 +201,8 @@
   :hook (emacs-lisp-mode . elisp-autofmt-mode))
 
 (use-package c3po
-  ;; :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-composition")
-  :straight (:host github :repo "d1egoaz/c3po.el" :branch "main")
+  :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-llms")
+  ;; :straight (:host github :repo "d1egoaz/c3po.el" :branch "main")
   :bind ("<f7>" . #'c3po-pop-results-buffer)
   :config
 
