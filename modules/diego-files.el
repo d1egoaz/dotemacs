@@ -129,34 +129,55 @@
           (dired-sidebar-subtree-toggle)
         (dired-sidebar-find-file))))
 
+  (defface dired-sidebar-face nil "")
+  (set-face-attribute 'dired-sidebar-face nil :height 0.8)
+
   (setq dired-sidebar-subtree-line-prefix "  ")
   (setq dired-sidebar-theme 'icons)
   (setq dired-sidebar-use-custom-font t)
   (setq dired-sidebar-should-follow-file t)
   (setq dired-sidebar-follow-file-at-point-on-toggle-open t)
-  (set-face-attribute 'dired-sidebar-face nil :height 0.8)
   (setq dired-sidebar-should-follow-file t)
   (setq dired-sidebar-recenter-cursor-on-follow-file nil))
 
-(use-package dirvish
-  :init (dirvish-override-dired-mode)
-  :config
-
-  (setq dirvish-attributes '(all-the-icons))
-  (setq dirvish-preview-dispatchers nil)
-  (setq delete-by-moving-to-trash t)
-  (setq dirvish-use-header-line nil)
-  (setq dirvish-use-mode-line nil)
-  (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
-  (setq
-   dirvish-libraries
-   '((dirvish-widgets path symlink sort omit index free-space file-link-number file-user file-group file-time file-size file-modes file-inode-number file-device-number audio image gif video epub pdf pdf-preface archive)
-     (dirvish-icons all-the-icons vscode-icon)
-     (dirvish-collapse collapse)
-     (dirvish-subtree subtree-state)
-     (dirvish-yank yank)))
-
-  (dirvish-side-follow-mode 1))
+;; (use-package dirvish
+;;   :init (dirvish-override-dired-mode)
+;;   :config
+;;   (setq dirvish-attributes '(all-the-icons))
+;;   (setq dirvish-preview-dispatchers nil)
+;;   (setq delete-by-moving-to-trash t)
+;;   (setq dirvish-use-header-line nil)
+;;   (setq dirvish-use-mode-line nil)
+;;   (setq dired-listing-switches
+;;         "-l --almost-all --human-readable --group-directories-first --no-group")
+;;   (setq dirvish-libraries
+;;         '((dirvish-widgets
+;;            path
+;;            symlink
+;;            sort
+;;            omit
+;;            index
+;;            free-space
+;;            file-link-number
+;;            file-user
+;;            file-group
+;;            file-time
+;;            file-size
+;;            file-modes
+;;            file-inode-number
+;;            file-device-number
+;;            audio
+;;            image
+;;            gif
+;;            video
+;;            epub
+;;            pdf
+;;            pdf-preface
+;;            archive)
+;;           (dirvish-icons all-the-icons vscode-icon)
+;;           (dirvish-collapse collapse)
+;;           (dirvish-subtree subtree-state)
+;;           (dirvish-yank yank)))
+;;   (dirvish-side-follow-mode 1))
 
 (provide 'diego-files)
