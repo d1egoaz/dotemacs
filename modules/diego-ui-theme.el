@@ -5,27 +5,24 @@
   (setq modus-themes-mixed-fonts t)
   (setq modus-themes-variable-pitch-ui t)
   (setq modus-themes-prompts '(italic bold))
-  (setq modus-themes-completions
-        '((matches . (extrabold underline))
-          (selection . (semibold))))
+  (setq modus-themes-completions '((matches . (extrabold underline)) (selection . (semibold))))
 
   (defun diego--improve-colors ()
     (modus-themes-with-colors
      (custom-set-faces
       `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
-      ;; `(tab-bar ((,c :background ,bg-blue-subtle)))
+      `(tab-bar
+        ((,c :box (:line-width (12 . 8) :color nil :style flat-button) :font "SF Pro Text-22")))
       `(tab-bar-tab ((,c :background ,bg-blue-nuanced :foreground ,blue :overline ,blue :bold nil)))
+      `(modern-tab-bar-tab
+        ((,c :background ,bg-blue-nuanced :foreground ,blue :overline ,blue :bold nil)))
       `(tab-bar-tab-inactive ((,c :background ,bg-cyan-subtle :overline ,blue :bold nil)))))
+
 
     (set-face-attribute 'font-lock-number-face nil :foreground "#ff9580" :bold nil)
     (set-face-attribute 'font-lock-escape-face nil :foreground "#feacd0")
-    (set-face-attribute 'font-lock-function-call-face nil
-                        :inherit nil
-                        :foreground "#00bcff"
-                        :bold nil)
-    (set-face-attribute 'font-lock-function-name-face nil
-                        :background "#004065"
-                        :foreground "#00d3d0"))
+    (set-face-attribute 'font-lock-function-call-face nil :inherit nil :foreground "#00bcff" :bold nil)
+    (set-face-attribute 'font-lock-function-name-face nil :background "#004065" :foreground "#00d3d0"))
 
   ;; similar to Dark Modern
   ;; (setq modus-vivendi-palette-overrides '((bg-main "#212121")
