@@ -12,29 +12,30 @@
 ;; Add extensions
 (use-package cape
   ;; Bind dedicated completion commands
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-elisp-symbol)
-         ("C-c p e" . cape-elisp-block)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p :" . cape-emoji)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  :bind
+  (("C-c p p" . completion-at-point) ;; capf
+   ("C-c p t" . complete-tag) ;; etags
+   ("C-c p d" . cape-dabbrev) ;; or dabbrev-completion
+   ("C-c p h" . cape-history)
+   ("C-c p f" . cape-file)
+   ("C-c p k" . cape-keyword)
+   ("C-c p s" . cape-elisp-symbol)
+   ("C-c p e" . cape-elisp-block)
+   ("C-c p a" . cape-abbrev)
+   ("C-c p l" . cape-line)
+   ("C-c p w" . cape-dict)
+   ("C-c p :" . cape-emoji)
+   ("C-c p \\" . cape-tex)
+   ("C-c p _" . cape-tex)
+   ("C-c p ^" . cape-tex)
+   ("C-c p &" . cape-sgml)
+   ("C-c p r" . cape-rfc1345))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
-   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 (use-package lsp-mode
@@ -376,6 +377,12 @@
    markdown-command
    "pandoc -f gfm --highlight-style pygments --toc -t html --metadata pagetitle=MarkdownPreview"))
 
+;;   :mode ("\\.md\\'" . markdown-ts-mode)
+;;   :defer 't
+;;   :config
+    ;; (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "main" "src")))
+  ;; (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+  ;; (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
 
 ;;** Misc
 (use-package dockerfile-mode)
@@ -387,10 +394,7 @@
   :mode (("\\.html.erb\\'" . web-mode)))
 
 ;;** yaml
-(use-package yaml-ts-mode
-  :after jinx
-  :config
-  :hook ((yaml-ts-mode-hook . (lambda () (jinx-mode -1)))))
+(use-package yaml-ts-mode)
 
 ;;** Kubernetes
 
@@ -533,15 +537,13 @@
 
 (use-package tree-sitter-langs
   :after tree-sitter
-  :config
-  (setq tree-sitter-langs--dir "/Users/diego.albeiroalvarezzuluag/.emacs.d/tree-sitter")
-  )
+  :config (setq tree-sitter-langs--dir "/Users/diego.albeiroalvarezzuluag/.emacs.d/tree-sitter"))
 
-;; (use-package treesit-auto
-;;   :straight (:type git :host github :repo "renzmann/treesit-auto")
-;;   :config
-;;   (setq treesit-auto-install 'prompt)
-;;   (global-treesit-auto-mode))
+(use-package treesit-auto
+  :straight (:type git :host github :repo "renzmann/treesit-auto")
+  :config
+  (setq treesit-auto-install 'prompt)
+  (global-treesit-auto-mode))
 
 (use-package evil-textobj-tree-sitter
   :after (evil treesit)
@@ -576,18 +578,10 @@
    (cons "evil-inner-conditional" (evil-textobj-tree-sitter-get-textobj "conditional.inner"))))
 
 (use-package treesit-fold
-  :straight (treesit-fold :type git :host github :repo "abougouffa/treesit-fold")
-
-;; (use-package ts-fold
-;;   :straight (ts-fold :type git :host github :repo "abougouffa/treesit-fold"))
-;; (use-package ts-fold
-;;   :after (tree-sitter)
-;;   :commands (ts-fold-mode)
-  ;; :straight (ts-fold :host github :repo "jcs090218/ts-fold")
-  :general
-  (general-nmap "za" #'treesit-fold-toggle)
+  :straight (treesit-fold :type git :host github :repo "emacs-tree-sitter/treesit-fold")
+  :general (general-nmap "za" #'treesit-fold-toggle)
   :config
-  (add-hook 'tree-sitter-after-on-hook #'treesit-fold-mode))
+  (global-treesit-fold-mode 1))
 
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
 (use-package treesit
@@ -598,13 +592,16 @@
 
 
   (setq major-mode-remap-alist
-        '((conf-toml-mode . toml-ts-mode)
+        '((bash-mode . bash-ts-mode)
+          (conf-toml-mode . toml-ts-mode)
           (css-mode . css-ts-mode)
           (java-mode . java-ts-mode)
           (js-json-mode . json-ts-mode)
+          (json-mode . json-ts-mode)
           (python-mode . python-ts-mode)
           (ruby-mode . ruby-ts-mode)
-          (sh-mode . bash-ts-mode)))
+          (sh-mode . bash-ts-mode)
+          (yaml-mode . yaml-ts-mode)))
 
   ;; tree-sitter only modes
   (add-to-list 'auto-mode-alist '("CMakeLists\\'" . cmake-ts-mode))
@@ -618,9 +615,9 @@
   (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
 
-  (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-pro-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-pro-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-pro-ts-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-pro-ts-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-pro-ts-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-pro-ts-mode))
   :hook ((go-ts-mode-hook . eglot-ensure)))
 
 ;; #+begin_example elisp
