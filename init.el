@@ -277,6 +277,6 @@
 (require 'diego-test)
 
 ;; (load-theme 'modus-vivendi t)
-(modus-themes-select 'modus-vivendi)
+;; (modus-themes-select 'modus-vivendi)
 
 ;;; init.el ends here
