@@ -140,8 +140,8 @@
   (defun diego/emacs-everywhere-set-frame-position ()
     "Set the size and position of the emacs-everywhere frame."
     (let ((frame (selected-frame)))
-      (set-frame-size frame 210 60)
-      (set-frame-position frame 100 100)))
+      (set-frame-size frame 210 55)
+      (set-frame-position frame 100 10)))
 
   (remove-hook 'emacs-everywhere-init-hooks #'emacs-everywhere-set-frame-position)
   (add-hook 'emacs-everywhere-init-hooks #'diego/emacs-everywhere-set-frame-position)
