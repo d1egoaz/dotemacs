@@ -27,12 +27,7 @@
   ;; Helps when scrolling images, as Emacs treats pictures as a single characters.
   (setq pixel-scroll-precision-mode t))
 
-;;** mixed-pitch.el
-
-(use-package mixed-pitch)
-;; :hook (
-;;        ;; (org-mode-hook       . mixed-pitch-mode)
-;;        ;; (gfm-mode-hook       . mixed-pitch-mode)
-;;        ))
+(use-package mixed-pitch
+  :hook ((org-mode-hook . mixed-pitch-mode) (gfm-mode-hook . mixed-pitch-mode)))
 
 (provide 'diego-ui-font)
