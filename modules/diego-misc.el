@@ -133,6 +133,8 @@
    :keymaps 'emacs-everywhere-mode-map
    "," #'diego/emacs-everywhere-filter
    "C-c C-c" #'emacs-everywhere--finish-or-ctrl-c-ctrl-c)
+  :bind ("s-g" . #'c3po-transient-tools)
+
   :config
   (setq emacs-everywhere-clipboard-sleep-delay 0.1)
   (add-hook 'emacs-everywhere-mode-hook #'evil-normal-state)
@@ -158,6 +160,12 @@
     (interactive)
     (let ((current-prefix-arg '(8)))
       (call-interactively 'c3po-assistant-new-chat-replace-region)))
+
+
+(defun emacs-everywhere-grammar-checker ()
+  (interactive)
+  (emacs-everywhere)
+  (run-with-timer 2 nil #'c3po-grammar-checker-new-chat-replace-region))
 
   (transient-define-prefix
    diego/emacs-everywhere-filter ()
