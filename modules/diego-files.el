@@ -129,12 +129,11 @@
           (dired-sidebar-subtree-toggle)
         (dired-sidebar-find-file))))
 
-  (defface dired-sidebar-face nil "")
   (set-face-attribute 'dired-sidebar-face nil :height 0.8)
 
   (setq dired-sidebar-subtree-line-prefix "  ")
-  (setq dired-sidebar-theme 'icons)
   (setq dired-sidebar-use-custom-font t)
+  (setq dired-sidebar-theme 'icons)
   (setq dired-sidebar-should-follow-file t)
   (setq dired-sidebar-follow-file-at-point-on-toggle-open t)
   (setq dired-sidebar-should-follow-file t)
