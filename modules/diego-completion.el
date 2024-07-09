@@ -470,6 +470,7 @@
 ;; Special SPC, TAB, etc., Single Character a-z,Modifier C-, M-, Other same as default, except single
 ;; characters are sorted alphabetically
 (use-package which-key
+  :straight (:type built-in)
   :init
   (setq which-key-sort-order #'which-key-key-order-alpha) ;
   (setq which-key-sort-uppercase-first nil) ; I prefer to have lowercase first when there is for example a k and K

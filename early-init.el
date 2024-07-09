@@ -31,7 +31,7 @@
 ;; threshold to temporarily prevent it from running, then reset it later by
 ;; enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
 (setq gc-cons-threshold most-positive-fixnum)
-(setq garbage-collection-messages t)    ; indicator of GC activity
+(setq garbage-collection-messages t) ; indicator of GC activity
 
 
 (setq byte-compile-warnings '(not obsolete))
@@ -44,16 +44,27 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode 1) ; I do like to have the menu-bar available to use when I break Emacs :D
-(setq default-frame-alist '((fullscreen . maximized)
-             (ns-transparent-titlebar . t)))
+(setq default-frame-alist '((fullscreen . maximized) (ns-transparent-titlebar . t)))
 
 (setq inhibit-automatic-native-compilation nil)
 (setq native-comp-always-compile t)
-(setq native-comp-async-jobs-number 4)
+;; (setq native-comp-async-jobs-number 4)
 (setq native-comp-async-query-on-exit t)
 (setq native-comp-async-report-warnings-errors 'silent)
 (setq native-comp-deferred-compilation-deny-list nil)
 (setq native-comp-verbose 0)
+
+(defvar my-native-comp-reserved-cpus 2
+  "Number of CPUs to reserve and not use for `native-compile'.")
+
+;; https://www.jamescherti.com/emacs-native-compilation-config-jobs/
+(defun my-calculate-native-comp-async-jobs ()
+  "Set `native-comp-async-jobs-number' based on the available CPUs."
+  ;; The `num-processors' functions is only available in Emacs >= 28.1
+  (max 1 (- (num-processors) my-native-comp-reserved-cpus)))
+
+(setq native-comp-async-jobs-number (my-calculate-native-comp-async-jobs))
+(setq native-comp-jit-compilation nil)
 (setq package-native-compile t)
 
 ;; Disable `package' in favor of `straight'.
@@ -97,7 +108,8 @@
     (with-current-buffer
         (url-retrieve-synchronously
          "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+         'silent
+         'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))

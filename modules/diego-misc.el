@@ -161,18 +161,21 @@
     (let ((current-prefix-arg '(8)))
       (call-interactively 'c3po-assistant-new-chat-replace-region)))
 
+  (defun diego--tmp-everywhere ()
+    (mark-whole-buffer)
+    (c3po-assistant-new-chat-replace-region))
 
-(defun emacs-everywhere-grammar-checker ()
-  (interactive)
-  (emacs-everywhere)
-  (run-with-timer 2 nil #'c3po-grammar-checker-new-chat-replace-region))
+  (defun emacs-everywhere-grammar-checker ()
+    (interactive)
+    (emacs-everywhere)
+    (run-with-timer 3 nil #'diego--tmp-everywhere))
 
   (transient-define-prefix
    diego/emacs-everywhere-filter ()
    [["Actions"
-     ("c" "correct grammar" c3po-grammar-checker-new-chat-replace-region)
+     ("g" "correct grammar" c3po-grammar-checker-new-chat-replace-region)
      ("a" "assistant" diego--custom-c3po-assistant)
-     ("r" "rewrite" c3po-rewriter-new-chat-replace-region)]]))
+     ("w" "rewrite" c3po-rewriter-new-chat-replace-region)]]))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
 ;; currently not used as I'm always using gfm-mode

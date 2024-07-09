@@ -380,9 +380,9 @@
 ;;   :mode ("\\.md\\'" . markdown-ts-mode)
 ;;   :defer 't
 ;;   :config
-    ;; (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "main" "src")))
-  ;; (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
-  ;; (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
+;; (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "main" "src")))
+;; (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+;; (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
 
 ;;** Misc
 (use-package dockerfile-mode)
@@ -390,6 +390,7 @@
   :mode "\\.g\\(?:raph\\)?ql$")
 (use-package nix-mode)
 (use-package terraform-mode)
+(use-package bats-mode)
 (use-package web-mode
   :mode (("\\.html.erb\\'" . web-mode)))
 
@@ -413,7 +414,7 @@
   ;; (setq kubel-use-namespace-list 'on)
   ;; list namespaces automatically
   (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
-  (setq-default kubel-namespace "cloudbuddies")
+  (setq-default kubel-namespace "argocd")
 
   (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
   (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
@@ -580,8 +581,7 @@
 (use-package treesit-fold
   :straight (treesit-fold :type git :host github :repo "emacs-tree-sitter/treesit-fold")
   :general (general-nmap "za" #'treesit-fold-toggle)
-  :config
-  (global-treesit-fold-mode 1))
+  :config (global-treesit-fold-mode 1))
 
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
 (use-package treesit
@@ -614,6 +614,7 @@
   (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\'" . yaml-ts-mode))
 
   ;; (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-pro-ts-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-pro-ts-mode))

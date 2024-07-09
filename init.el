@@ -240,7 +240,6 @@
           "KUBECONFIG"
           "MANPATH"
           "PATH"
-          "USE_GKE_GCLOUD_AUTH_PLUGIN"
           "GPG_AGENT_INFO"))
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
@@ -250,8 +249,8 @@
 (add-to-list 'load-path (locate-user-emacs-file "modules"))
 (add-to-list 'load-path (substitute-in-file-name "$EMACS_ADDITIONAL_DIR"))
 
-(require 'diego-common)
 (require 'chime-emacs)
+(require 'diego-common)
 (require 'diego-ui)
 (require 'diego-ui-font)
 (require 'diego-ui-theme)
@@ -270,6 +269,7 @@
 (require 'diego-dev)
 (require 'diego-programming)
 (require 'diego-productivity)
+(require 'diego-ai)
 (require 'diego-vterm)
 (require 'diego-org)
 (require 'diego-misc)
@@ -278,5 +278,7 @@
 
 ;; (load-theme 'modus-vivendi t)
 ;; (modus-themes-select 'modus-vivendi)
+
+(ef-themes-select 'ef-dream)
 
 ;;; init.el ends here

@@ -1,7 +1,7 @@
 ;;* Workspaces/tabs (tab-bar.el)
 
 (use-package tab-bar
-  :after modus-themes
+  :after ef-themes
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-tab-select 'recent)
@@ -9,8 +9,8 @@
 
   ;; for fonts to show up use: all-the-icons-install-fonts first
   (setq tab-bar-new-tab-choice nil)
-  (setq tab-bar-separator "☰")
-  ;; (setq tab-bar-separator "|")
+  ;; (setq tab-bar-separator "☰")
+  (setq tab-bar-separator "|")
   ;; (setq tab-bar-separator "")
   (setq tab-bar-show t)
   (setq tab-bar-tab-hints nil) ; don't show numbers
@@ -27,11 +27,14 @@
     `((global menu-item ,(string-trim-right (format-mode-line mode-line-modified)) ignore)))
 
   ;; modify theme and remove (beginning-of-line)d
-  (defface diego-modus-themes-mark-sel '((t :foreground "#00d3d0" :background "#004065" :bold nil))
+  (defface diego-modus-themes-mark-sel
+    '((t :foreground "#00d3d0" :background "#004065" :weight normal))
     "diego-modus-themes-mark-sel")
-  (defface diego-modus-themes-mark-alt '((t :foreground "#d0bc00" :background "#4a4000" :bold nil))
+  (defface diego-modus-themes-mark-alt
+    '((t :foreground "#d0bc00" :background "#4a4000" :weight normal))
     "diego-modus-themes-mark-alt")
-  (defface diego-modus-themes-mark-del '((t :foreground "#ff7f9f" :background "#620f2a" :bold nil))
+  (defface diego-modus-themes-mark-del
+    '((t :foreground "#ff7f9f" :background "#620f2a" :weight normal))
     "diego-modus-themes-mark-del")
 
   (defun diego-tab-format-empire ()
@@ -42,7 +45,21 @@
   (defun diego-tab-format-vc ()
     "Format VC status for the tab bar."
     `((global
-       menu-item ,(propertize (concat "" vc-mode " ") 'face 'diego-modus-themes-mark-alt) ignore)))
+       ;; menu-item ,(propertize (concat "" vc-mode " ") ))))
+       menu-item
+       ,(propertize (concat "" vc-mode " ")
+                    'face
+                    ((:foreground "#d09950" :background "#4e3930"))
+                    ignore))))
+
+  (defun diego-tab-format-kubel () ;
+    "Format the current buffer's major mode for the tab bar."
+    (when (eq major-mode 'kubel-mode)
+      (append
+       (diego-tab-format-line-break)
+       (diego-tab-format-kubel-context)
+       (diego-tab-format-kubel-namespace)
+       (diego-tab-format-kubel-resource))))
 
   (defun diego-tab-format-buffer-id () ;
     "Buffer true name for files or just the buffer name."
@@ -57,7 +74,7 @@
                             "File: "
                             (all-the-icons-icon-for-file
                              buffer-file-truename
-                             :height 0.7
+                             :height 0.5
                              :v-adjust 0.0)
                             " "
                             (if (string-prefix-p (diego/current-project-root) buffer-file-truename)
@@ -71,7 +88,7 @@
                           "Buffer: "
                           (all-the-icons-icon-for-mode major-mode :height 0.7 :v-adjust 0.0)
                           " ")))
-                      'face 'all-the-icons-dblue)
+                      'face '(:background "#0f3f4f" :foreground "#6fb3c0" :weight normal))
          ignore))))
 
   (defun diego-tab-format-keycast ()
@@ -91,7 +108,7 @@ It needs an space before to stop any colour to follow at the end of the row."
                      " :"
                      (when (boundp 'kubel-context)
                        kubel-context))
-                    'face 'diego-modus-themes-mark-del)
+                    'face '(:family "default" :height 150 :inherit diego-modus-themes-mark-del))
        ignore)))
 
   (defun diego-tab-format-kubel-namespace ()
@@ -102,7 +119,7 @@ It needs an space before to stop any colour to follow at the end of the row."
                      " :"
                      (when (boundp 'kubel-namespace)
                        kubel-namespace))
-                    'face 'diego-modus-themes-mark-alt)
+                    'face '(:family "default" :height 150 :inherit diego-modus-themes-mark-alt))
        ignore)))
 
   (defun diego-tab-format-kubel-resource ()
@@ -113,7 +130,7 @@ It needs an space before to stop any colour to follow at the end of the row."
                      " :"
                      (when (boundp 'kubel-resource)
                        kubel-resource))
-                    'face 'diego-modus-themes-mark-sel)
+                    'face '(:family "default" :height 150 :inherit diego-modus-themes-mark-sel))
        ignore)))
 
   (setq tab-bar-format
@@ -122,19 +139,13 @@ It needs an space before to stop any colour to follow at the end of the row."
 
           ;; prot-tab-format-modified
           prot-tab-format-evil
+          ;; diego-tab-format-vc
+          ;; (vc-mode)
+          ;; diego-tab-format-line-break
+          diego-tab-format-buffer-id diego-tab-format-line-break
           tab-bar-format-tabs ;; tab-bar-format-tabs-groups ; remove as it duplicates the tabs
           tab-bar-separator
-          diego-tab-format-buffer-id
-          diego-tab-format-line-break
-          diego-tab-format-vc
-
-          ;; (when (eq major-mode 'kubel-mode)
-          ;;   (list
-          ;; diego-tab-format-line-break
-          diego-tab-format-kubel-context
-          diego-tab-format-kubel-namespace
-          diego-tab-format-kubel-resource
-          ;; ))
+          diego-tab-format-kubel
           ;; diego-tab-format-keycast
           tab-bar-format-align-right
           ;; tab-bar-format-global
@@ -144,6 +155,13 @@ It needs an space before to stop any colour to follow at the end of the row."
   (tab-bar-mode 1)
   (tab-bar-history-mode 1)
 
-  (add-hook 'tab-bar-switch-functions #'diego-apply-current-buffer-display-rules))
+  (defun diego-apply-current-buffer-display-rules-tab (new old)
+    "Run display-buffer-alist rules after switching tabs or killing buffers."
+    (when diego-workspaces-enabled
+      (display-buffer (current-buffer))))
+
+
+  ;; (add-hook 'tab-bar-switch-functions #'diego-apply-current-buffer-display-rules)
+  (add-hook 'tab-bar-tab-post-select-functions #'diego-apply-current-buffer-display-rules-tab))
 
 (provide 'diego-tab-bar)
