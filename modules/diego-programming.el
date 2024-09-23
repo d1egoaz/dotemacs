@@ -612,14 +612,12 @@
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.tpl\\'" . yaml-ts-mode))
 
-  ;; (add-to-list 'auto-mode-alist '("\\.y[a]?ml\\'" . yaml-pro-ts-mode))
-  ;; (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-pro-ts-mode))
-  ;; (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-pro-ts-mode))
   :hook ((go-ts-mode-hook . eglot-ensure)))
 
 ;; #+begin_example elisp

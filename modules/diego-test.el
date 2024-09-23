@@ -6,8 +6,6 @@
 (use-package jq-shell
   :straight (:type git :host github :repo "nverno/jq-shell"))
 
-(use-package yaml-pro)
-
 (defun diego/copy-buffer-file-to-snippets-dir ()
   "Copy the current buffer's file to the interesting-scripts directory, keeping the original file name."
   (interactive)
