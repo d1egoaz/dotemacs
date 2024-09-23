@@ -95,7 +95,6 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 (use-package evil-collection
   :after evil
   :demand t
-  :commands (evil-collection-dired-setup evil-collection-magit-setup)
   :init
   (setq evil-collection-company-use-tng nil) ; I don't want that completion experience
   (setq evil-collection-mode-list nil) ; I don't want surprises, I'll enable it manually by mode

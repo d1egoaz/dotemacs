@@ -141,7 +141,9 @@ Uses gh and magit"
 ;;*** forge.el
 (use-package forge
   :after magit
-  :demand t
-  :commands forge-create-pullreq)
+  :init
+  ;; https://github.com/emacs-evil/evil-collection/issues/543
+  (setq forge-add-default-sections nil)
+  (setq forge-add-default-bindings nil))
 
 (provide 'diego-git)
