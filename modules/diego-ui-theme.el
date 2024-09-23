@@ -39,10 +39,9 @@ This function is added to the `ef-themes-post-load-hook'."
     (ef-themes-with-colors
      (custom-set-faces
       `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
-      ;; `(tab-bar ((,c :font "Essential PragmataPro-28" :bold nil)))
-      `(tab-bar ((,c :font "Essential PragmataPro-28" :background ,bg-main)))
+      `(tab-bar ((,c :font "Baloo Bhaijaan-28" :background ,bg-main)))
       `(tab-bar-tab ((,c :underline ,green :overline ,green :foreground "#a9c99f" )))
-      `(tab-bar-tab-inactive ((,c :bold nil :foreground "#a9c99f")))))
+      `(tab-bar-tab-inactive ((,c :font "Essential PragmataPro-28" :bold nil :foreground "#a9c99f")))))
 
     (set-face-attribute 'font-lock-number-face nil :foreground "#ff9580" :bold nil)
     (set-face-attribute 'font-lock-escape-face nil :foreground "#feacd0")
