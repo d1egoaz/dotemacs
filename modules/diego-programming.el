@@ -414,7 +414,8 @@
   ;; (setq kubel-use-namespace-list 'on)
   ;; list namespaces automatically
   (setq kubel-use-namespace-list 'on) ; I'm now using my own branch
-  (setq-default kubel-namespace "argocd")
+  (setq kubel-list-wide t)
+  (setq-default kubel-namespace "default")
 
   (add-to-list 'savehist-additional-variables 'kubel--context-list-cached)
   (add-to-list 'savehist-additional-variables 'kubel--namespace-list-cached)
