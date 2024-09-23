@@ -183,4 +183,7 @@
   :after org
   :config (require 'ox-gfm nil t))
 
+(use-package show-font
+  :straight (:host github :repo "protesilaos/show-font"))
+
 (provide 'diego-misc)
