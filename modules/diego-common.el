@@ -293,11 +293,10 @@ exist after each headings's drawers."
            (buffer (current-buffer))
            (name (buffer-name)))
     (if (file-exists-p filename) ; it can be a new file that is not saved yet
-        (when (yes-or-no-p (format "Are you sure you want to delete '%s' ? " filename))
+        (progn
           (delete-file filename)
           (kill-buffer buffer)
-          (message "File '%s' successfully deleted" filename))
-      (message "File '%s' doesn't exist" filename))
+          (message "File '%s' successfully deleted" filename)))
     (message "Buffer '%s' is not visiting a file" (buffer-name))))
 
 (defun diego/auth-source-get-password (host user)
