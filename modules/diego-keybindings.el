@@ -29,8 +29,9 @@
   (keymap-global-set "s-w" #'delete-window)
   (keymap-global-set "M-c" #'evil-commentary-line)
 
-  (keymap-global-set "C-M-h" #'previous-buffer)
-  (keymap-global-set "C-M-l" #'next-buffer)
+  ;; because I'm using tabs x buffer tab-line-mode, so the next/previous buffer match the next/previous tab shown in the screen
+  (keymap-global-set "C-M-h" #'tab-line-switch-to-prev-tab)
+  (keymap-global-set "C-M-l" #'tab-line-switch-to-next-tab)
 
   ;; Https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
   (defun my-delete-word (arg)
