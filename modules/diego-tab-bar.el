@@ -10,8 +10,8 @@
   ;; for fonts to show up use: all-the-icons-install-fonts first
   (setq tab-bar-new-tab-choice nil)
   ;; (setq tab-bar-separator "☰")
-  (setq tab-bar-separator "|")
-  ;; (setq tab-bar-separator "")
+  ;; (setq tab-bar-separator "|")
+  (setq tab-bar-separator " ")
   (setq tab-bar-show t)
   (setq tab-bar-tab-hints nil) ; don't show numbers
   (setq tab-bar-tab-pre-close-functions '(diego--close-workspace))
@@ -135,17 +135,16 @@ It needs an space before to stop any colour to follow at the end of the row."
 
   (setq tab-bar-format
         '(mode-line-front-space
-          diego-tab-format-empire
 
           ;; prot-tab-format-modified
+          diego-tab-format-empire
           prot-tab-format-evil
-          ;; diego-tab-format-vc
-          ;; (vc-mode)
           ;; diego-tab-format-line-break
-          diego-tab-format-buffer-id diego-tab-format-line-break
           tab-bar-format-tabs ;; tab-bar-format-tabs-groups ; remove as it duplicates the tabs
+          diego-tab-format-line-break
+          diego-tab-format-buffer-id
           tab-bar-separator
-          diego-tab-format-kubel
+          ;; diego-tab-format-kubel
           ;; diego-tab-format-keycast
           tab-bar-format-align-right
           ;; tab-bar-format-global
