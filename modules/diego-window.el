@@ -136,12 +136,14 @@
            (tab-name . "kubel")
            (side . right)
            (window-width . 0.5))
-          ("\\*kubel session.*"
-           (display-buffer-in-tab display-buffer-reuse-mode-window)
-           (tab-name . "kubel")
-           (dedicated . t))
+          ("\\*kubel session.*" (display-buffer-in-tab) (tab-name . "kubel") (dedicated . t))
+          ;; ("\\*kubel session.*"
+          ;;  (lambda (buffer alist)
+          ;;    (message "Opening buffer: %s in tab kubel" (buffer-name buffer))
+          ;;    (display-buffer-in-tab buffer alist))
+          ;;  (tab-name . "kubel"))
           ;;;; Elfeed
-          ("\\*elfeed-search\\*" (display-buffer-in-tab) (tab-name . "|elfeed|"))
+          ("\\*elfeed-search\\*" (display-buffer-in-tab) (tab-name . "elfeed"))
           ("\\*elfeed-entry\\*"
            (display-buffer-in-side-window)
            (side . bottom)
@@ -158,6 +160,36 @@
            (display-buffer-in-tab) (tab-name . diego/workspaces-name-for-buffer))
           ;; end display-buffer-alist elements
           ))
+
+  (defun diego/tab-bar-close-tab-on-buffer-kill ()
+    "Close the tab when the killed buffer is the last buffer displayed in the tab."
+    ;; Prevent recursion by checking if the function is already running
+    (unless (or (eq this-command 'tab-bar-close-tab)
+                (derived-mode-p 'magit-mode)
+                (derived-mode-p 'elfeed-show-mode)
+                (string= (buffer-name) "*scratch*"))
+      (when (and (eq (current-buffer) (window-buffer)) (not (minibufferp)))
+        ;; Temporarily remove this function from kill-buffer-hook to prevent recursion
+        (remove-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
+        ;; (unwind-protect
+        ;;     (let* ((buffers-in-tab
+        ;;             (delete-dups
+        ;;              (mapcar #'window-buffer (window-list (selected-frame) 'no-minibuffer))))
+        ;;            (remaining-buffers (remove (current-buffer) buffers-in-tab)))
+        ;;       (when (null remaining-buffers)
+        ;;         (tab-bar-close-tab)))
+        (unwind-protect
+            (let* ((tab-buffers
+                    (seq-filter
+                     (lambda (buf) (memq buf (tab-line-tabs-window-buffers))) (buffer-list)))
+                   (remaining-buffers (remove (current-buffer) tab-buffers)))
+              (when (null remaining-buffers)
+                (tab-bar-close-tab)))
+          ;; Ensure the hook is re-added even if an error occurs
+          (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)))))
+
+  (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
+
 
   ;; (defun diego/display-new-buffer ()
   ;;   )
@@ -191,6 +223,21 @@
   (setq split-height-threshold nil)
   (setq split-width-threshold nil)
 
+
+  ;; adapted from https://www.omarpolo.com/post/emacs-side-window.html
+  (defun diego/buffer-to-side-window ()
+    (interactive)
+    "Place the current buffer in the right side window."
+    (interactive)
+    (let ((buf (current-buffer)))
+      (display-buffer-in-side-window
+       buf
+       '((window-width . 0.50)
+         (side . right)
+         (slot . -1)
+         (window-parameters . (no-delete-other-windows . t))))
+      (delete-window)))
+
   (defun diego/split-window-horizontally-3 ()
     (interactive)
     (delete-other-windows)
@@ -212,10 +259,7 @@
    (interactive)
    (let ((display-buffer-mark-dedicated t))
      (display-buffer-in-side-window
-      buffer
-      '((side . right)
-        (window-parameters
-         (no-delete-other-windows . t))))))
+      buffer '((side . right) (window-parameters (no-delete-other-windows . t))))))
 
   ;; Swap windows if there are two of them
   ;; copied from https://github.com/karthink/.emacs.d/blob/master/lisp/better-buffers.el
@@ -245,20 +289,6 @@
 
   :bind ("<f6>" . #'window-toggle-side-windows))
 
-;; adapted from https://www.omarpolo.com/post/emacs-side-window.html
-(defun diego/buffer-to-side-window ()
-  (interactive)
-  "Place the current buffer in the right side window."
-  (interactive)
-  (let ((buf (current-buffer)))
-    (display-buffer-in-side-window
-     buf
-     '((window-width . 0.50)
-       (side . right)
-       (slot . -1)
-       (window-parameters . (no-delete-other-windows . t))))
-    (delete-window)))
-
 (use-package windmove
   :straight (:type built-in)
   :config
@@ -271,10 +301,7 @@
      (windmove-display-same-window ?m)))
   (windmove-install-defaults
    nil '(super)
-   '((windmove-left ?h)
-     (windmove-right ?l)
-     (windmove-up ?k)
-     (windmove-down ?j))))
+   '((windmove-left ?h) (windmove-right ?l) (windmove-up ?k) (windmove-down ?j))))
 
 (use-package winner
   :hook (after-init-hook . winner-mode))
