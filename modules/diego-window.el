@@ -161,32 +161,24 @@
           ;; end display-buffer-alist elements
           ))
 
-  (defun diego/tab-bar-close-tab-on-buffer-kill ()
-    "Close the tab when the killed buffer is the last buffer displayed in the tab."
-    ;; Prevent recursion by checking if the function is already running
-    (unless (or (eq this-command 'tab-bar-close-tab)
-                (derived-mode-p 'magit-mode)
-                (derived-mode-p 'elfeed-show-mode)
-                (string= (buffer-name) "*scratch*"))
-      (when (and (eq (current-buffer) (window-buffer)) (not (minibufferp)))
-        ;; Temporarily remove this function from kill-buffer-hook to prevent recursion
-        (remove-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
-        ;; (unwind-protect
-        ;;     (let* ((buffers-in-tab
-        ;;             (delete-dups
-        ;;              (mapcar #'window-buffer (window-list (selected-frame) 'no-minibuffer))))
-        ;;            (remaining-buffers (remove (current-buffer) buffers-in-tab)))
-        ;;       (when (null remaining-buffers)
-        ;;         (tab-bar-close-tab)))
-        (unwind-protect
-            (let* ((tab-buffers
-                    (seq-filter
-                     (lambda (buf) (memq buf (tab-line-tabs-window-buffers))) (buffer-list)))
-                   (remaining-buffers (remove (current-buffer) tab-buffers)))
-              (when (null remaining-buffers)
-                (tab-bar-close-tab)))
-          ;; Ensure the hook is re-added even if an error occurs
-          (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)))))
+(defun diego/tab-bar-close-tab-on-buffer-kill ()
+  "Close the tab when the killed buffer is the last buffer displayed in the tab."
+  ;; Prevent recursion by checking if the function is already running
+  (unless (or (eq this-command 'tab-bar-close-tab)
+              ;; (derived-mode-p 'magit-mode)
+              ;; (derived-mode-p 'elfeed-show-mode)
+              (string= (buffer-name) "*scratch*"))
+    (when (and (eq (current-buffer) (window-buffer)) (not (minibufferp)))
+      ;; Temporarily remove this function from kill-buffer-hook to prevent recursion
+      (remove-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
+      (unwind-protect
+          (let* ((all-windows (window-list)) ;; Get all windows in the current tab
+                 (tab-buffers (seq-uniq (mapcar #'window-buffer all-windows))) ;; Get unique buffers in all windows
+                 (remaining-buffers (remove (current-buffer) tab-buffers)))
+            (when (null remaining-buffers)
+              (tab-bar-close-tab)))
+        ;; Ensure the hook is re-added even if an error occurs
+        (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)))))
 
   (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
 
