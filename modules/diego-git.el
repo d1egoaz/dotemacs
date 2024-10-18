@@ -46,9 +46,15 @@
   ;; helpful and only add to runtime costs.
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
+
+  ; modify git log select buffer
+  ;; (setq transient-values '((magit-log:magit-log-select-mode "-n30")))
   ;; (put 'magit-log-mode 'magit-log-default-arguments '("-n30" "--decorate"))
   ;; TODO: @d1egoaz 2023-07-28: https://github.com/d1egoaz/dotfiles/commit/5831d94d27b9217a3c3cc7cbe174ac57470dacaf
+
+  ;; force magit log arguments on some magit modes
   (put 'magit-log-mode 'magit-log-default-arguments '("-n30"))
+  (put 'magit-log-select-mode 'magit-log-default-arguments '("-n30"))
   ;; (setq magit-refs-show-commit-count nil
   ;;       magit-revision-show-gravatars nil
   ;;       magit-process-popup-time 0
@@ -58,6 +64,24 @@
   ;;       )
   ;; (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+
+  (setq magit-section-initial-visibility-alist
+        '((untracked . hide) (unstaged . show) (staged . show) (stashes . hide)))
+
+  ;; debug magit performance
+  ;; (setq magit-refresh-verbose t)
+
+  (remove-hook 'magit-status-sections-hook #'magit-insert-tags-header)
+  (remove-hook 'magit-status-sections-hook #'magit-insert-unpulled-from-pushremote)
+  (remove-hook 'magit-status-sections-hook #'magit-insert-unpulled-from-upstream)
+  (remove-hook 'magit-status-sections-hook #'magit-insert-unpushed-to-pushremote)
+  (remove-hook 'magit-status-sections-hook #'magit-insert-untracked-files)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
+  ;; (remove-hook 'magit-status-sections-hook #'magit-insert-status-headers)
+
+  (remove-hook 'magit-status-sections-hook #'magit-insert-unpushed-to-upstream-or-recent)
+  (remove-hook 'magit-refs-sections-hook #'magit-insert-tags) ;; remove tags from ref section
+  ;; (remove-hook 'server-switch-hook 'magit-commit-diff) ;; remove diff on commiting
 
   ;; (setq magit-display-buffer-function #'display-buffer) to use window rules
 
@@ -90,13 +114,14 @@
 
   (defun diego/fetch-and-rebase-onto-origin-main ()
     (interactive)
-    (magit-fetch-branch "origin" "main" nil)
+    ;; (magit-fetch-branch "origin" "main" nil)
+    ;; (magit-fetch-branch "origin" "main" nil)
+    (magit-run-git "fetch" "origin" "main")
     ;; (magit-git-rebase "origin/master" "--keep-base"))
     (magit-git-rebase "origin/main" nil))
 
   (defun diego/visit-pull-request-url ()
-    "Visit the current branch's PR on Github.
-Uses gh and magit"
+    "Visit the current branch's PR on Github. Uses gh and magit"
     (interactive)
     (call-process "gh"
                   nil
