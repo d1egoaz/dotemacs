@@ -65,7 +65,7 @@
 
 (defun diego/workspaces-name-for-buffer (buffer _a)
   "Select an appropriate tab name given a buffer BUFFER."
-  (if-let ((file-name (buffer-file-name buffer))) ; check if buffer is visiting a file
+  (if-let* ((file-name (buffer-file-name buffer))) ; check if buffer is visiting a file
     (if (file-remote-p file-name)
         "|tramp|" ; I don't use remote files too much, when I use them just use a single workspace
       (let* ((root-dir (diego--locate-project-root-dir file-name))
@@ -99,7 +99,7 @@ directory name, otherwise return the ROOT-DIR."
   "Close the TAB workspace.
 This is intended to be called via `tab-bar-tab-pre-close-functions'."
   (let ((name (alist-get 'name tab)))
-    (when (string= "*kubel*" name)
+    (when (string= "kubel" name)
       (kill-matching-buffers "\\*kubel" nil t))
     (when (project-current)
       (project-kill-buffers t))

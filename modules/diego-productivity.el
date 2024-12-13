@@ -195,9 +195,13 @@
    (org-mode-hook . undo-fu-session-mode)
    (text-mode-hook . undo-fu-session-mode)))
 
+;; https://codeberg.org/ideasman42/emacs-elisp-autofmt/src/branch/main
 (use-package elisp-autofmt
   :commands (elisp-autofmt-mode elisp-autofmt-buffer)
-  :config (setq-default elisp-autofmt-load-packages-local '("use-package"))
+  :config
+  (setq-default elisp-autofmt-load-packages-local '("use-package"))
+  (setq elisp-autofmt-python-bin "python3")
+
   :hook (emacs-lisp-mode . elisp-autofmt-mode))
 
 (provide 'diego-productivity)

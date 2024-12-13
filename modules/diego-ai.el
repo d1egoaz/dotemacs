@@ -1,15 +1,16 @@
 ;;* AI - LLM
 
 (use-package gptel
-  :bind
-  ((:map gptel-mode-map ("C-c C-c" . gptel-send)))
+  :bind ((:map gptel-mode-map ("C-c C-c" . gptel-send)))
   :config
   (setq gptel-model "gpt-4o")
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 
 (use-package magit-gptcommit
-  :after gptel magit) ;; magit-gptcommit-generate, magit-gptcommit-commit-create
+  :after
+  gptel
+  magit) ;; magit-gptcommit-generate, magit-gptcommit-commit-create
 
 (use-package c3po
   :straight (:host github :repo "d1egoaz/c3po.el" :branch "d1egoaz_test-llms")
@@ -30,17 +31,11 @@
   (setq c3po-base-path-local-models "http://localhost:11434/v1/chat/completions")
   ;; format-next-line: off
   (c3po-add-local-models
-   "openchat"
-   "llama3"
-   "phi3"
-   "llama3:instruct"
-   "llama3:8b-instruct-q8_0"
-   "mistral:7b"
-   "phi3:14b-medium-4k-instruct-q5_K_M"
-   "llava-llama3"
-   "phi3:3.8b-mini-instruct-4k-fp16"
-   "dolphin-llama3:8b-v2.9-q8_0")
+   "qwen2.5:14b"
+   "qwen2.5-coder:14b"
+   "marco-o1")
   (setq c3po-model "gpt-4o")
+  ;; (setq c3po-model "qwen2.5-coder:14b")
 
   (c3po-add-new-droid '(synonymizer . (:system-prompt "
 I want you to act as a synonyms provider.

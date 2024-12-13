@@ -289,7 +289,7 @@ exist after each headings's drawers."
 (defun diego/delete-file ()
   "Removes file and buffer."
   (interactive)
-  (if-let ((filename (buffer-file-name))
+  (if-let* ((filename (buffer-file-name))
            (buffer (current-buffer))
            (name (buffer-name)))
     (if (file-exists-p filename) ; it can be a new file that is not saved yet

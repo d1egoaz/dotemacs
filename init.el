@@ -279,6 +279,8 @@
 ;; (load-theme 'modus-vivendi t)
 ;; (modus-themes-select 'modus-vivendi)
 
-(ef-themes-select 'ef-dream)
+;; (ef-themes-select 'ef-dream)
+;; (ef-themes-select 'ef-dream)
+(ef-themes-select 'ef-trio-light)
 
 ;;; init.el ends here

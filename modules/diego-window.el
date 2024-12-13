@@ -16,7 +16,9 @@
   ;;      '("\\*compilation\\*" display-buffer-no-window
   ;;         (allow-no-window . t)))
   (defun diego--debug-buffer-alist (b a)
-    (message "b:%s" b)
+    (message ">>> Opening buffer: %s" (buffer-name buffer))
+    (message ">>> buffer:%s" b)
+    (message ">>> alist:%s" a)
     (print a)
     nil)
 
@@ -161,27 +163,88 @@
           ;; end display-buffer-alist elements
           ))
 
-(defun diego/tab-bar-close-tab-on-buffer-kill ()
-  "Close the tab when the killed buffer is the last buffer displayed in the tab."
-  ;; Prevent recursion by checking if the function is already running
-  (unless (or (eq this-command 'tab-bar-close-tab)
-              ;; (derived-mode-p 'magit-mode)
-              ;; (derived-mode-p 'elfeed-show-mode)
-              (string= (buffer-name) "*scratch*"))
-    (when (and (eq (current-buffer) (window-buffer)) (not (minibufferp)))
-      ;; Temporarily remove this function from kill-buffer-hook to prevent recursion
-      (remove-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; managing closing the last buffer in a tab ;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (defvar diego/closing-tab nil
+    "Flag to indicate if a tab is being closed.")
+
+  (defcustom diego/tab-bar-excluded-modes '(magit-mode);dired-sidebar-mode)
+    "List of major modes where the tab should not be auto-closed."
+    :type '(repeat symbol)
+    :group 'diego)
+
+  (defcustom diego/tab-bar-excluded-buffers '("*scratch*" "*Messages*" "*Backtrace*")
+    "List of buffer names where the tab should not be auto-closed."
+    :type '(repeat string)
+    :group 'diego)
+
+  (defun diego/tab-bar-close-empty-tab ()
+    "Close the current tab if it is empty."
+    (when (diego/should-close-empty-tab-p)
       (unwind-protect
-          (let* ((all-windows (window-list)) ;; Get all windows in the current tab
-                 (tab-buffers (seq-uniq (mapcar #'window-buffer all-windows))) ;; Get unique buffers in all windows
-                 (remaining-buffers (remove (current-buffer) tab-buffers)))
-            (when (null remaining-buffers)
-              (tab-bar-close-tab)))
-        ;; Ensure the hook is re-added even if an error occurs
-        (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)))))
+          (progn
+            (setq diego/closing-tab t)
+            (message ">>> Opening buffer: %s" (buffer-name buffer))
+            (message ">>> buffer:%s" b)
+            (remove-hook 'kill-buffer-hook #'diego/tab-bar-close-empty-tab)
+            (tab-bar-close-tab))
+        (progn
+          (add-hook 'kill-buffer-hook #'diego/tab-bar-close-empty-tab)
+          (setq diego/closing-tab nil)))))
 
-  (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
+  (defun diego/should-close-empty-tab-p ()
+    "Check if the current tab should be closed because it is empty."
+    (and
+     ;; Ensure we're not already closing a tab
+     (not diego/closing-tab)
+     ;; Ensure the command is not itself `tab-bar-close-tab`
+     (not (eq this-command 'tab-bar-close-tab))
+     ;; Exclude certain major modes
+     (not (apply #'derived-mode-p diego/tab-bar-excluded-modes))
+     ;; Exclude certain buffers
+     (not (member (buffer-name) diego/tab-bar-excluded-buffers))
+     ;; Ensure current buffer is displayed in the current window and not a minibuffer
+     (and (eq (current-buffer) (window-buffer))
+          (not (minibufferp)))
+     ;; Check if closing the tab would leave no buffers open
+     (diego/is-tab-empty-p)))
 
+  ;; TODO: try using bufferlo-list-buffers to include all buffers in a tab
+  (defun diego/is-tab-empty-p ()
+    "Check if the current tab has no buffers open besides the current buffer."
+    (let ((buffers-in-windows (delete-dups (mapcar #'window-buffer (window-list)))))
+      (null (delq (current-buffer) buffers-in-windows))))
+
+
+  ;; (add-hook 'kill-buffer-hook #'diego/tab-bar-close-empty-tab)
+
+
+  ;; (defun diego/tab-bar-close-tab-on-buffer-kill ()
+  ;;   "Close the tab when the killed buffer is the last buffer displayed in the tab."
+  ;;   ;; Prevent recursion by checking if the function is already running
+  ;;   (unless (or (eq this-command 'tab-bar-close-tab)
+  ;;               (derived-mode-p 'magit-mode)
+  ;;               ;; (derived-mode-p 'elfeed-show-mode)
+  ;;               (string-prefix-p "magit-" (buffer-name) )
+  ;;               (string= (buffer-name) "*scratch*"))
+  ;;     (when (and (eq (current-buffer) (window-buffer)) (not (minibufferp)))
+  ;;       (let ((kill-buffer-hook nil))
+  ;;         ;; Temporarily remove this function from kill-buffer-hook to prevent recursion
+  ;;         (let* ((all-windows (window-list nil nil t)) ;; Get all windows in the current tab
+  ;;                (tab-buffers (seq-uniq (mapcar #'window-buffer all-windows))) ;; Get unique buffers in all windows
+  ;;                (remaining-buffers (remove (current-buffer) tab-buffers)))
+  ;;           (message "all-windows %S" all-windows)
+  ;;           (message "tab-buffers %S" tab-buffers)
+  ;;           (message "remaining-buffers %S" remaining-buffers)
+  ;;           (when (null remaining-buffers)
+  ;;             (tab-bar-close-tab)))
+  ;;         ;; Ensure the hook is re-added even if an error occurs
+  ;;         ))))
+
+  ;; (add-hook 'kill-buffer-hook #'diego/tab-bar-close-tab-on-buffer-kill)
 
   ;; (defun diego/display-new-buffer ()
   ;;   )
@@ -199,7 +262,6 @@
       (display-buffer (current-buffer))))
 
   (advice-add 'kill-current-buffer :after #'diego-apply-current-buffer-display-rules)
-  ;; (add-hook 'kill-buffer-hook #'diego-apply-current-buffer-display-rules)
 
   ;; (setq display-buffer-alist nil) ;; use on emergency :)
 
@@ -245,13 +307,13 @@
 
   ;; from https://www.reddit.com/r/emacs/comments/pka1sm/my_first_package_aside_for_easier_configuration/hc3g1z7
   (cl-defun
-   diego/display-buffer-in-side-window
-   (&optional (buffer (current-buffer)))
-   "Display BUFFER in dedicated side window."
-   (interactive)
-   (let ((display-buffer-mark-dedicated t))
-     (display-buffer-in-side-window
-      buffer '((side . right) (window-parameters (no-delete-other-windows . t))))))
+      diego/display-buffer-in-side-window
+      (&optional (buffer (current-buffer)))
+    "Display BUFFER in dedicated side window."
+    (interactive)
+    (let ((display-buffer-mark-dedicated t))
+      (display-buffer-in-side-window
+       buffer '((side . right) (window-parameters (no-delete-other-windows . t))))))
 
   ;; Swap windows if there are two of them
   ;; copied from https://github.com/karthink/.emacs.d/blob/master/lisp/better-buffers.el

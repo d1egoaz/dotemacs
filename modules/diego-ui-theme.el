@@ -12,6 +12,8 @@
           (7 variable-pitch 1.2)
           (t variable-pitch 1.1)))
 
+  (setq ef-themes-to-rotate '(ef-dream ef-trio-light))
+
   (setq ef-themes-mixed-fonts t)
   (setq ef-themes-variable-pitch-ui t)
   (mapc #'disable-theme custom-enabled-themes)
@@ -32,16 +34,26 @@
   ;; underlying value.
   ;; (ef-themes-get-color-value 'variable :overrides)
 
+    (defvar-local my-minibuffer-font-remap-cookie nil
+      "The current face remap of `my-minibuffer-set-font'.")
+    (defface my-minibuffer-default
+      '((t :height 1.3))
+      "Face for the minibuffer and the Completions.")
+
   (defun my-ef-themes-custom-faces ()
     "My customizations on top of the Ef themes.
 This function is added to the `ef-themes-post-load-hook'."
 
     (ef-themes-with-colors
-     (custom-set-faces
-      `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
-      `(tab-bar ((,c :font "Baloo Bhaijaan-22" :background ,bg-main)))
-      `(tab-bar-tab ((,c  :overline ,green :foreground "#a9c99f" )))
-      `(tab-bar-tab-inactive ((,c  :bold nil :background ,bg-alt :foreground ,yellow-warmer)))))
+      (custom-set-faces
+       `(web-mode-block-delimiter-face ((,c :foreground ,yellow)))
+       `(tab-bar ((,c :font "Baloo Bhaijaan-22" :background ,bg-main)))
+       ;; `(tab-bar-tab ((,c  :overline ,green :foreground "#a9c99f" )))
+       ;; `(tab-bar-tab-inactive ((,c  :bold nil :background ,bg-alt :foreground ,yellow-warmer)))
+       ;; '(my-minibuffer-default ((t (:background "#181032" :foreground "#a0d0ff" :height 1.4))))
+       ;; '(my-minibuffer-default ((t (:background "#181032" :foreground "#a0d0ff" :height 1.4))))
+       ))
+    ;; `(my-minibuffer-default ((t :background ,bg-magenta-nuanced :foreground ,magenta-cooler)))))
 
     (set-face-attribute 'font-lock-number-face nil :foreground "#ff9580" :bold nil)
     (set-face-attribute 'font-lock-escape-face nil :foreground "#feacd0")
@@ -63,15 +75,23 @@ This function is added to the `ef-themes-post-load-hook'."
   (defun my-ef-themes-mode-line ()
     "Tweak the style of the mode lines."
     (ef-themes-with-colors
-     (custom-set-faces
-      ;; `(mode-line ((,c :background ,bg-active :foreground ,fg-main :box (:line-width 1 :color ,fg-dim))))
-      `(mode-line
-        ((,c
-          :background ,bg-mode-line
-          :foreground ,fg-mode-line
-          :box (:line-width 1 :color ,fg-dim))))
+      (custom-set-faces
+       ;; `(mode-line ((,c :background ,bg-active :foreground ,fg-main :box (:line-width 1 :color ,fg-dim))))
+       `(mode-line
+         ((,c
+           :background ,bg-mode-line
+           :foreground ,fg-mode-line
+           :box (:line-width 1 :color ,fg-dim))))
 
-      `(mode-line-inactive ((,c :box (:line-width 1 :color ,bg-active)))))))
+       `(mode-line-inactive ((,c :box (:line-width 1 :color ,bg-active)))))))
+
+
+  (defun my-minibuffer-set-font ()
+    (setq-local my-minibuffer-font-remap-cookie
+                (face-remap-add-relative 'default 'my-minibuffer-default)))
+
+  ;; https://protesilaos.com/codelog/2024-10-17-emacs-remap-minibuffer-face/
+  (add-hook 'minibuffer-mode-hook #'my-minibuffer-set-font)
 
   (add-hook 'ef-themes-post-load-hook #'my-ef-themes-mode-line))
 

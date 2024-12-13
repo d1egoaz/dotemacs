@@ -65,7 +65,15 @@
   ;;** Enable narrowing functions
   (put 'narrow-to-defun 'disabled nil)
   (put 'narrow-to-page 'disabled nil)
-  (put 'narrow-to-region 'disabled nil))
+  (put 'narrow-to-region 'disabled nil)
+
+  ;; https://protesilaos.com/codelog/2024-12-11-emacs-diff-save-some-buffers/
+  (add-to-list
+   'save-some-buffers-action-alist
+   (list
+    "d"
+    (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+    "show diff between the buffer and its file")))
 
 ;;** Whitespace cleanup on buffer save
 (use-package whitespace
@@ -87,11 +95,7 @@
 (use-package elec-pair
   :straight (:type built-in)
   :config
-  (setq electric-pair-pairs
-        '((?\" . ?\")
-          (?\` . ?\`)
-          (?\( . ?\))
-          (?\{ . ?\})))
+  (setq electric-pair-pairs '((?\" . ?\") (?\` . ?\`) (?\( . ?\)) (?\{ . ?\})))
   (setq electric-pair-text-pairs electric-pair-pairs)
   (setq electric-pair-inhibit-predicate (lambda (c) (char-equal c ?\<)))
   (electric-pair-mode 1))
@@ -219,6 +223,9 @@
   (setq pulsar-iterations 6)
   (setq pulsar-face 'pulsar-magenta)
   (setq pulsar-highlight-face 'pulsar-magenta)
+  (setq pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
+  (setq pulsar-pulse-on-window-change t)
+
   (pulsar-global-mode 1))
 
 ;;** rainbow-mode.el
@@ -235,5 +242,9 @@
   :config
   (setq hl-todo-keyword-faces '(("TODO" . "#cc9393") ("FIXME" . "#cc9393") ("NOTE" . "#d0bf8f")))
   (global-hl-todo-mode 1))
+
+(use-package delsel
+  :ensure nil
+  :hook (after-init . delete-selection-mode))
 
 (provide 'diego-editor)

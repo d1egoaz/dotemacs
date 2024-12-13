@@ -239,7 +239,8 @@
    "js" #'(avy-goto-symbol-1 :which-key "Jump to begginning of word")
    ;; Kill
    "kk" #'(kill-current-buffer :which-key "Kill current buffer")
-   "kK" #'(diego/kill-buffer :which-key "Kill current buffer")
+   "kK" #'(tab-bar-close-tab :which-key "Kill current tab")
+   ;; "kK" #'(diego/kill-buffer :which-key "Kill current buffer")
    "kh" #'((lambda () (interactive) (kill-matching-buffers "\\*helpful" nil t)) :which-key "Kill help buffers")
    "kv" #'((lambda () (interactive) (kill-matching-buffers "\\*vterm" nil t)) :which-key "Kill vterm buffers")
    "k TAB" #'(tab-bar-close-tab :which-key "Kill workspace tab")

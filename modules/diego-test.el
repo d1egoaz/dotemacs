@@ -18,4 +18,21 @@
       (copy-file current-file target-file t)
       (message "File copied to %s" target-file))))
 
+; doesn't wor
+;; (use-package kele
+;;   :config
+;;   (setq kele-discovery-refresh-interval nil)
+;;   (setq kele-resource-default-refresh-interval nil))
+  ;(kele-mode 1))
+
+;; interested in: bufferlo-list-buffers
+;; (use-package bufferlo
+;;  ;; :ensure t
+;;  :config
+;;  (bufferlo-mode 1))
+
+; hard to use
+;; (use-package kubed
+;;   :straight (:type git :host github :repo ""))
+
 (provide 'diego-test)

@@ -28,6 +28,7 @@
                   ;; default-directory
                   mode-line-position
                   (project-mode-line project-mode-line-format)
+                  mode-line-format-right-align
                   minions-mode-line-modes
                   (vc-mode vc-mode) " "
                   ;; mode-line-misc-info

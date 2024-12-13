@@ -196,13 +196,13 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
   :config (evil-exchange-install))
 
 ;;** evil-goggles.el
-(use-package evil-goggles
-  :after evil
-  :config
-  (setq evil-goggles-pulse t)
-  (set-face-attribute 'evil-goggles-default-face nil :inherit 'cursor)
-  (setq evil-goggles-duration 0.3)
-  (evil-goggles-mode))
+;; (use-package evil-goggles
+;;   :after evil
+;;   :config
+;;   (setq evil-goggles-pulse t)
+;;   (set-face-attribute 'evil-goggles-default-face nil :inherit 'cursor)
+;;   (setq evil-goggles-duration 0.3)
+;;   (evil-goggles-mode 1))
 
 ;;** evil-snipe.el
 (use-package evil-snipe
