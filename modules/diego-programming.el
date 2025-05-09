@@ -396,6 +396,7 @@
 
 ;;** yaml
 (use-package yaml-ts-mode)
+(use-package lua-mode)
 
 ;;** Kubernetes
 
