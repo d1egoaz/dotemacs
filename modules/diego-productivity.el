@@ -1,6 +1,28 @@
 ;; -*- lexical-binding: t; -*-
 ;;* Productivity
 
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (defvar my-old-display-buffer-alist nil
+    "Backup of old `display-buffer-alist' before reading the desktop.")
+
+  (defun my-disable-display-rules ()
+    "Disable all custom display rules before loading the desktop."
+    (setq my-old-display-buffer-alist display-buffer-alist)
+    (setq display-buffer-alist nil))
+
+  (defun my-enable-display-rules ()
+    "Restore custom display rules after loading the desktop."
+    (setq display-buffer-alist my-old-display-buffer-alist))
+
+ ; (add-hook 'desktop-before-read-hook #'my-disable-display-rules)
+;  (add-hook 'desktop-after-read-hook #'my-enable-display-rules)
+;;  (advice-add 'desktop-read :around (lambda (orig-fun &rest args) (my-disable-display-rules) (let ((res (apply orig-fun args))) (my-enable-display-rules) res)))
+  :config
+  (desktop-save-mode 1)
+  (setq desktop-auto-save-timeout 30))
+
 ;;** keyfreq.el
 (use-package keyfreq
   :config
