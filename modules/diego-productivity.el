@@ -20,7 +20,7 @@
 ;  (add-hook 'desktop-after-read-hook #'my-enable-display-rules)
 ;;  (advice-add 'desktop-read :around (lambda (orig-fun &rest args) (my-disable-display-rules) (let ((res (apply orig-fun args))) (my-enable-display-rules) res)))
   :config
-  (desktop-save-mode 1)
+  ;; (desktop-save-mode 1)
   (setq desktop-auto-save-timeout 30))
 
 ;;** keyfreq.el
