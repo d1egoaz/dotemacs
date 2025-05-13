@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Misc
 
 ;;** helpful.el
@@ -70,11 +71,11 @@
   :general
   ;; format-next-line: off
   (general-nmap
-   :keymaps 'elfeed-search-mode-map
-   "c" #'elfeed-search-clear-filter
-   "s" #'elfeed-search-live-filter
-   "r" #'elfeed-search-untag-all-unread
-   "," #'diego/elfeed-filter)
+    :keymaps 'elfeed-search-mode-map
+    "c" #'elfeed-search-clear-filter
+    "s" #'elfeed-search-live-filter
+    "r" #'elfeed-search-untag-all-unread
+    "," #'diego/elfeed-filter)
   (general-nmap :keymaps 'elfeed-show-mode-map "C-n" #'elfeed-show-next "C-p" #'elfeed-show-prev)
   :commands elfeed
   :config
@@ -84,6 +85,35 @@
   (setq elfeed-show-truncate-long-urls t)
   (setq elfeed-sort-order 'ascending)
 
+  (defun diego-elfeed-search-print-entry--default (entry)
+  "Print ENTRY to the buffer."
+  (let* (;;(date (elfeed-search-format-date (elfeed-entry-date entry)))
+         (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+         (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+         (feed (elfeed-entry-feed entry))
+         (feed-title
+          (when feed
+            (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+         ;; (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+         ;; (tags-str (mapconcat
+         ;;            (lambda (s) (propertize s 'face 'elfeed-search-tag-face))
+         ;;            tags ","))
+         (title-width (- (window-width) 10 elfeed-search-trailing-width))
+         (title-column (elfeed-format-column
+                        title (elfeed-clamp
+                               elfeed-search-title-min-width
+                               title-width
+                               elfeed-search-title-max-width)
+                        :left)))
+    ;; (insert (propertize date 'face 'elfeed-search-date-face) " ")
+    (insert (propertize title-column 'face title-faces 'kbd-help title) " ")
+    (when feed-title
+      (insert (propertize feed-title 'face 'elfeed-search-feed-face) " "))
+    ;; (when tags (insert "(" tags-str ")"))
+    ))
+
+  (setq elfeed-search-print-entry-function #'diego-elfeed-search-print-entry--default)
+  (set-face-attribute 'elfeed-search-unread-title-face nil :weight 'normal)
   ;; (set-face-attribute 'elfeed-search-unread-title-face nil
   ;;                     :background "#001904"
   ;;                     :foreground "#b8e2b8"
@@ -97,21 +127,25 @@
       (goto-char (point-min))))
 
   (transient-define-prefix
-   diego/elfeed-filter ()
-   [["Arguments"
-     ("a" "apple" "+apple")
-     ("c" "Tech Crunch" "+techcrunch")
-     ("e" "emacs" "+emacs")
-     ("h" "Hacker News" "+hnews")
-     ("l" "linux" "+linux")
-     ("t" "top" "+top")
-     ("s" "sre" "+sre")
-     ("v" "verge" "+theverge")
-     ("w" "aws" "+aws")]
-    ["Reddit" ("p" "r/Programming" "+programming")]
-    ["Actions" ("f" "apply" diego/elfeed-filter-do) ("u" "update" elfeed-update)]])
+    diego/elfeed-filter ()
+    [["Arguments"
+      ("a" "apple" "+apple")
+      ("c" "Tech Crunch" "+techcrunch")
+      ("e" "emacs" "+emacs")
+      ("h" "Hacker News" "+hnews")
+      ("l" "linux" "+linux")
+      ("t" "top" "+top")
+      ("s" "sre" "+sre")
+      ("v" "verge" "+theverge")
+      ("w" "aws" "+aws")]
+     ["Reddit" ("p" "r/Programming" "+programming")]
+     ["Actions" ("f" "apply" diego/elfeed-filter-do) ("u" "update" elfeed-update)]])
 
-  :hook ((elfeed-search-mode-hook . diego/olivetti-mode) (elfeed-show-mode-hook . diego/olivetti-mode)))
+  :hook (
+         (elfeed-search-mode-hook . diego/olivetti-mode)
+         (elfeed-search-mode-hook . mixed-pitch-mode)
+         (elfeed-show-mode-hook . diego/olivetti-mode)
+         ))
 
 (use-package elfeed-org
   :after elfeed
@@ -130,9 +164,9 @@
   :general
   ;; format-next-line: off
   (general-nmap
-   :keymaps 'emacs-everywhere-mode-map
-   "," #'diego/emacs-everywhere-filter
-   "C-c C-c" #'emacs-everywhere--finish-or-ctrl-c-ctrl-c)
+    :keymaps 'emacs-everywhere-mode-map
+    "," #'diego/emacs-everywhere-filter
+    "C-c C-c" #'emacs-everywhere--finish-or-ctrl-c-ctrl-c)
   :bind ("s-g" . #'c3po-transient-tools)
 
   :config
@@ -171,11 +205,11 @@
     (run-with-timer 3 nil #'diego--tmp-everywhere))
 
   (transient-define-prefix
-   diego/emacs-everywhere-filter ()
-   [["Actions"
-     ("g" "correct grammar" c3po-grammar-checker-new-chat-replace-region)
-     ("a" "assistant" diego--custom-c3po-assistant)
-     ("w" "rewrite" c3po-rewriter-new-chat-replace-region)]]))
+    diego/emacs-everywhere-filter ()
+    [["Actions"
+      ("g" "correct grammar" c3po-grammar-checker-new-chat-replace-region)
+      ("a" "assistant" diego--custom-c3po-assistant)
+      ("w" "rewrite" c3po-rewriter-new-chat-replace-region)]]))
 
 ;; to signal emacs-everywhere to use org-gfm-export-to-markdown
 ;; currently not used as I'm always using gfm-mode

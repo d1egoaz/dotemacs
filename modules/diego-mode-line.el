@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; * Mode line
 
 (use-package emacs
@@ -28,15 +29,16 @@
                   ;; default-directory
                   mode-line-position
                   (project-mode-line project-mode-line-format)
-                  mode-line-format-right-align
+                  ;; mode-line-format-right-align
                   minions-mode-line-modes
                   (vc-mode vc-mode) " "
+                  (nyan-create)
                   ;; mode-line-misc-info
                   ;; mode-line-mule-info
                   ;; mode-line-client
                   ;; mode-line-modified
                   ;; mode-line-remote
-                  mode-line-frame-identification
+                  ;; mode-line-frame-identification
                   mode-line-end-spaces)))
 
 (use-package minions

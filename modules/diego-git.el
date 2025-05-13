@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;** Git
 ;; https://github.com/magit/magit
 ;; A git client for Emacs.
@@ -46,6 +47,8 @@
   ;; helpful and only add to runtime costs.
   (setq magit-revision-insert-related-refs nil)
   (setq magit-diff-refine-ignore-whitespace nil)
+  (setopt magit-format-file-function #'magit-format-file-all-the-icons)
+  ;; (setopt magit-format-file-function #'magit-format-file-nerd-icons)
 
   ; modify git log select buffer
   ;; (setq transient-values '((magit-log:magit-log-select-mode "-n30")))
@@ -64,9 +67,11 @@
   ;;       )
   ;; (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  ;; (setq magit-display-buffer-function #'display-buffer) ;;to use window rules
+  ;; (setq magit-display-buffer-function #'magit-display-buffer-fullcolumn-most-v1)
 
   (setq magit-section-initial-visibility-alist
-        '((untracked . hide) (unstaged . show) (staged . show) (stashes . hide)))
+        '((untracked . show) (unstaged . show) (staged . show) (stashes . hide)))
 
   ;; debug magit performance
   ;; (setq magit-refresh-verbose t)
@@ -75,7 +80,7 @@
   (remove-hook 'magit-status-sections-hook #'magit-insert-unpulled-from-pushremote)
   (remove-hook 'magit-status-sections-hook #'magit-insert-unpulled-from-upstream)
   (remove-hook 'magit-status-sections-hook #'magit-insert-unpushed-to-pushremote)
-  (remove-hook 'magit-status-sections-hook #'magit-insert-untracked-files)
+  ;; (remove-hook 'magit-status-sections-hook #'magit-insert-untracked-files)
   (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
   ;; (remove-hook 'magit-status-sections-hook #'magit-insert-status-headers)
 
@@ -83,7 +88,6 @@
   (remove-hook 'magit-refs-sections-hook #'magit-insert-tags) ;; remove tags from ref section
   ;; (remove-hook 'server-switch-hook 'magit-commit-diff) ;; remove diff on commiting
 
-  ;; (setq magit-display-buffer-function #'display-buffer) to use window rules
 
   (setq magit-repository-directories '(("~/code/" . 2) ("~/dotfiles/" . 1)))
 
@@ -94,7 +98,8 @@
   (defun diego/git-create-branch-from-origin-main ()
     "Create a new branch starting from origin/main."
     (interactive)
-    (magit-fetch-branch "origin" "main" nil)
+    ;;(magit-fetch-branch "origin" "main" nil)
+    (magit-call-git "fetch" "origin" "main")
     (let ((new_branch_name
            (read-from-minibuffer "New branch name (from origin/main): " "d1egoaz_")))
       (magit-git-command-topdir (concat "git checkout -b " new_branch_name " origin/main"))))

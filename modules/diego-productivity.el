@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Productivity
 
 ;;** keyfreq.el
@@ -138,7 +139,10 @@
 ;;** blamer.el
 (use-package breadcrumb
   :straight (:type git :host github :repo "joaotavora/breadcrumb")
-  :config (breadcrumb-mode 1))
+  :config
+
+  (setq breadcrumb-project-max-length 1.0)
+  (breadcrumb-mode 1))
 
 ;;** bookmarks.el
 (use-package bookmark
@@ -203,5 +207,11 @@
   (setq elisp-autofmt-python-bin "python3")
 
   :hook (emacs-lisp-mode . elisp-autofmt-mode))
+
+(use-package nyan-mode
+  :config
+  (setq nyan-wavy-trail nil)
+  (setq nyan-animate-nyancat nil)
+  (nyan-mode 1))
 
 (provide 'diego-productivity)

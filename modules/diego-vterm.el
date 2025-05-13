@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;** vterm.el
 (use-package vterm
   :demand t

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Let's Be Evil (evil-*.el)
 
 ;; - Cutting and Pasting ::
@@ -178,7 +179,6 @@ If `evil-vsplit-window-right' is non-nil, the new window isn't focused."
 ;; | gc     | comment out selection               |
 (use-package evil-commentary
   :straight (:build (autoloads native-compile))
-  :after evil
   :config (evil-commentary-mode 1))
 
 ;;** evil-exchange.el

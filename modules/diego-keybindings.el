@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Keybindings
 
 (use-package emacs
@@ -11,13 +12,14 @@
   ;; ** Global Keybindings
   ;; repeat last macro with Q, use macro and then Q to repeat it
   (keymap-set evil-normal-state-map "Q" #'evil-execute-last-recorded-macro)
+  (keymap-set evil-normal-state-map "q" nil)
 
   ;; fixes binding for corfu
   (keymap-set evil-insert-state-map "C-n" nil)
-  (keymap-set evil-insert-state-map "C-p" nil)
 
   (evil-define-key 'visual global-map (kbd ">") 'my/evil-shift-right)
   (evil-define-key 'visual global-map (kbd "<") 'my/evil-shift-left)
+  (evil-define-key 'normal global-map "gc" 'evil-commentary)
 
   ;; ESC Cancels All
   (define-key global-map [escape] #'keyboard-escape-quit)
@@ -26,8 +28,10 @@
 
   (keymap-global-set "s-b" #'consult-buffer)
   (keymap-global-set "s-r" #'consult-recent-file)
-  (keymap-global-set "s-w" #'delete-window)
-  (keymap-global-set "M-c" #'evil-commentary-line)
+  ;; (keymap-global-set "s-w" #'delete-window)
+  (keymap-global-set "s-w" #'kill-current-buffer)
+
+  (keymap-global-set "s-p" #'project-find-file)
 
   ;; because I'm using tabs x buffer tab-line-mode, so the next/previous buffer match the next/previous tab shown in the screen
   (keymap-global-set "C-M-h" #'tab-line-switch-to-prev-tab)
@@ -76,7 +80,8 @@
    "TAB K" #'(tab-bar-close-tab-by-name :which-key "Close workspace by name")
    "TAB h" #'(tab-previous :which-key "Previous workspace")
    "TAB l" #'(tab-next :which-key "Next workspace")
-   "TAB TAB" #'(tab-recent :which-key "Recent workspace")
+   ;; "TAB TAB" #'(tab-recent :which-key "Recent workspace")
+   "TAB TAB" #'(diego-apply-current-buffer-display-rules :which-key "Recent workspace")
    "TAB t" #'(diego/toggle-workspaces-enabled :which-key "Toggle tabs as workspaces")
    ;; Apps
    "a" '(:ignore t :which-key "apps")
@@ -330,7 +335,7 @@
    "wb" #'balance-windows
    "wB" #'balance-windows-area
    "ws" #'diego/swap-windows
-   "ww" #'toggle-window-dedicated
+   "ww" #'delete-window
    "w-" #'(+evil/window-split-and-follow :which-key "Horizontal split window")
    "w/" #'(+evil/window-vsplit-and-follow :which-key "Vertical split window")
    "wd" #'(evil-window-delete :which-key "Close window")

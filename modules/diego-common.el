@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;; diego-common.el --- Common Functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Diego Alvarez

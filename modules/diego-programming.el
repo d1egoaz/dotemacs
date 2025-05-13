@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Development
 
 ;;** Language Server Support (LSP)
@@ -476,7 +477,8 @@
      ,(rx (or "#" "=begin")) ; Comment start
      ruby-forward-sexp nil))
 
-  (add-hook 'hs-minor-mode-hook #'(lambda () (hs-hide-all)))
+  ;; (add-hook 'hs-minor-mode-hook #'(lambda () (hs-hide-all)))
+  ;; (remove-hook 'hs-minor-mode-hook #'(lambda () (hs-hide-all)))
 
   :hook (prog-mode-hook . hs-minor-mode))
 
@@ -592,6 +594,8 @@
 
   (setq-default treesit-font-lock-level 4)
 
+  ;;(add-to-list 'treesit-language-source-alist '(jq "https://github.com/nverno/tree-sitter-jq"))
+  ;Then run M-x treesit-install-language-grammar and select jq to install the shared library.
 
   (setq major-mode-remap-alist
         '((bash-mode . bash-ts-mode)
@@ -604,20 +608,6 @@
           (ruby-mode . ruby-ts-mode)
           (sh-mode . bash-ts-mode)
           (yaml-mode . yaml-ts-mode)))
-
-  ;; tree-sitter only modes
-  (add-to-list 'auto-mode-alist '("CMakeLists\\'" . cmake-ts-mode))
-  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
-  (add-to-list 'auto-mode-alist '("/go\\.mod\\'" . go-mod-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\'" . yaml-ts-mode))
 
   :hook ((go-ts-mode-hook . eglot-ensure)))
 

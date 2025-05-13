@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Workspaces/tabs (tab-bar.el)
 
 (use-package tab-bar
@@ -15,6 +16,8 @@
   (setq tab-bar-show t)
   (setq tab-bar-tab-hints nil) ; don't show numbers
   (setq tab-bar-tab-pre-close-functions '(diego--close-workspace))
+  ;; 2025-02-24 test https://www.masteringemacs.org/article/whats-new-in-emacs-301#:~:text=New%20user%20option%20%27tab%2Dbar%2Dselect%2Drestore%2Dwindows%27.%0AIt%20defines%20what%20to%20do%20with%20windows%20whose%20buffer%20was%20killed%20since%20the%20tab%0Awas%20last%20selected.%20%20By%20default%20it%20displays
+  (setq tab-bar-select-restore-windows nil)
 
   (setq global-mode-string '("  " display-time-string))
 
@@ -88,7 +91,9 @@
                           "Buffer: "
                           (all-the-icons-icon-for-mode major-mode :height 0.7 :v-adjust 0.0)
                           " ")))
-                      'face '(:background "#0f3f4f" :foreground "#6fb3c0" :weight normal))
+                      'face '(
+                              ;; :background "#0f3f4f" ;; :foreground "#6fb3c0" :weight normal))
+                                          :foreground "#00FFFF" :weight light))
          ignore))))
 
   (defun diego-tab-format-keycast ()
@@ -147,6 +152,7 @@ It needs an space before to stop any colour to follow at the end of the row."
           ;; diego-tab-format-kubel
           ;; diego-tab-format-keycast
           tab-bar-format-align-right
+          project-mode-line-format
           ;; tab-bar-format-global
           ))
 
@@ -154,13 +160,15 @@ It needs an space before to stop any colour to follow at the end of the row."
   (tab-bar-mode 1)
   (tab-bar-history-mode 1)
 
-  (defun diego-apply-current-buffer-display-rules-tab (new old)
-    "Run display-buffer-alist rules after switching tabs or killing buffers."
-    (when diego-workspaces-enabled
-      (display-buffer (current-buffer))))
+  ;; (defun diego-apply-current-buffer-display-rules-tab (new old)
+  ;;   "Run display-buffer-alist rules after switching tabs or killing buffers."
+  ;;   (when diego-workspaces-enabled
+  ;;     (display-buffer (current-buffer))))
 
 
-  ;; (add-hook 'tab-bar-switch-functions #'diego-apply-current-buffer-display-rules)
-  (add-hook 'tab-bar-tab-post-select-functions #'diego-apply-current-buffer-display-rules-tab))
+  (add-hook 'tab-bar-switch-functions #'diego-apply-current-buffer-display-rules)
+  ;; (add-hook 'tab-bar-tab-post-select-functions #'diego-apply-current-buffer-display-rules-tab))
+  (add-hook 'tab-bar-tab-post-select-functions #'diego-apply-current-buffer-display-rules)
+  )
 
 (provide 'diego-tab-bar)

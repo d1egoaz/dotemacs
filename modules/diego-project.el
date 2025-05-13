@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;; diego-project.el --- Diego Project Related Functions  -*- lexical-binding: t; -*-
 
 (defvar diego--project-project-roots
@@ -7,6 +8,9 @@
 (use-package project
   :straight (:type built-in)
   :config
+
+  ;; makes commands like 'project-find-file'and 'project-find-dir' display previous history entries relative to the current project.
+  (setq project-file-history-behavior 'relativize)
 
   ;;** Save Some Buffers default to project root
   (setq save-some-buffers-default-predicate 'save-some-buffers-root)
@@ -38,7 +42,6 @@
     "Open the README.md file in a project."
     (interactive)
     (find-file (expand-file-name "README.md" (diego/current-project-root)))
-    ;; (dirvish-side))
     (dired-sidebar-show-sidebar))
 
   (defun diego/open-project-magit ()
@@ -100,7 +103,7 @@
 
   (defun diego/current-project-root ()
     "Return the current project root."
-    (when-let ((proj (project-current)))
+    (when-let* ((proj (project-current)))
       (project-root proj)))
 
   (defun diego/project-generate-ctags ()

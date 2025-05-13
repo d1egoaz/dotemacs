@@ -1,4 +1,4 @@
-;;* Windows
+;; -*- lexical-binding: t; -*-
 
 ;;** Jump to windows (ace-window.el)
 (use-package ace-window
@@ -65,6 +65,7 @@
                 (derived-mode . comint-mode)
                 (derived-mode . magit-diff-mode)
                 (derived-mode . magit-rev-mode)
+                ;; (derived-mode . magit-status-mode)
                 (derived-mode . flymake-diagnostics-buffer-mode)))
            (display-buffer-reuse-mode-window display-buffer-in-side-window)
            (side . right)
@@ -80,7 +81,7 @@
           ;; ← left side window
 
           ;; → right side window
-          ("\\*\\(?:VC-history\\|eldoc\\|vterm-project\\|vterm-compile\\|🤖C3PO🤖\\).*\\*"
+          ("\\*\\(?:VC-history\\|eldoc\\|vterm-project\\|vterm-compile\\|🤖C3PO🤖\\|Annotate\\).*\\*"
            (display-buffer-in-side-window)
            (side . right)
            (window-width . 0.50)
@@ -158,8 +159,8 @@
           ;;; Automatic workspaces-tabs management
           ;; Every buffer visiting a file goes automatically to a tab given by the root project.
           ;; idea from https://emacs.stackexchange.com/a/64486
-          (diego/workspaces-validate-buffer
-           (display-buffer-in-tab) (tab-name . diego/workspaces-name-for-buffer))
+          ;(diego/workspaces-validate-buffer
+           ;(display-buffer-in-tab) (tab-name . diego/workspaces-name-for-buffer))
           ;; end display-buffer-alist elements
           ))
 
@@ -171,7 +172,7 @@
   (defvar diego/closing-tab nil
     "Flag to indicate if a tab is being closed.")
 
-  (defcustom diego/tab-bar-excluded-modes '(magit-mode);dired-sidebar-mode)
+  (defcustom diego/tab-bar-excluded-modes '(magit-mode) ;dired-sidebar-mode)
     "List of major modes where the tab should not be auto-closed."
     :type '(repeat symbol)
     :group 'diego)
@@ -207,8 +208,7 @@
      ;; Exclude certain buffers
      (not (member (buffer-name) diego/tab-bar-excluded-buffers))
      ;; Ensure current buffer is displayed in the current window and not a minibuffer
-     (and (eq (current-buffer) (window-buffer))
-          (not (minibufferp)))
+     (and (eq (current-buffer) (window-buffer)) (not (minibufferp)))
      ;; Check if closing the tab would leave no buffers open
      (diego/is-tab-empty-p)))
 
@@ -256,12 +256,29 @@
 
   ;;   (add-hook 'kill-buffer-hook #'diego/display-new-buffer)
 
-  (defun diego-apply-current-buffer-display-rules ()
-    "Run display-buffer-alist rules after switching tabs or killing buffers."
+  ;; (defun diego-apply-current-buffer-display-rules ()
+  ;;   "Run display-buffer-alist rules after switching tabs or killing buffers."
+  ;;   (when diego-workspaces-enabled
+  ;;     (display-buffer (current-buffer))))
+
+  (defun diego-apply-current-buffer-display-rules (&optional _a _b)
+    (interactive)
     (when diego-workspaces-enabled
       (display-buffer (current-buffer))))
 
-  (advice-add 'kill-current-buffer :after #'diego-apply-current-buffer-display-rules)
+  ;; (defun diego-apply-current-buffer-display-rules (&optional a b)
+  ;;   "Run display-buffer-alist rules after switching tabs or killing buffers."
+  ;;   ;; (message "a:%S, b:%S" a b)
+  ;;   (setq diego-apply-current-buffer-display-rules-count
+  ;;         (1+ diego-apply-current-buffer-display-rules-count))
+  ;;   (message "diego-apply-current-buffer-display-rules called %d times"
+  ;;            diego-apply-current-buffer-display-rules-count)
+  ;;   (when diego-workspaces-enabled
+  ;;     (display-buffer (current-buffer))))
+
+  ;; to move the remaining buffer to the right tab
+  ;; (advice-add 'kill-current-buffer :after #'diego-apply-current-buffer-display-rules)
+  ;; (advice-add 'switch-to-buffer :after #'diego-apply-current-buffer-display-rules)
 
   ;; (setq display-buffer-alist nil) ;; use on emergency :)
 
@@ -307,13 +324,13 @@
 
   ;; from https://www.reddit.com/r/emacs/comments/pka1sm/my_first_package_aside_for_easier_configuration/hc3g1z7
   (cl-defun
-      diego/display-buffer-in-side-window
-      (&optional (buffer (current-buffer)))
-    "Display BUFFER in dedicated side window."
-    (interactive)
-    (let ((display-buffer-mark-dedicated t))
-      (display-buffer-in-side-window
-       buffer '((side . right) (window-parameters (no-delete-other-windows . t))))))
+   diego/display-buffer-in-side-window
+   (&optional (buffer (current-buffer)))
+   "Display BUFFER in dedicated side window."
+   (interactive)
+   (let ((display-buffer-mark-dedicated t))
+     (display-buffer-in-side-window
+      buffer '((side . right) (window-parameters (no-delete-other-windows . t))))))
 
   ;; Swap windows if there are two of them
   ;; copied from https://github.com/karthink/.emacs.d/blob/master/lisp/better-buffers.el

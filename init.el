@@ -1,4 +1,6 @@
-;;; init.el --- Init File                            -*- lexical-binding: t; -*-
+;; -*- lexical-binding: t; -*-
+
+;;; init.el --- Init File
 
 ;; Copyright (C) 2022  Diego Alvarez
 
@@ -279,8 +281,7 @@
 ;; (load-theme 'modus-vivendi t)
 ;; (modus-themes-select 'modus-vivendi)
 
-;; (ef-themes-select 'ef-dream)
-;; (ef-themes-select 'ef-dream)
-(ef-themes-select 'ef-trio-light)
+(ef-themes-select 'ef-dream)
+;; (ef-themes-select 'ef-trio-light)
 
 ;;; init.el ends here

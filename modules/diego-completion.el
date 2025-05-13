@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Completion
 
 ;;** Preserve history with savehist-mode

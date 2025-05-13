@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Org Mode
 
 ;;** org.el

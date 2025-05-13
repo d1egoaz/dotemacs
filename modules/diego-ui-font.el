@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (use-package emacs
   :straight (:type built-in)
   :config
@@ -13,9 +14,7 @@
 
   (set-face-attribute 'fixed-pitch nil :font "-*-Essential PragmataPro-regular-normal-normal-*-16-*-*-*-m-0-iso10646-1" :height 1.0)
   ;; (set-face-attribute 'variable-pitch nil :font "SF Pro Text-15")
-  (set-face-attribute 'variable-pitch nil :font "Atkinson Hyperlegible-15" :height 1.0)
-  (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-  (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+  (set-face-attribute 'variable-pitch nil :font "Atkinson Hyperlegible Next-16" :height 1.0)
 
   ;; *** Configure emoji font 😎
   (add-to-list 'face-font-rescale-alist '("Apple Color Emoji" . 0.8))
@@ -29,6 +28,8 @@
   (setq pixel-scroll-precision-mode t))
 
 (use-package mixed-pitch
-  :hook ((org-mode-hook . mixed-pitch-mode) (gfm-mode-hook . mixed-pitch-mode)))
+  :hook (
+         ;(org-mode-hook . mixed-pitch-mode)
+         (gfm-mode-hook . mixed-pitch-mode)))
 
 (provide 'diego-ui-font)

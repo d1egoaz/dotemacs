@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Search And Replace
 
 ;;** Jumping with (avy.el)

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; ** Persistent Scratch buffers
 
 (use-package emacs

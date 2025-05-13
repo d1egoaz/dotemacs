@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;* Editor
 
 (use-package emacs
@@ -22,7 +23,7 @@
   (setq-default display-line-numbers-widen t)
 
   ;; Enable line numbers in most text-editing modes.
-  (setq display-line-numbers-type 'relative)
+  (setq display-line-numbers-type t)
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (add-hook 'text-mode-hook #'display-line-numbers-mode)
   (add-hook 'conf-mode-hook #'display-line-numbers-mode)
@@ -32,6 +33,10 @@
   (setq-default visual-line-mode nil)
 
   (setq show-trailing-whitespace t) ;; highlight whitespace at the end of line
+
+  ;; smooth scrolling https://themkat.net/2025/03/25/simple_smoother_emacs_scrolling.html
+  (setq scroll-conservatively 10)
+  (setq scroll-margin 15)
 
   ;; ** Kill ring not save duplicates
   ;; Remove duplicates in the kill ring.
@@ -73,7 +78,24 @@
    (list
     "d"
     (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
-    "show diff between the buffer and its file")))
+    "show diff between the buffer and its file"))
+
+  ;; auto-mode-alist
+  (add-to-list 'auto-mode-alist '("CODEOWNERS\\'" . conf-mode))
+  (add-to-list 'auto-mode-alist '("\\.env\\'" . conf-mode))
+  ;; tree-sitter only modes
+  (add-to-list 'auto-mode-alist '("CMakeLists\\'" . cmake-ts-mode))
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+  (add-to-list 'auto-mode-alist '("/go\\.mod\\'" . go-mod-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\.lock\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\.erb\\'" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\'" . yaml-ts-mode)))
 
 ;;** Whitespace cleanup on buffer save
 (use-package whitespace
@@ -106,17 +128,17 @@
 (use-package format-all
   :config
   (define-format-all-formatter
-   elisp-autofmt
-   (:executable)
-   (:install "M-x package-install elisp-autofmt")
-   (:languages "Emacs Lisp")
-   (:features region)
-   (:format
-    (format-all--buffer-native
-     'elisp-autofmt-mode
-     (if region
-         (lambda () (funcall 'elisp-autofmt-region (car region) (cdr region)))
-       (lambda () (funcall 'elisp-autofmt-region (point-min) (point-max))))))))
+      elisp-autofmt
+    (:executable)
+    (:install "M-x package-install elisp-autofmt")
+    (:languages "Emacs Lisp")
+    (:features region)
+    (:format
+     (format-all--buffer-native
+      'elisp-autofmt-mode
+      (if region
+          (lambda () (funcall 'elisp-autofmt-region (car region) (cdr region)))
+        (lambda () (funcall 'elisp-autofmt-region (point-min) (point-max))))))))
 
 ;;** highlight-parentheses.el
 (use-package highlight-parentheses
@@ -172,52 +194,52 @@
 ;; Never lose the cursor again.
 (use-package pulsar
   :straight (:host github :repo "protesilaos/pulsar")
-  :init
-  (setq pulsar-pulse-functions
-        '(backward-page
-          bookmark-jump
-          delete-other-windows
-          delete-window
-          evil-avy-goto-line
-          evil-goto-definition
-          evil-mouse-drag-region
-          evil-scroll-down
-          evil-scroll-line-to-bottom
-          evil-scroll-line-to-center
-          evil-scroll-line-to-top
-          evil-scroll-up
-          evil-window-left
-          evil-window-right
-          evil-window-split
-          forward-page
-          handle-select-window
-          kill-current-buffer
-          lsp-find-references
-          lsp-find-definition
-          lsp-find-implementation
-          move-to-window-line-top-bottom
-          other-window
-          recenter-top-bottom
-          reposition-window
-          scroll-down
-          scroll-down-command
-          scroll-up
-          scroll-up-command
-          tab-close
-          tab-new
-          tab-next
-          windmove-down
-          windmove-left
-          windmove-right
-          windmove-swap-states-down
-          windmove-swap-states-left
-          windmove-swap-states-right
-          windmove-swap-states-up
-          windmove-up
-          xref-find-references
-          xref-find-definitions))
-
   :config
+  (setq pulsar-pulse-functions
+        (append
+         pulsar-pulse-functions
+         '(backward-page
+           bookmark-jump
+           delete-other-windows
+           delete-window
+           evil-avy-goto-line
+           evil-goto-definition
+           evil-mouse-drag-region
+           evil-scroll-down
+           evil-scroll-line-to-bottom
+           evil-scroll-line-to-center
+           evil-scroll-line-to-top
+           evil-scroll-up
+           evil-window-left
+           evil-window-right
+           evil-window-split
+           forward-page
+           handle-select-window
+           kill-current-buffer
+           lsp-find-references
+           lsp-find-definition
+           lsp-find-implementation
+           move-to-window-line-top-bottom
+           other-window
+           recenter-top-bottom
+           reposition-window
+           scroll-down
+           scroll-down-command
+           scroll-up
+           scroll-up-command
+           tab-close
+           tab-new
+           tab-next
+           windmove-down
+           windmove-left
+           windmove-right
+           windmove-swap-states-down
+           windmove-swap-states-left
+           windmove-swap-states-right
+           windmove-swap-states-up
+           windmove-up
+           xref-find-references
+           xref-find-definitions)))
   (setq pulsar-pulse t)
   (setq pulsar-delay 0.2)
   (setq pulsar-iterations 6)
