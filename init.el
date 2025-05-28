@@ -236,6 +236,9 @@
   :config
   (setq exec-path-from-shell-variables
         '("EMACS_ADDITIONAL_DIR"
+          "NIX_USER_PROFILE_DIR"
+          "NIX_PATH"
+          "NIX_PROFILES"
           "FZF_CTRL_T_COMMAND"
           "FZF_DEFAULT_COMMAND"
           "FZF_DEFAULT_OPTS"
@@ -244,7 +247,8 @@
           "PATH"
           "GPG_AGENT_INFO"))
   (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize))
+  (setenv "TERM" "dumb"))
 
 ;;;; Packages
 
