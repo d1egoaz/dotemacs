@@ -99,7 +99,7 @@
   (evil-collection-dired-setup)
   (setq dired-mouse-drag-files t) ; added in Emacs 29
   (setq mouse-drag-and-drop-region-cross-program t) ; added in Emacs 29
-  (setq insert-directory-program "gls")
+  (setq insert-directory-program "ls")
   ;; only one dired buffer when opening directories
   (setq dired-kill-when-opening-new-dired-buffer t)
   (setq dired-use-ls-dired nil)
